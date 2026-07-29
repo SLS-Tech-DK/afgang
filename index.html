@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>afgang — book mig, så tager vi den derfra</title>
+<meta name="description" content="Book en sparring eller workshop, så finder vi ud af hvad du skal have. Eller kør en gratis lyn-analyse af din side med det samme.">
+<meta name="theme-color" content="#0f1218">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0f1218; --ink-2:#151922; --panel:#191d27; --raised:#1f2431;
+  --line:#262c38; --line-2:#323a49;
+  --text:#edece7; --muted:#939aa8; --muted-2:#828b97;
+  --gron:#57c98a; --gul:#e0aa4e; --rod:#e0745a;
+  --gron-dim:rgba(87,201,138,.12); --gul-dim:rgba(224,170,78,.12); --rod-dim:rgba(224,116,90,.12);
+  --shadow:0 24px 60px -24px rgba(0,0,0,.7);
+  --nav-bg:rgba(15,18,24,.55); --nav-bg-stuck:rgba(15,18,24,.82);
+}
+body[data-theme="lys-varm"]{
+  color-scheme:light;
+  --ink:#f6f4ee; --ink-2:#fffdf8; --panel:#ffffff; --raised:#f3f0e8;
+  --line:#e7e3d8; --line-2:#d9d4c6;
+  --text:#1c1f26; --muted:#5e6874; --muted-2:#647080;
+  --gron:#2f9e6b; --gul:#b9822a; --rod:#c8542c;
+  --shadow:0 24px 50px -26px rgba(60,50,30,.28);
+  --nav-bg:rgba(246,244,238,.72); --nav-bg-stuck:rgba(246,244,238,.92);
+}
+body[data-theme="lys-koel"]{
+  color-scheme:light;
+  --ink:#eef1f5; --ink-2:#fbfcfe; --panel:#ffffff; --raised:#eef1f5;
+  --line:#e1e6ee; --line-2:#cfd6e0;
+  --text:#111722; --muted:#586372; --muted-2:#606a78;
+  --gron:#1f9b73; --gul:#b57f22; --rod:#c74f36;
+  --shadow:0 24px 50px -26px rgba(30,45,70,.22);
+  --nav-bg:rgba(238,241,245,.72); --nav-bg-stuck:rgba(238,241,245,.93);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+section{position:relative}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gron);outline-offset:3px;border-radius:4px}
+button{font-family:inherit;cursor:pointer}
+::selection{background:rgba(87,201,138,.25)}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(10px);background:var(--nav-bg);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+nav.stuck{border-bottom-color:var(--line);background:var(--nav-bg-stuck)}
+.nav-in{max-width:1120px;margin:0 auto;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
+.mark{font-family:'JetBrains Mono',monospace;font-size:17px;letter-spacing:.02em;font-weight:500;text-decoration:none}
+.mark .dot{color:var(--gron)}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a.txt{font-size:14px;color:var(--muted);text-decoration:none;transition:color .18s}
+.nav-links a.txt:hover{color:var(--text)}
+.nav-cta{font-family:'Inter';font-size:13.5px;color:var(--text);text-decoration:none;border:1px solid var(--line-2);padding:9px 16px;border-radius:100px;transition:all .18s}
+.nav-cta:hover{border-color:var(--gron);background:var(--gron-dim)}
+@media(max-width:820px){.nav-links a.txt{display:none}}
+.hero{min-height:80vh;display:flex;flex-direction:column;justify-content:center;padding:140px 0 50px;background:
+  radial-gradient(120% 90% at 82% -10%, rgba(87,201,138,.07), transparent 55%),
+  radial-gradient(90% 70% at 8% 115%, rgba(224,116,90,.05), transparent 55%);}
+.board-eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-2);display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.board-eyebrow .pill{display:inline-flex;align-items:center;gap:8px;color:var(--gron)}
+.blink{width:7px;height:7px;border-radius:50%;background:var(--gron);animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.22}}
+.h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(38px,7vw,78px);line-height:.98;letter-spacing:-.03em;max-width:16ch}
+.h1 .flip{color:var(--gron)}
+.hero-sub{margin-top:24px;font-size:clamp(16px,2.2vw,20px);color:var(--muted);max-width:52ch;line-height:1.55}
+.hero-cta{margin-top:36px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn{font-family:'Inter';font-weight:600;font-size:15.5px;text-decoration:none;padding:15px 26px;border-radius:100px;transition:transform .12s,box-shadow .2s,background .2s;display:inline-block;border:none}
+.btn-primary{background:var(--text);color:var(--ink)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px -12px rgba(0,0,0,.7)}
+.btn-ghost{color:var(--muted);font-size:14.5px;text-decoration:none;padding:15px 6px;background:none}
+.btn-ghost:hover{color:var(--text)}
+.btn-buy{background:var(--gron);color:#08130d}
+.btn-buy:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.sec{padding:clamp(60px,9vw,110px) 0}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gron);margin-bottom:16px}
+.h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:clamp(27px,4.3vw,44px);line-height:1.04;letter-spacing:-.02em;max-width:20ch}
+.lead{font-size:17px;color:var(--muted);max-width:56ch;margin-top:18px;line-height:1.6}
+/* DEMO / ANALYSE — prominent panel lige under hero */
+.analyse{margin-top:8px}
+.analyse-card{background:linear-gradient(165deg,var(--panel),var(--ink-2));border:1px solid rgba(87,201,138,.35);border-radius:24px;padding:clamp(26px,5vw,46px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.analyse-card::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 120% at 100% 0%, rgba(87,201,138,.10), transparent 55%);pointer-events:none}
+.analyse-card .eyebrow{color:var(--gron)}
+.analyse-card h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;line-height:1.05;max-width:20ch}
+.analyse-card p{color:var(--muted);font-size:16px;max-width:56ch;margin-top:14px;line-height:1.6}
+.analyse-field{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;max-width:560px}
+.analyse-field input{flex:1;min-width:220px;background:var(--ink-2);border:1px solid var(--line-2);border-radius:100px;padding:16px 22px;color:var(--text);font-size:16px;font-family:'Inter'}
+.analyse-field input:focus{outline:none;border-color:var(--gron)}
+.analyse-field button{background:var(--gron);color:#08130d;border:none;border-radius:100px;padding:16px 28px;font-weight:700;font-size:16px;transition:transform .12s,filter .2s}
+.analyse-field button:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.analyse-card .hint{margin-top:14px;font-size:13px;color:var(--muted-2)}
+.analyse-card .hint b{color:var(--muted)}
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px}
+@media(max-width:820px){.tracks{grid-template-columns:1fr}}
+.track{border:1px solid var(--line);border-radius:20px;padding:30px;background:var(--ink-2);position:relative}
+.track.a{border-top:3px solid var(--gron)}
+.track.b{border-top:3px solid var(--gul)}
+.track .tk{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.track.a .tk{color:var(--gron)} .track.b .tk{color:var(--gul)}
+.track h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:23px;letter-spacing:-.01em;margin-bottom:10px}
+.track p{color:var(--muted);font-size:15px;line-height:1.6}
+.track .how{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.track .how div{font-size:13.5px;color:var(--muted);padding-left:22px;position:relative}
+.track .how div::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%}
+.track.a .how div::before{background:var(--gron)} .track.b .how div::before{background:var(--gul)}
+.track .pay{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted-2)}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+@media(max-width:820px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--ink-2);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column}
+.plan.feature{background:linear-gradient(165deg,var(--panel),var(--ink-2));border-color:rgba(87,201,138,.35)}
+.plan .pk{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gron);margin-bottom:12px}
+.plan h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;margin-bottom:6px;letter-spacing:-.01em}
+.plan .pp{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:32px;letter-spacing:-.02em;margin:8px 0 2px}
+.plan .pp small{font-size:15px;color:var(--muted);font-weight:500}
+.plan .pdesc{color:var(--muted);font-size:14px;line-height:1.55;margin:8px 0 18px}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin:0 0 20px}
+.plan li{font-size:13.5px;color:var(--muted);padding-left:20px;position:relative;line-height:1.45}
+.plan li::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--gron)}
+.plan .btn{margin-top:auto;text-align:center;width:100%}
+.grp-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin:40px 0 4px}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+@media(max-width:640px){.mini{grid-template-columns:1fr}}
+.after{margin-top:40px;background:var(--ink-2);border:1px solid var(--line);border-radius:24px;padding:clamp(26px,5vw,44px)}
+.after .rows{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+@media(max-width:720px){.after .rows{grid-template-columns:1fr}}
+.arow{display:flex;justify-content:space-between;gap:14px;align-items:baseline;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+.arow .an{font-size:14.5px;font-weight:600}
+.arow .ad{font-size:12.5px;color:var(--muted);margin-top:3px;max-width:34ch;line-height:1.45}
+.arow .ap{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--gul);white-space:nowrap;text-align:right}
+.after .foot{margin-top:22px;font-size:13.5px;color:var(--muted-2);line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:44px}
+@media(max-width:720px){.who{grid-template-columns:1fr}}
+.who-card{border:1px solid var(--line);border-radius:18px;padding:30px;background:var(--ink-2)}
+.who-card .k{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gron);margin-bottom:12px}
+.who-card h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:20px;margin-bottom:10px;letter-spacing:-.01em}
+.who-card p{color:var(--muted);font-size:15px;}
+.book{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+@media(max-width:820px){.book{grid-template-columns:1fr}}
+.book-panel{background:var(--ink-2);border:1px solid var(--line);border-radius:20px;padding:28px}
+.book-panel h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:19px;margin-bottom:4px}
+.book-panel .sub{font-size:13.5px;color:var(--muted-2);margin-bottom:20px;font-family:'JetBrains Mono',monospace}
+.slots{display:flex;flex-direction:column;gap:10px}
+.slot{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;transition:all .15s;width:100%;text-align:left}
+.slot:hover:not(:disabled){border-color:var(--line-2)}
+.slot.on{background:var(--gron-dim);border-color:var(--gron)}
+.slot:disabled{opacity:.4;cursor:not-allowed}
+.slot .sl-d{font-size:14.5px;font-weight:600}
+.slot .sl-d span{display:block;font-size:12px;font-weight:400;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.slot .sl-t{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted)}
+.slot.on .sl-t{color:var(--gron)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.field input,.field textarea{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--text);font-family:'Inter';font-size:14.5px;transition:border-color .15s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gron)}
+.field textarea{resize:vertical;min-height:82px}
+.book-msg{font-size:13px;margin-top:12px;line-height:1.5;min-height:18px}
+.book-msg.ok{color:var(--gron)} .book-msg.err{color:var(--rod)}
+.chosen-tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gron);margin-bottom:14px;min-height:16px}
+.final{padding:clamp(72px,11vw,124px) 0;text-align:center;background:radial-gradient(80% 120% at 50% 120%, rgba(87,201,138,.08), transparent 60%);}
+.final h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,5.5vw,56px);line-height:1;letter-spacing:-.03em;margin-bottom:20px}
+.final p{color:var(--muted);font-size:18px;max-width:44ch;margin:0 auto 34px}
+footer{border-top:1px solid var(--line);padding:34px 0;color:var(--muted-2);font-size:13.5px}
+.foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center}
+.foot-in .mark{font-size:15px;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.no-io .reveal{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.blink{animation:none}}
+.theme-switch{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;gap:5px;background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:5px;box-shadow:var(--shadow)}
+.theme-switch button{border:none;background:none;color:var(--muted);font-size:11.5px;font-family:'JetBrains Mono',monospace;padding:6px 11px;border-radius:100px;cursor:pointer;transition:all .15s}
+.theme-switch button.on{background:var(--gron-dim);color:var(--gron)}
+.theme-switch .lbl{color:var(--muted-2);font-size:10px;padding:6px 4px 6px 8px;align-self:center}
+@media(max-width:600px){.theme-switch .lbl{display:none}}
+</style>
+</head>
+<body data-theme="lys-varm">
+<nav id="nav">
+  <div class="nav-in">
+    <a class="mark" href="index.html">afgang<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="#analyse" class="txt">Gratis analyse</a>
+      <a href="#saadan" class="txt">Sådan foregår det</a>
+      <a href="#priser" class="txt">Priser</a>
+      <a href="eksempler.html" class="txt">Eksempler</a>
+      <a href="cases.html" class="txt">Cases</a>
+      <a href="faq.html" class="txt">Spørgsmål</a>
+      <a href="#book" class="nav-cta">Book mig</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="board-eyebrow"><span class="pill"><span class="blink"></span>AI · idé · handling</span></div>
+    <h1 class="h1">Book mig — så tager vi <span class="flip">den derfra</span>.</h1>
+    <p class="hero-sub">Du behøver ikke have styr på det hele på forhånd. Book en tid, fortæl hvad du går og tænker på, så finder vi ud af resten sammen — sparring, workshop, eller noget der skal bygges. Kom med hvad du har.</p>
+    <div class="hero-cta">
+      <a href="#book" class="btn btn-primary">Book mig</a>
+      <a href="#priser" class="btn btn-ghost">Se priser →</a>
+    </div>
+  </div>
+</header>
+
+<!-- GRATIS ANALYSE — prominent lige under hero -->
+<section class="sec analyse" id="analyse" style="padding-top:clamp(20px,4vw,50px)">
+  <div class="wrap">
+    <div class="analyse-card reveal">
+      <div class="eyebrow">Gratis · uden du giver mig noget</div>
+      <h2>Start med en gratis lyn-analyse af din side.</h2>
+      <p>Skriv dit domæne, så kigger jeg på alt det offentlige jeg kan finde og viser dig hvor du står på Google, i AI-svar og teknisk — med konkrete quick wins, på et par minutter. Vil du dybere, kan du uploade dine egne data, og så tager vi den sammen på et møde.</p>
+      <form class="analyse-field" id="analyseForm" action="demo.html" method="get">
+        <input id="analyseDomain" name="domain" type="text" inputmode="url" placeholder="dinbutik.dk" autocomplete="off" aria-label="Dit domæne">
+        <button type="submit">Kør gratis analyse →</button>
+      </form>
+      <div class="hint">Virker bedst for <b>webshops og virksomhedssider</b>. Gratis, tager ~1-2 minutter — et godt sted at starte før du booker.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SÅDAN: TO SPOR -->
+<section class="sec" id="saadan" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Sådan foregår det</div>
+      <h2 class="h2">To måder at arbejde sammen på.</h2>
+      <p class="lead">Start altid med en snak — så finder vi ud af om du bare skal have svar og retning, eller om der skal bygges noget rigtigt bagefter.</p>
+    </div>
+    <div class="tracks">
+      <div class="track a reveal">
+        <div class="tk">Spor 1 · kom i gang selv</div>
+        <h3>Sparring & workshops</h3>
+        <p>Vi sætter os sammen — online eller hos jer — gennemgår din idé, din udfordring eller hvad AI kan for netop dig. Du går fra det med retning og konkrete næste skridt.</p>
+        <div class="how">
+          <div>Fast pris, du kender på forhånd</div>
+          <div>Betal med det samme — sikkert via Stripe</div>
+          <div>Jeg kommer forberedt, med analyser klar</div>
+        </div>
+        <div class="pay">→ Vælg og betal nedenfor</div>
+      </div>
+      <div class="track b reveal">
+        <div class="tk">Spor 2 · book mig til noget skræddersyet</div>
+        <h3>Bygget sammen med dig</h3>
+        <p>Skal der bygges noget — en hjemmeside, et dataværktøj, en bot, en app — tager vi en snak først, og så skræddersyr jeg en løsning ud fra præcis hvad du har brug for. Vi former det sammen.</p>
+        <div class="how">
+          <div>Pris vurderes per opgave — intet er ens</div>
+          <div>Faktura / betalingslink, når vi er enige om rammen</div>
+          <div>Du ejer det bagefter, i dit eget navn</div>
+        </div>
+        <div class="pay">→ Book en snak i bunden</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRISER: KERNEPRODUKTER (SELF-SERVICE) -->
+<section class="sec" id="priser" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Priser · kom i gang selv</div>
+      <h2 class="h2">Faste priser. Betal og book.</h2>
+      <p class="lead">De her kan du købe direkte. Prisen inkluderer forberedelse og analyser, så vi rammer plet på dagen. Betaling forud — så ved du jeg leverer, og vi er begge investeret.</p>
+    </div>
+
+    <div class="grp-label">Sparring</div>
+    <div class="plans">
+      <div class="plan feature reveal">
+        <div class="pk">1:1 online</div>
+        <h3>AI-sparring · 1 time</h3>
+        <div class="pp"><span data-pris-tal="sparring_1t">600</span><small> kr</small></div>
+        <div class="pdesc">En times fokuseret online møde om din idé, dit produkt eller din AI-udfordring. Jeg kommer forberedt — du går fra det klogere.</div>
+        <ul>
+          <li>Online, en time, helt konkret</li>
+          <li>Stil de spørgsmål du sidder med</li>
+          <li>Perfekt første skridt før en workshop</li>
+        </ul>
+        <a href="https://buy.stripe.com/test_6oUbIU0yydxJeHs2Bt5c406" target="_blank" rel="noopener" class="btn btn-buy">Book AI-sparring</a>
+      </div>
+      <div class="plan reveal" style="grid-column:span 2;background:var(--ink-2)">
+        <div class="pk">Sådan bruger folk den</div>
+        <h3 style="font-size:18px">En billig, konkret start</h3>
+        <div class="pdesc" style="margin-bottom:0">Mange starter med en times sparring for at mærke om vi passer sammen — for at få styr på hvad der overhovedet skal til. Derfra går de typisk videre til en workshop, eller booker mig til at bygge noget. Ingen binding, ingen forpligtelse.</div>
+      </div>
+    </div>
+
+    <div class="grp-label">Workshops</div>
+    <div class="plans">
+      <div class="plan feature reveal">
+        <div class="pk">Online / hos dig</div>
+        <h3>Halvdags workshop</h3>
+        <div class="pp"><span data-pris-tal="workshop_halvdag">2.000</span><small> kr</small></div>
+        <div class="pdesc">En formiddag hvor vi arbejder med din idé og finder ud af hvad du skal bygge — og hvordan.</div>
+        <ul>
+          <li>Ca. en halv dag sammen</li>
+          <li>Analyser forberedt på forhånd</li>
+          <li>Konkrete næste skridt med hjem</li>
+        </ul>
+        <a href="https://buy.stripe.com/test_dRm14gdlk1P1eHsb7Z5c400" target="_blank" rel="noopener" class="btn btn-buy">Book halvdag</a>
+      </div>
+      <div class="plan reveal">
+        <div class="pk">Mest for pengene</div>
+        <h3>Heldags workshop</h3>
+        <div class="pp"><span data-pris-tal="workshop_heldag">3.000</span><small> kr</small></div>
+        <div class="pdesc">En hel dag — vi når meget længere, og du får en klar rabat i forhold til to halve. Det bedste udgangspunkt hvis du vil videre.</div>
+        <ul>
+          <li>En hel dag i dybden</li>
+          <li>Markant mere værdi pr. krone</li>
+          <li>Forberedelse og analyser inkluderet</li>
+        </ul>
+        <a href="#book" class="btn btn-buy">Book heldag</a>
+      </div>
+      <div class="plan reveal">
+        <div class="pk">AI-workshop hos jer</div>
+        <h3>Ude i virksomheden</h3>
+        <div class="pp" style="font-size:26px"><span data-pris-tal="workshop_hos_1dag">5.000</span>–<span data-pris-tal="workshop_hos_2dag">8.000</span><small> kr</small></div>
+        <div class="pdesc">Hands-on AI-workshop hos jer — til teams uden en fast AI-person, hvor viden er spredt. Jeg klæder jer på med guardrails og konkrete quick wins.</div>
+        <ul>
+          <li>1 dag: <span data-pris-tal="workshop_hos_1dag">5.000</span> kr · 2 dage: <span data-pris-tal="workshop_hos_2dag">8.000</span> kr</li>
+          <li>Hos jer, hele holdet med</li>
+          <li>I går fra det og kan selv</li>
+        </ul>
+        <a href="#book" class="btn btn-buy">Book workshop hos jer</a>
+      </div>
+    </div>
+
+    <div class="grp-label">Support bagefter</div>
+    <div class="mini">
+      <div class="plan reveal">
+        <div class="pk">Klippekort</div>
+        <h3>5 klip</h3>
+        <div class="pp"><span data-pris-tal="klip_5">1.000</span><small> kr</small></div>
+        <div class="pdesc" style="margin-bottom:14px">Køb en stak klip og træk på mig når noget skal justeres, udvides eller fejlfindes. Ingen binding. Typisk tilkøb efter vi har bygget noget sammen.</div>
+        <a href="https://buy.stripe.com/test_cNi5kwa98fFR7f0ekb5c407" target="_blank" rel="noopener" class="btn btn-buy">Køb 5 klip</a>
+      </div>
+      <div class="plan reveal">
+        <div class="pk">Klippekort</div>
+        <h3>10 klip</h3>
+        <div class="pp"><span data-pris-tal="klip_10">1.800</span><small> kr</small></div>
+        <div class="pdesc" style="margin-bottom:14px">Samme fleksibilitet, bedre pris pr. klip. Til dig der ved du får brug for løbende små hjælp hen ad vejen.</div>
+        <a href="#book" class="btn btn-buy">Køb 10 klip</a>
+      </div>
+    </div>
+    <p style="color:var(--muted-2);font-size:12.5px;margin-top:16px;text-align:center">Betalingslinks er Stripe test-links — skift til live-links når du åbner for salg.</p>
+  </div>
+</section>
+
+<!-- EFTER SESSION: FLYDENDE / BOOK MIG -->
+<section class="sec" id="byg" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Priser · book mig til noget skræddersyet</div>
+      <h2 class="h2">Skal der bygges? Så tager vi en snak.</h2>
+      <p class="lead">Det her er ikke hyldevarer. Vi finder ud af hvad du har brug for, jeg vurderer det, og du får en pris før vi går i gang — faktureret via betalingslink. Tallene nedenfor er intervaller, så du kender størrelsesordenen.</p>
+    </div>
+    <div class="after reveal">
+      <div class="rows">
+        <div class="arow"><div><div class="an">Hjemmeside + hosting</div><div class="ad">Rigtig side live i dit navn, på dine egne konti. Afhænger meget af omfang og hvad du selv kan.</div></div><div class="ap"><span data-pris-tal="hjemmeside">5.000–15.000</span></div></div>
+        <div class="arow"><div><div class="an">Data-analyse & overblik</div><div class="ad">Dine tal samlet ét sted — salg, kunder, lager — [ed grafer og visning der giver mening.</div></div><div class="ap">fra <span data-pris-tal="data_fortolkning">1.000</span></div></div>
+        <div class="arow"><div><div class="an">Betalingsopsætning</div><div class="ad">Stripe sat rigtigt op, så du kan tage imod betalinger. Ofte kan du meget selv.</div></div><div class="ap">fra <span data-pris-tal="betalingsopsaetning">500</span></div></div>
+        <div class="arow"><div><div class="an">Kobling til andre systemer</div><div class="ad">Få dine værktøjer til at snakke sammen. Afhænger af hvor indviklet dit setup er.</div></div><div class="ap">fra <span data-pris-tal="kobling">500</span></div></div>
+        <div class="arow"><div><div class="an">Konkurrent-bot</div><div class="ad">Holder øje med udvalgte konkurrenter og samler ændringer i pris og sortiment. Tilkøb til webshops.</div></div><div class="ap"><span data-pris-tal="konkurrent_bot">7.000</span></div></div>
+        <div class="arow"><div><div class="an">Branchenyheds-bot</div><div class="ad">Samler relevante branchenyheder automatisk til ét fast overblik.</div></div><div class="ap"><span data-pris-tal="branchenyheds_bot">5.000</span></div></div>
+        <div class="arow"><div><div class="an">Mobil-app</div><div class="ad">Rigtig app i App Store / Google Play. Større opgave — vurderes fra gang til gang.</div></div><div class="ap"><span data-pris-tal="mobil_app">fra-pris, aftales</span></div></div>
+        <div class="arow"><div><div class="an">Noget helt andet?</div><div class="ad">Har du en idé der ikke står her, så er det tit præcis dét der er sjovest. Book en snak.</div></div><div class="ap">book mig</div></div>
+      </div>
+      <div class="foot">Priserne er vejledende intervaller, ikke faste pakker. Den endelige pris aftaler vi før vi går i gang, og betaling sker via faktura/betalingslink — ikke direkte i kurven. Driften betaler du selv, på dine egne konti.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Hvem det er for</div>
+      <h2 class="h2">Dem der vil videre — [en ikke ved med hvad, eller hvordan.</h2>
+    </div>
+    <div class="who">
+      <div class="who-card reveal">
+        <div class="k">Virksomheden uden en AI-person</div>
+        <h3>Få styr på hvad AI kan for jer</h3>
+        <p>Viden er spredt, ingen ejer det, og I ved at der er noget at hente. En workshop hos jer samler trådene og giver hele holdet konkrete værktøjer — [ed guardrails, så det bliver brugt rigvigvn.</p>
+      </div>
+      <div class="who-card reveal">
+        <div class="k">Iværksætteren</div>
+        <h3>Find ud af hvad du skal bygge — før du bygger det</h3>
+        <p>En times sparring eller en workshop giver dig retning, så du ikke bruger et halvt år og en formue på det forkerte. Skal der bygges, gør vi det sammen bagefter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section class="sec" id="book" style="padding-top:0">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Book mig</div>
+      <h2 class="h2">Find en tid. Så tager vi den derfra.</h2>
+      <p class="lead">Vælg en ledig dag, skriv et par ord om hvad du tænker på, og send det. Jeg vender tilbage og bekræfter — og siger til hvis en gratis lyn-analyse er et godt sted at starte først.</p>
+    </div>
+    <div class="book">
+      <div class="book-panel reveal">
+        <h3>Ledige tider</h3>
+        <div class="sub" id="bookWindow">indlæser…</div>
+        <div class="slots" id="slots"></div>
+      </div>
+      <div class="book-panel reveal">
+        <h3>Dine detaljer</h3>
+        <div class="sub">så jeg ved hvem og hvad</div>
+        <div class="chosen-tag" id="chosen">vælg en tid til venstre ↖</div>
+        <div class="field"><label for="bkName">Navn</label><input id="bkName" type="text" autocomplete="name" placeholder="Dit navn"></div>
+        <div class="field"><label for="bkMail">Email</label><input id="bkMail" type="email" autocomplete="email" placeholder="dig@eksempel.dk"></div>
+        <div class="field"><label for="bkIdea">Kot om hvad du tænker på</label><textarea id="bkIdea" placeholder="Sparring, workshop, eller noget der skal bygges?"></textarea></div>
+        <button class="btn btn-primary" id="bkSend">Send booking-forespørgsel</button>
+        <div class="book-msg" id="bkMsg"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap">
+    <h2>Skal vi finde ud af det sammen?</h2>
+    <p>Book en sparring, en workshop, eller bare skriv et par ord — så tager vi den derfra.</p>
+    <a href="#book" class="btn btn-primary">Book mig</a>
+  </div>
+</section>
+<footer>
+  <div class="wrap foot-in">
+    <a class="mark" href="index.html">afgang<span class="dot">.</span></a>
+    <div>AI middot sparring · workshops · det du vil bygge</div>
+    <div id="footMail">sls@slstech.dk</div>
+    <div>Afgang er en del af SLS Tech · CVR 46634640</div>
+  </div>
+</footer>
+
+<div class="theme-switch" id="themeSwitch" role="group" aria-label="Vælg tema">
+  <span class="lbl">tema</span>
+  <button data-theme="lys-varm">Lys varm</button>
+  <button data-theme="lys-koel">Lys kølig</button>
+  <button data-theme="moerk">Mørk</button>
+</div>
+
+<script src="priser.js"></script>
+<script>
+const CONFIG = {
+  contactEmail: "sls@slstech.dk",
+  booking: {
+    opensISO: "2026-07-27",
+    weeksAhead: 4,
+    availableWeekdays: [1, 3, 5],
+    timeLabel: "Formiddag · 09–12",
+    slotsPerWindow: 6,
+    supabaseUrl: "",
+    supabaseAnonKey: "",
+    supabaseTable: "bookinger"
+  }
+};
+const $ = s => document.querySelector(s);
+/* reveal */
+(function(){
+  if (!('IntersectionObserver' in window)) { document.body.classList.add('no-io'); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold:.12, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+/* nav shadow */
+const nav = $('#nav');
+addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 12), { passive:true });
+/* hero word flip */
+(function(){
+  const flip = $('.flip');
+  if (!flip || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const words = ['den derfra','resten sammen','det næste skridt','det svære'];
+  let i = 0;
+  setInterval(() => {
+    i = (i+1) % words.length;
+    flip.style.transition = 'opacity .3s';
+    flip.style.opacity = '0';
+    setTimeout(() => { flip.textContent = words[i]; flip.style.opacity = '1'; }, 260);
+  }, 2800);
+})();
+/* analyse-form: send domæne videre til demo.html */
+(function(){
+  const f = $('#analyseForm');
+  if(!f) return;
+  f.addEventListener('submit', e=>{
+    e.preventDefault();
+    const v = ($('#analyseDomain').value||'').trim();
+    location.href = 'demo.html' + (v ? ('?domain='+encodeURIComponent(v)) : '');
+  });
+})();
+/* booking */
+(function(){
+  const B=CONFIG.booking;
+  const dayNames=['søn','man','tir','ons','tor','fre','lør'];
+  const monthNames=['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+  let chosenSlot=null;
+  const opens=new Date(B.opensISO+'T00:00:00');
+  const today=new Date(); today.setHours(0,0,0,0);
+  const from = opens>today?opens:today;
+  const end=new Date(from); end.setDate(end.getDate()+B.weeksAhead*7);
+  const slots=[];
+  for(let d=new Date(from); d<end && slots.length<B.slotsPerWindow; d.setDate(d.getDate()+1)){
+    if(B.availableWeekdays.includes(d.getDay())){
+      slots.push({ date:new Date(d),
+        label:`${dayNames[d.getDay()]} ${d.getDate()}. ${monthNames[d.getMonth()]}`,
+        iso:d.toISOString().slice(0,10) });
+    }
+  }
+  $('#bookWindow').textContent = slots.length
+    ? `fra ${slots[0].label} · ${B.timeLabel}`
+    : `næste vindue åbner snart`;
+  const host=$('#slots');
+  if(!slots.length){
+    host.innerHTML='<div class="slot" style="opacity:.6">Ingen ledige tider lige nu — skriv til mig, så finder vi en tid.</div>';
+  }
+  slots.forEach(s=>{
+    const b=document.createElement('button'); b.className='slot';
+    b.innerHTML=`<div class="sl-d">${s.label}<span>${B.timeLabel}</span></div><div class="sl-t">vælg →</div>`;
+    b.onclick=()=>{ chosenSlot=s; [...host.children].forEach(c=>c.classList.remove('on')); b.classList.add('on');
+      b.querySelector('.sl-t').textContent='valgt ✓';
+      [...host.children].forEach(c=>{ if(c!==b) c.querySelector('.sl-t').textContent='vælg →'; });
+      $('#chosen').textContent=`Tid: ${s.label}, ${B.timeLabel}`; };
+    host.appendChild(b);
+  });
+  $('#footMail').textContent=CONFIG.contactEmail;
+  $('#bkSend').onclick=async ()=>{
+    const name=$('#bkName').value.trim(), mail=$('#bkMail').value.trim(), idea=$('#bkIdea').value.trim();
+    const msg=$('#bkMsg'); msg.className='book-msg';
+    if(!chosenSlot){ msg.className='book-msg err'; msg.textContent='Vælg en tid først.'; return; }
+    if(!name||!mail){ msg.className='book-msg err'; msg.textContent='Skriv i hvert fald navn og email.'; return; }
+    if(B.supabaseUrl && B.supabaseAnonKey){
+      try{
+        msg.textContent='sender…';
+        const res=await fetch(`${B.supabaseUrl}/rest/v1/${B.supabaseTable}`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','apikey':B.supabaseAnonKey,'Authorization':`Bearer ${B.supabaseAnonKey}`,'Prefer':'return-minimal'},
+          body:JSON.stringify({ navn:name, email:mail, ide:idea, afgang_dato:chosenSlot.iso, tidspunkt:B.timeLabel })
+        });
+        if(!res.ok) throw new Error(res.status);
+        msg.className='book-msg ok';
+        msg.textContent=`Sendt! Din tid ${chosenSlot.label} er forespurgt — jeg vender tilbage og bekræfter.`;
+        $('#bkName').value=$('#bkMail').value=$('#bkIdea').value='';
+      }catch(e){ fallbackMail(name,mail,idea); msg.className='book-msg ok'; msg.textContent='Åbner din mail så du kan sende forespørgslen.'; }
+    } else {
+      fallbackMail(name,mail,idea);
+      msg.className='book-msg ok';
+      msg.textContent='Åbner din mail med det hele udfyldt — tryk bare send.';
+    }
+  };
+  function fallbackMail(name,mail,idea){
+    const subject=`Booking: ${chosenSlot.label}`;
+    const body=`Navn: ${name}\nEmail: ${mail}\nTid: ${chosenSlot.label}, ${CONFIG.booking.timeLabel}\n\nOm:\n${idea||'(ikke udfyldt)'}`;
+    location.href=`mailto:${CONFIG.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+})();
+/* tema */
+(function(){
+  var sw=document.getElementById('themeSwitch');
+  function apply(t){
+    if(t==='moerk'){document.body.removeAttribute('data-theme');}
+    else{document.body.setAttribute('data-theme',t);}
+    [].forEach.call(sw.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.theme===t);});
+    try{localStorage.setItem('afgang_theme',t);}catch(e){}
+  }
+  var saved;try{saved=localStorage.getItem('afgang_theme');}catch(e){}
+  apply(saved||'lys-varm');
+  [].forEach.call(sw.querySelectorAll('button'),function(b){b.onclick=function(){apply(b.dataset.theme);};});
+})();
+</script>
+</body>
+</html>
