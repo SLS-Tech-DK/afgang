@@ -1,0 +1,18 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/afgang/site:$COMMIT_SHA', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/afgang/site:$COMMIT_SHA']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'afgang'
+      - '--image=europe-north1-docker.pkg.dev/$PROJECT_ID/afgang/site:$COMMIT_SHA'
+      - '--region=europe-north1'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+images:
+  - 'europe-north1-docker.pkg.dev/$PROJECT_ID/afgang/site:$COMMIT_SHA'
+timeout: '600s'
