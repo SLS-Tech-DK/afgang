@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="da"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLS Tech · Afgang — analyser din egen data</title>
+<style>
+  :root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--muted:#98a2b3;--line:#242a35;--accent:#3b82f6;--accent2:#22c55e;--soft:#1b2130}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{padding:22px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .brand{font-weight:800;font-size:18px;letter-spacing:.3px}.brand span{color:var(--accent)}
+  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:20px}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 60px}
+  h1{font-size:26px;margin:6px 0 4px}
+  .lead{color:var(--muted);margin:0 0 24px;max-width:640px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:8px}
+  .card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .card h3{margin:0;font-size:15px}
+  .card p{margin:0;font-size:13px;color:var(--muted);flex:1}
+  .price{font-size:13px;font-weight:700;color:var(--accent2)}
+  .badge{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);align-self:flex-start;border:1px solid var(--line);padding:2px 6px;border-radius:6px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:8px}
+  label{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+  input[type=text],input[type=email],textarea,select{width:100%;background:var(--soft);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px;font-size:14px;font-family:inherit}
+  textarea{min-height:120px;resize:vertical}
+  input[type=file]{width:100%;font-size:13px;color:var(--muted);background:var(--soft);border:1px dashed var(--line);border-radius:8px;padding:14px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}
+  button{cursor:pointer;border:none;border-radius:8px;padding:11px 18px;font-size:14px;font-weight:700}
+  .primary{background:var(--accent);color:#fff}.primary:hover{background:#2f6fe0}
+  .ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .buy{background:var(--accent2);color:#04210f}.buy:hover{background:#1eb257}
+  .back{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;padding:0;margin-bottom:8px}
+  .result{margin-top:18px;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:14px;white-space:pre-wrap}
+  .result h4{margin:0 0 8px;color:var(--accent)}
+  .kpi{display:inline-block;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:4px 6px 4px 0;font-size:13px}
+  .kpi b{color:var(--accent2)}
+  .demoflag{background:#3a2d0b;color:#f5c451;border:1px solid #5a4712;font-size:12px;padding:6px 10px;border-radius:8px;display:inline-block;margin-bottom:12px}
+  .foot{margin-top:34px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+  .cfg{font-size:11px;color:var(--muted)}
+  .hidden{display:none}
+  a{color:var(--accent)}
+</style></head>
+<body>
+<header>
+  <div class="brand">SLS Tech<span>.</span> Afgang</div>
+  <span class="tag">Analyser din egen data</span>
+  <div style="flex:1"></div>
+  <span class="cfg" id="modeflag"></span>
+</header>
+<div class="wrap">
+  <div id="catalog">
+    <h1>Vælg en analyse</h1>
+    <p class="lead">Upload din egen data og få konkret indsigt på minutter — ikke en generisk rapport. Rigtig indsigt, brøkdel af bureauprisen.</p>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div id="product" class="hidden">
+    <button class="back" id="back">← Alle analyser</button>
+    <div class="panel">
+      <span class="badge" id="p_badge"></span>
+      <h1 id="p_name" style="margin-top:6px"></h1>
+      <p class="lead" id="p_desc"></p>
+      <div class="price" id="p_price"></div>
+      <div id="p_form"></div>
+      <div class="row" style="margin-top:18px">
+        <button class="primary" id="run" style="flex:0 0 auto">Kør analyse</button>
+        <button class="buy" id="buy" style="flex:0 0 auto">Køb & få leveret</button>
+        <button class="ghost" id="demo" style="flex:0 0 auto">Vis eksempel</button>
+      </div>
+      <div id="out"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    SLS Tech · CVR 46634640 · Dine data behandles til at generere din analyse. <br>
+    <span class="cfg">Motor-endpoint: <span id="ep"></span>. Sæt <code>window.AFGANG_MOTOR_URL</code> når routeren er deployet; ellers kører siden i demo-tilstand med eksempeldata.</span>
+  </div>
+</div>
+
+<script>
+/* ---------- Konfiguration ----------
+   Sæt AFGANG_MOTOR_URL til den deployede Cloud Function-router for live kald.
+   Tom = demo-tilstand (eksempeldata, ingen backend). */
+var MOTOR_URL = (window.AFGANG_MOTOR_URL || "").trim();
+/* Stripe checkout-links pr. type sættes her når Stripe er oppe. Tom = knappen
+   forklarer at køb kobles på ved launch. */
+var STRIPE_LINKS = window.AFGANG_STRIPE_LINKS || {};
+
+/* ---------- Produktkatalog ----------
+   inputkind: csv | csv_stock | domain_comp | brand_comp | pagetext */
+var PRODUCTS = [
+  {type:"butiksanalyse", name:"Fuld Butiksanalyse", nick:"Butiksrøntgen", badge:"Premium", price:"3.900 kr",
+   desc:"Hele butikken røntgenfotograferet: salg, indkøb, lager og kunder + krydsindsigter og samlet handlingsplan.", inputkind:"csv_stock"},
+  {type:"salgsanalyse", name:"Salgsanalyse", badge:"Delelement", price:"990 kr",
+   desc:"Bestsellere, hvad der købes sammen, bundle-forslag og hvilke produkter der stjæler salg fra hinanden.", inputkind:"csv"},
+  {type:"indkobsanalyse", name:"Indkøbsanalyse", badge:"Delelement", price:"990 kr",
+   desc:"Genbestillingsliste, genkøbsmønstre og leverandørtiming ud fra din faktiske salgshistorik.", inputkind:"csv"},
+  {type:"lageranalyse", name:"Lageranalyse", badge:"Delelement", price:"990 kr",
+   desc:"Dødvarer, kapitalbinding og sæsonudsving — find pengene der ligger stille.", inputkind:"csv_stock"},
+  {type:"kundeanalyse", name:"Kundeanalyse", badge:"Delelement", price:"990 kr",
+   desc:"Livstidsværdi, churn-signaler og segmenter — hvem tjener dig reelt penge.", inputkind:"csv"},
+  {type:"konkurrentanalyse", name:"Konkurrentanalyse", badge:"Fra 500 kr", price:"Lite 500 / Pro 1.900 kr",
+   desc:"Dig side om side med tre konkurrenter på pris, sortiment og synlighed — og hvor du kan vinde.", inputkind:"domain_comp"},
+  {type:"ai_synlighed", name:"AI-synlighed (GEO+AEO)", badge:"Fra 750 kr", price:"Lite 750 / Pro 2.500 kr",
+   desc:"Anbefaler AI-modellerne dig eller konkurrenterne? Plus konkrete rettelser til dine sider.", inputkind:"brand_comp"},
+  {type:"prisovervagning", name:"Prisovervågning", badge:"Abonnement", price:"Fra 299 kr/md",
+   desc:"Hold øje med konkurrenternes priser automatisk og få besked når noget ændrer sig.", inputkind:"domain_comp"},
+  {type:"naevner_ai_alarm", name:"Nævner AI min virksomhed", badge:"Abonnement", price:"249 kr/md",
+   desc:"Månedligt tjek af om AI-modellerne nævner dig vs. tre konkurrenter — med alarm når det flytter sig.", inputkind:"brand_comp"},
+  {type:"produkttekst", name:"Produkttekst-optimering", badge:"NEXT", price:"20 kr/produkt (min. 250)",
+   desc:"Upload dit katalog → AEO-parathedsscore pr. produkt + optimerede tekster.", inputkind:"csv"},
+  {type:"review_analyse", name:"Review-/omdømme-analyse", badge:"NEXT", price:"Kontakt",
+   desc:"Upload anmeldelser → hvad klages der over, og hvad koster dig salg.", inputkind:"csv"},
+  {type:"landingsside", name:"Landingsside-teardown", badge:"NEXT", price:"Kontakt",
+   desc:"Indsæt din sidetekst → konkret konverterings-kritik med prioriterede rettelser.", inputkind:"pagetext"},
+  {type:"annonce_spild", name:"Annonce-spildsanalyse", badge:"NEXT", price:"Kontakt",
+   desc:"Upload annonce-data → hvor brænder budgettet uden at konvertere.", inputkind:"csv"},
+  {type:"soegeords_gap", name:"Søgeords-gap", badge:"NEXT", price:"Kontakt",
+   desc:"Upload din interne søgelog → hvad kunder søger men ikke finder = manglende produkter.", inputkind:"csv"}
+];
+
+/* ---------- Eksempel-output (demo-tilstand) ---------- */
+var DEMO = {
+  salgsanalyse:'<h4>Salgsanalyse — eksempel</h4><span class="kpi">Omsætning <b>128.400 kr</b></span><span class="kpi">Ordrer <b>412</b></span><span class="kpi">Gns. ordre <b>311 kr</b></span>\n\nTop 3 bestsellere: Kaffe, Filter, Kop.\nKøbes ofte sammen: Kaffe + Filter (1,4× oftere end tilfældigt).\nBundle-forslag: Kaffe + Filter.\nMulig kannibalisering (undersøg): Kaffe vs. The.',
+  indkobsanalyse:'<h4>Indkøbsanalyse — eksempel</h4><span class="kpi">Hurtigst-bevægende <b>Kaffe</b></span>\n\nGenbestil først: Kaffe (0,74 stk/dag). Kunder genkøber ca. hver 7. dag.\nRisiko for udsolgt: Filter.',
+  lageranalyse:'<h4>Lageranalyse — eksempel</h4><span class="kpi">Kapitalbinding <b>4.050 kr</b></span>\n\nDødvarer: Solcreme (intet salg i 120 dage).\nLangsomst: Solcreme.\nSæson: salg topper juni–juli.',
+  kundeanalyse:'<h4>Kundeanalyse — eksempel</h4><span class="kpi">Kunder <b>318</b></span><span class="kpi">Gengangere <b>41%</b></span>\n\nTop-kunde (CLV): Storkunde — 5.000 kr / 5 ordrer.\nChurn-signal: 12 kunder har ikke købt længe.\n95% af omsætningen kommer fra gengangere.',
+  butiksanalyse:'<h4>Fuld Butiksanalyse — eksempel</h4><span class="kpi">Omsætning <b>128.400 kr</b></span><span class="kpi">Bruttomargin top <b>Kaffe 50%</b></span>\n\nHandlingsplan:\n1. Beskyt din topseller Kaffe — aldrig udsolgt.\n2. Lav bundle af Kaffe + Filter.\n3. Ryd ud i dødvarer (Solcreme).\n4. Genbestil hurtige varer først.\n5. Vind churn-kunder tilbage.',
+  konkurrentanalyse:'<h4>Konkurrentanalyse — eksempel</h4>\nDu er bagud på: trafik (15.000), sortiment (200 varer), AI-synlighed (40).\nDu er foran på: fri fragt-grænse.\nHvor du kan vinde: 1) trafik (SEO/AI), 2) sortiment, 3) AI-synlighed.',
+  ai_synlighed:'<h4>AI-synlighed — eksempel</h4><span class="kpi">Omtale-rate <b>40%</b></span><span class="kpi">Share-of-voice <b>22%</b></span>\n\nKonkurrent A nævnes oftere end dig.\nAEO-audit: forside 100/100, om-side 20/100 — tilføj FAQ + schema.',
+  prisovervagning:'<h4>Prisovervågning — eksempel</h4>\nKaffe: du ligger midt. The: billigst. Kande: dyrest.\nAlarm: KonkA sænkede Kaffe med 16,7%.',
+  naevner_ai_alarm:'<h4>Nævner-AI-alarm — eksempel</h4>\nDenne måned: omtale-rate 75% (+50 pp siden sidst).\nAlarm: KonkA er steget og nævnes nu oftere end dig.',
+  produkttekst:'<h4>Produkttekst-optimering — eksempel</h4><span class="kpi">Gns. AEO-score <b>33/100</b></span><span class="kpi">Pris <b>250 kr</b></span>\n\nSvageste tekster: "Dårlig vare", "MEGET RÅBENDE".\nAnbefaling: længde 20–200 ord, konkrete tal, spørgsmål/svar.',
+  review_analyse:'<h4>Review-analyse — eksempel</h4><span class="kpi">Gns. rating <b>2,6</b></span><span class="kpi">Lave anmeldelser <b>60%</b></span>\n\nTop-klager i lave anmeldelser: levering (2), kvalitet (2), kundeservice (1).',
+  landingsside:'<h4>Landingsside-teardown — eksempel</h4><span class="kpi">Score <b>100/100</b></span>\n\nStærk: overskrift, CTA, trust-signaler, kontakt, struktur.\n(Dårlig eksempelside ville score 14/100.)',
+  annonce_spild:'<h4>Annonce-spildsanalyse — eksempel</h4><span class="kpi">Spildt forbrug <b>1.400 kr</b></span>\n\nSpild: "Spild-ingen-konv" (0 konverteringer), "Spild-tab" (ROAS 0,5).\nVinder: ROAS 5.',
+  soegeords_gap:'<h4>Søgeords-gap — eksempel</h4>\nManglende produkter (mange søgninger, ingen resultater):\n1. grøn hat (200 søgninger)\n2. blå sko (150 søgninger)'
+};
+
+/* ---------- Render katalog ---------- */
+var grid = document.getElementById('grid');
+PRODUCTS.forEach(function(p){
+  var c = document.createElement('div'); c.className='card';
+  c.innerHTML = '<span class="badge">'+p.badge+'</span><h3>'+p.name+(p.nick?' <span style="color:var(--muted)">· '+p.nick+'</span>':'')+'</h3>'+
+                '<p>'+p.desc+'</p><span class="price">'+p.price+'</span>';
+  c.onclick=function(){ openProduct(p); };
+  grid.appendChild(c);
+});
+
+document.getElementById('modeflag').textContent = MOTOR_URL ? '● live' : '● demo-tilstand';
+document.getElementById('ep').textContent = MOTOR_URL || '(ikke sat — demo)';
+
+var CUR=null;
+function openProduct(p){
+  CUR=p;
+  document.getElementById('catalog').classList.add('hidden');
+  document.getElementById('product').classList.remove('hidden');
+  document.getElementById('p_badge').textContent=p.badge;
+  document.getElementById('p_name').textContent=p.name+(p.nick?' — '+p.nick:'');
+  document.getElementById('p_desc').textContent=p.desc;
+  document.getElementById('p_price').textContent=p.price;
+  document.getElementById('out').innerHTML='';
+  document.getElementById('p_form').innerHTML=formHTML(p.inputkind);
+  window.scrollTo(0,0);
+}
+function formHTML(kind){
+  if(kind==='csv') return '<label>Upload din data-CSV (Shopify/WooCommerce-eksport eller lignende)</label><input type="file" id="f_csv" accept=".csv,.txt">';
+  if(kind==='csv_stock') return '<label>Salgs-/ordre-CSV</label><input type="file" id="f_csv" accept=".csv,.txt"><label>Lager-CSV (valgfri: produkt, lagerantal, kostpris)</label><input type="file" id="f_stock" accept=".csv,.txt">';
+  if(kind==='domain_comp') return '<label>Dit domæne</label><input type="text" id="f_own" placeholder="minshop.dk"><div class="row"><div><label>Konkurrent 1</label><input type="text" id="f_c1" placeholder="konkurrent-a.dk"></div><div><label>Konkurrent 2</label><input type="text" id="f_c2"></div><div><label>Konkurrent 3</label><input type="text" id="f_c3"></div></div>';
+  if(kind==='brand_comp') return '<label>Dit brand/virksomhedsnavn</label><input type="text" id="f_brand" placeholder="Min Virksomhed"><label>Branche/felt (så vi kan spørge AI rigtigt)</label><input type="text" id="f_field" placeholder="fx løbesko, regnskab"><div class="row"><div><label>Konkurrent 1</label><input type="text" id="f_c1"></div><div><label>Konkurrent 2</label><input type="text" id="f_c2"></div><div><label>Konkurrent 3</label><input type="text" id="f_c3"></div></div>';
+  if(kind==='pagetext') return '<label>Indsæt din sidetekst / HTML</label><textarea id="f_page" placeholder="Sæt teksten fra din landingsside ind her..."></textarea>';
+  return '';
+}
+
+document.getElementById('back').onclick=function(){
+  document.getElementById('product').classList.add('hidden');
+  document.getElementById('catalog').classList.remove('hidden');
+};
+document.getElementById('demo').onclick=function(){ showDemo(CUR); };
+document.getElementById('run').onclick=function(){ runAnalysis(CUR); };
+document.getElementById('buy').onclick=function(){ buy(CUR); };
+
+function showDemo(p){
+  document.getElementById('out').innerHTML =
+    '<div class="demoflag">EKSEMPEL — genereret på prøvedata, ikke din egen</div>'+
+    '<div class="result">'+(DEMO[p.type]||'Eksempel kommer.')+'</div>';
+}
+
+function collectInput(p, cb){
+  var body={type:p.type};
+  var k=p.inputkind;
+  function readFile(id, key, then){
+    var el=document.getElementById(id);
+    if(el && el.files && el.files[0]){
+      var r=new FileReader(); r.onload=function(){ body[key]=r.result; then(); }; r.readAsText(el.files[0]);
+    } else then();
+  }
+  if(k==='csv'){ readFile('f_csv','csv',function(){ cb(body); }); return; }
+  if(k==='csv_stock'){ readFile('f_csv','csv',function(){ readFile('f_stock','stock_csv',function(){ cb(body); }); }); return; }
+  if(k==='domain_comp'){
+    body.own={name:val('f_own')}; body.competitors=[val('f_c1'),val('f_c2'),val('f_c3')].filter(Boolean).map(function(n){return {name:n};});
+    body.current=[]; cb(body); return;
+  }
+  if(k==='brand_comp'){
+    body.brand=val('f_brand'); body.field=val('f_field');
+    body.competitors=[val('f_c1'),val('f_c2'),val('f_c3')].filter(Boolean); body.query_results=[]; cb(body); return;
+  }
+  if(k==='pagetext'){ body.page_text=val('f_page'); cb(body); return; }
+  cb(body);
+}
+function val(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+
+function runAnalysis(p){
+  var out=document.getElementById('out');
+  if(!MOTOR_URL){
+    out.innerHTML='<div class="demoflag">Motoren er ikke koblet på endnu — viser eksempel i stedet. Live-kald aktiveres når routeren er deployet.</div>';
+    showDemoAppend(p); return;
+  }
+  collectInput(p,function(body){
+    out.innerHTML='<div class="result">Kører analyse…</div>';
+    fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json();})
+      .then(function(data){ renderResult(data); })
+      .catch(function(e){ out.innerHTML='<div class="result">Kunne ikke kontakte motoren: '+e.message+'</div>'; });
+  });
+}
+function showDemoAppend(p){
+  document.getElementById('out').innerHTML += '<div class="result">'+(DEMO[p.type]||'Eksempel kommer.')+'</div>';
+}
+function renderResult(data){
+  var out=document.getElementById('out');
+  if(!data.ok){ out.innerHTML='<div class="result">Fejl: '+(data.error||(data.result&&data.result.error)||'ukendt')+'</div>'; return; }
+  out.innerHTML='<div class="result"><h4>Resultat</h4>'+escapeHtml(JSON.stringify(data.result,null,2))+'</div>'+
+                (data.forklaring?'<div class="result"><h4>Forklaring</h4>'+escapeHtml(data.forklaring.forklaring_tekst||'')+'</div>':'');
+}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function buy(p){
+  var out=document.getElementById('out');
+  var link=STRIPE_LINKS[p.type];
+  if(link){ window.location.href=link; return; }
+  out.innerHTML='<div class="demoflag">Køb kobles på ved launch (Stripe). Indtil da: kontakt SLS Tech, så leverer vi analysen manuelt.</div>';
+}
+</script>
+</body></html>
