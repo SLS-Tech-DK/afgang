@@ -1,0 +1,38 @@
+{
+  "current": [
+    {
+      "product": "Kaffe",
+      "own": 79,
+      "competitors": {
+        "KonkA": 75,
+        "KonkB": 85
+      }
+    },
+    {
+      "product": "The",
+      "own": 59,
+      "competitors": {
+        "KonkA": 65,
+        "KonkB": 62
+      }
+    }
+  ],
+  "previous": [
+    {
+      "product": "Kaffe",
+      "own": 79,
+      "competitors": {
+        "KonkA": 90,
+        "KonkB": 85
+      }
+    },
+    {
+      "product": "The",
+      "own": 59,
+      "competitors": {
+        "KonkA": 65,
+        "KonkB": 60
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "own": {
+    "name": "minshop.dk",
+    "avg_price": 250,
+    "product_count": 100,
+    "traffic_estimate": 5000,
+    "ai_visibility": 20,
+    "shipping_free_over": 299
+  },
+  "competitors": [
+    {
+      "name": "konkA.dk",
+      "avg_price": 200,
+      "product_count": 300,
+      "traffic_estimate": 20000,
+      "ai_visibility": 60,
+      "shipping_free_over": 499
+    },
+    {
+      "name": "konkB.dk",
+      "avg_price": 220,
+      "product_count": 250,
+      "traffic_estimate": 15000,
+      "ai_visibility": 45,
+      "shipping_free_over": 399
+    }
+  ]
+}

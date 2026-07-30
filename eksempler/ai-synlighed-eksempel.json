@@ -1,0 +1,35 @@
+{
+  "brand": "MinShop",
+  "competitors": [
+    "KonkA",
+    "KonkB"
+  ],
+  "query_results": [
+    {
+      "query": "bedste webshop til kaffe?",
+      "response": "KonkA og KonkB anbefales."
+    },
+    {
+      "query": "hvor køber man stempelkande?",
+      "response": "MinShop og KonkA."
+    },
+    {
+      "query": "billigste kaffe online?",
+      "response": "KonkA er billigst."
+    },
+    {
+      "query": "god kvalitetskaffe?",
+      "response": "MinShop har god kvalitet."
+    }
+  ],
+  "pages": [
+    {
+      "name": "forside",
+      "text": "## Hvad koster fragt?\n\nFragt koster 39 kr.\n\n- Gratis over 299\n<script type=\"application/ld+json\">{\"@type\":\"FAQPage\"}</script>"
+    },
+    {
+      "name": "om",
+      "text": "Vi har solgt kaffe i mange aar."
+    }
+  ]
+}

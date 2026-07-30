@@ -1,0 +1,26 @@
+{
+  "brand": "MinShop",
+  "competitors": [
+    "KonkA",
+    "KonkB"
+  ],
+  "query_results": [
+    {
+      "query": "q1",
+      "response": "MinShop er bedst."
+    },
+    {
+      "query": "q2",
+      "response": "MinShop og KonkA."
+    },
+    {
+      "query": "q3",
+      "response": "KonkB."
+    },
+    {
+      "query": "q4",
+      "response": "MinShop."
+    }
+  ],
+  "previous_measurement": null
+}
