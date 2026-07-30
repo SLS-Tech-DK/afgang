@@ -1,0 +1,21 @@
+# SLS Tech · Afgang — Cloud Build: deploy motor-routeren til Cloud Run (gen2), europe-north1.
+# Kør: gcloud builds submit --config cloudbuild.yaml
+# Sæt hemmeligheder som env/secret ved deploy (Vertex bruger service-kontoens ADC).
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - functions
+      - deploy
+      - afgang-motorer
+      - --gen2
+      - --region=europe-north1
+      - --runtime=python311
+      - --source=.
+      - --entry-point=handler
+      - --trigger-http
+      - --no-allow-unauthenticated          # kald kun fra orchestrator/backend
+      - --set-env-vars=GEMINI_ENABLED=1,VERTEX_LOCATION=europe-north1
+      # GOOGLE_CLOUD_PROJECT sættes automatisk af runtime.
+options:
+  logging: CLOUD_LOGGING_ONLY

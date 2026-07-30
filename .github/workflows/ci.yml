@@ -1,0 +1,26 @@
+name: CI — kør alle tests
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      # Motorernes deterministiske kerner har ingen eksterne afhængigheder.
+      # Vi kører hver test_*.py fra sin egen mappe, så relative imports virker.
+      - name: Kør alle test_*.py
+        run: |
+          set -e
+          fail=0
+          while IFS= read -r t; do
+            dir=$(dirname "$t")
+            file=$(basename "$t")
+            echo "=== $t ==="
+            ( cd "$dir" && python "$file" ) || fail=1
+          done < <(find . -name 'test_*.py' | sort)
+          if [ "$fail" -ne 0 ]; then echo "MINDST ÉN TEST FEJLEDE"; exit 1; fi
+          echo "ALLE TESTS BESTÅET"
