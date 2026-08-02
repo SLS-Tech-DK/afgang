@@ -1,0 +1,2257 @@
+{
+  "salgsanalyse": {
+    "ok": true,
+    "type": "salgsanalyse",
+    "result": {
+      "meta": {
+        "column_mapping": {
+          "order_id": "Ordrenr",
+          "product": "Varenavn",
+          "quantity": "Antal",
+          "line_total": "Beloeb",
+          "date": "Ordredato",
+          "customer": "Kunde"
+        },
+        "rows_used": 276,
+        "distinct_products": 6,
+        "distinct_orders": 231,
+        "total_revenue": 39351.0,
+        "avg_order_value": 170.35
+      },
+      "bestsellers": {
+        "by_revenue": [
+          {
+            "product": "Kande",
+            "revenue": 15522.0,
+            "quantity": 78.0
+          },
+          {
+            "product": "Kaffe",
+            "revenue": 10812.0,
+            "quantity": 136.0
+          },
+          {
+            "product": "The",
+            "revenue": 5074.0,
+            "quantity": 86.0
+          },
+          {
+            "product": "Kop",
+            "revenue": 4165.0,
+            "quantity": 85.0
+          },
+          {
+            "product": "Filter",
+            "revenue": 3422.0,
+            "quantity": 118.0
+          },
+          {
+            "product": "Solcreme",
+            "revenue": 356.0,
+            "quantity": 4.0
+          }
+        ],
+        "by_quantity": [
+          {
+            "product": "Kaffe",
+            "quantity": 136.0,
+            "revenue": 10812.0
+          },
+          {
+            "product": "Filter",
+            "quantity": 118.0,
+            "revenue": 3422.0
+          },
+          {
+            "product": "The",
+            "quantity": 86.0,
+            "revenue": 5074.0
+          },
+          {
+            "product": "Kop",
+            "quantity": 85.0,
+            "revenue": 4165.0
+          },
+          {
+            "product": "Kande",
+            "quantity": 78.0,
+            "revenue": 15522.0
+          },
+          {
+            "product": "Solcreme",
+            "quantity": 4.0,
+            "revenue": 356.0
+          }
+        ],
+        "worst_by_revenue": [
+          {
+            "product": "Solcreme",
+            "revenue": 356.0,
+            "quantity": 4.0
+          },
+          {
+            "product": "Filter",
+            "revenue": 3422.0,
+            "quantity": 118.0
+          },
+          {
+            "product": "Kop",
+            "revenue": 4165.0,
+            "quantity": 85.0
+          },
+          {
+            "product": "The",
+            "revenue": 5074.0,
+            "quantity": 86.0
+          },
+          {
+            "product": "Kaffe",
+            "revenue": 10812.0,
+            "quantity": 136.0
+          },
+          {
+            "product": "Kande",
+            "revenue": 15522.0,
+            "quantity": 78.0
+          }
+        ]
+      },
+      "co_purchase": [
+        {
+          "pair": [
+            "Filter",
+            "Kaffe"
+          ],
+          "orders_together": 45,
+          "lift": 1.0
+        }
+      ],
+      "bundles": [],
+      "cannibalization": [
+        {
+          "products": [
+            "Filter",
+            "Kop"
+          ],
+          "orders_together": 0,
+          "expected_if_independent": 16.4,
+          "revenue_each": [
+            3422.0,
+            4165.0
+          ],
+          "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+        },
+        {
+          "products": [
+            "Filter",
+            "The"
+          ],
+          "orders_together": 0,
+          "expected_if_independent": 15.3,
+          "revenue_each": [
+            3422.0,
+            5074.0
+          ],
+          "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+        },
+        {
+          "products": [
+            "Filter",
+            "Kande"
+          ],
+          "orders_together": 0,
+          "expected_if_independent": 14.1,
+          "revenue_each": [
+            3422.0,
+            15522.0
+          ],
+          "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+        },
+        {
+          "products": [
+            "Kaffe",
+            "Kop"
+          ],
+          "orders_together": 0,
+          "expected_if_independent": 12.0,
+          "revenue_each": [
+            10812.0,
+            4165.0
+          ],
+          "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+        },
+        {
+          "products": [
+            "Kaffe",
+            "The"
+          ],
+          "orders_together": 0,
+          "expected_if_independent": 11.2,
+          "revenue_each": [
+            10812.0,
+            5074.0
+          ],
+          "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+        }
+      ]
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en analyse af jeres salgsdata:\n\n**1. Kort resumé**\nWebshoppen har genereret 39351.0 kr i omsætning fordelt på 231 ordrer og 6 produkter. Den gennemsnitlige ordreværdi er 170.35 kr. \"Kande\" og \"Kaffe\" er de primære omsætningsdrivere. \"Solcreme\" er det svagest sælgende produkt. \"Filter\" og \"Kaffe\" købes ofte sammen.\n\n**2. Hvad der driver omsætningen**\nOmsætningen drives primært af \"Kande\" med 15522.0 kr og \"Kaffe\" med 10812.0 kr. Disse to produkter udgør størstedelen af den samlede omsætning. \"Filter\" er det produkt, der er solgt flest enheder af (118 stk.), men bidrager med 3422.0 kr i omsætning.\n\n**3. Bundle-muligheder**\nDataen viser, at \"Filter\" og \"Kaffe\" købes sammen i 45 ordrer med en lift på 1.0. Dette indikerer en stærk relation mellem produkterne og en oplagt mulighed for at oprette en bundle.\n\n**4. Mulige kannibaliseringer at undersøge**\n*   Undersøg om \"Filter\" og \"Kop\" kannibaliserer. De sælger hver for sig, men købes sjældent sammen (0 ordrer sammen, forventet 16.4).\n*   Undersøg om \"Filter\" og \"The\" kannibaliserer. De sælger hver for sig, men købes sjældent sammen (0 ordrer sammen, forventet 15.3).\n*   Undersøg om \"Filter\" og \"Kande\" kannibaliserer. De sælger hver for sig, men købes sjældent sammen (0 ordrer sammen, forventet 14.1).\n*   Undersøg om \"Kaffe\" og \"Kop\" kannibaliserer. De sælger hver for sig, men købes sjældent sammen (0 ordrer sammen, forventet 12.0).\n*   Undersøg om \"Kaffe\" og \"The\" kannibaliserer. De sælger hver for sig, men købes sjældent sammen (0 ordrer sammen, forventet 11.2).\n\n**5. Prioriteret handlingsliste**\n\n1.  **Opret bundle:** Tilbyd en bundle med \"Filter\" og \"Kaffe\" for at kapitalisere på det eksisterende købsmønster (45 ordrer sammen, lift 1.0).\n2.  **Analyser \"Solcreme\":** Undersøg årsagen til det lave salg af \"Solcreme\" (4 enheder, 356.0 kr omsætning). Overvej at fjerne produktet eller justere markedsføring.\n3.  **Undersøg kannibalisering \"Filter\" vs. \"Kop\":** Analyser kundeadfærd for at afgøre, om \"Filter\" og \"Kop\" substituerer hinanden, da de sjældent købes sammen (0 ordrer).\n4.  **Fokus på top-produkter:** Fortsæt med at optimere markedsføring og synlighed for \"Kande\" (15522.0 kr) og \"Kaffe\" (10812.0 kr), da de driver størstedelen af omsætningen.\n5.  **Undersøg kannibalisering \"Filter\" vs. \"The\":** Analyser kundeadfærd for at afgøre, om \"Filter\" og \"The\" substituerer hinanden, da de sjældent købes sammen (0 ordrer).",
+      "prompt_brugt": "BUTIKSNØGLETAL: 231 ordrer, 6 produkter, total omsætning 39351.0 kr, gns. ordreværdi 170.35 kr.\n\nBESTSELLERE (efter omsætning):\n[{\"product\": \"Kande\", \"revenue\": 15522.0, \"quantity\": 78.0}, {\"product\": \"Kaffe\", \"revenue\": 10812.0, \"quantity\": 136.0}, {\"product\": \"The\", \"revenue\": 5074.0, \"quantity\": 86.0}, {\"product\": \"Kop\", \"revenue\": 4165.0, \"quantity\": 85.0}, {\"product\": \"Filter\", \"revenue\": 3422.0, \"quantity\": 118.0}, {\"product\": \"Solcreme\", \"revenue\": 356.0, \"quantity\": 4.0}]\n\nSVAGEST SÆLGENDE:\n[{\"product\": \"Solcreme\", \"revenue\": 356.0, \"quantity\": 4.0}, {\"product\": \"Filter\", \"revenue\": 3422.0, \"quantity\": 118.0}, {\"product\": \"Kop\", \"revenue\": 4165.0, \"quantity\": 85.0}, {\"product\": \"The\", \"revenue\": 5074.0, \"quantity\": 86.0}, {\"product\": \"Kaffe\", \"revenue\": 10812.0, \"quantity\": 136.0}, {\"product\": \"Kande\", \"revenue\": 15522.0, \"quantity\": 78.0}]\n\nKØBES-SAMMEN (par + hvor mange gange + lift):\n[{\"pair\": [\"Filter\", \"Kaffe\"], \"orders_together\": 45, \"lift\": 1.0}]\n\nBUNDLE-KANDIDATER:\n[]\n\nKANNIBALISERINGS-SIGNALER (undersøg — ikke bevis):\n[{\"products\": [\"Filter\", \"Kop\"], \"orders_together\": 0, \"expected_if_independent\": 16.4, \"revenue_each\": [3422.0, 4165.0], \"signal\": \"Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer.\"}, {\"products\": [\"Filter\", \"The\"], \"orders_together\": 0, \"expected_if_independent\": 15.3, \"revenue_each\": [3422.0, 5074.0], \"signal\": \"Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer.\"}, {\"products\": [\"Filter\", \"Kande\"], \"orders_together\": 0, \"expected_if_independent\": 14.1, \"revenue_each\": [3422.0, 15522.0], \"signal\": \"Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer.\"}, {\"products\": [\"Kaffe\", \"Kop\"], \"orders_together\": 0, \"expected_if_independent\": 12.0, \"revenue_each\": [10812.0, 4165.0], \"signal\": \"Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer.\"}, {\"products\": [\"Kaffe\", \"The\"], \"orders_together\": 0, \"expected_if_independent\": 11.2, \"revenue_each\": [10812.0, 5074.0], \"signal\": \"Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer.\"}]\n\nSkriv leverancen: 1) kort resumé (3-5 linjer), 2) hvad der driver omsætningen, 3) bundle-muligheder, 4) mulige kannibaliseringer at undersøge, 5) prioriteret handlingsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "Tekst er LLM-genereret ud fra de deterministiske tal. Tal selv er beregnet, ikke gættet."
+    }
+  },
+  "indkobsanalyse": {
+    "ok": true,
+    "type": "indkobsanalyse",
+    "result": {
+      "meta": {
+        "column_mapping": {
+          "order_id": "Ordrenr",
+          "product": "Varenavn",
+          "quantity": "Antal",
+          "line_total": "Beloeb",
+          "date": "Ordredato",
+          "customer": "Kunde"
+        },
+        "rows_used": 276,
+        "date_from": "2026-01-01",
+        "date_to": "2026-06-25",
+        "span_days": 176,
+        "warnings": []
+      },
+      "velocity": [
+        {
+          "product": "Kaffe",
+          "units_sold": 136.0,
+          "units_per_day": 0.773
+        },
+        {
+          "product": "Filter",
+          "units_sold": 118.0,
+          "units_per_day": 0.67
+        },
+        {
+          "product": "The",
+          "units_sold": 86.0,
+          "units_per_day": 0.489
+        },
+        {
+          "product": "Kop",
+          "units_sold": 85.0,
+          "units_per_day": 0.483
+        },
+        {
+          "product": "Kande",
+          "units_sold": 78.0,
+          "units_per_day": 0.443
+        },
+        {
+          "product": "Solcreme",
+          "units_sold": 4.0,
+          "units_per_day": 0.023
+        }
+      ],
+      "repurchase_intervals": [
+        {
+          "product": "Filter",
+          "avg_days_between_repurchase": 39.3,
+          "observations": 55
+        },
+        {
+          "product": "The",
+          "avg_days_between_repurchase": 40.2,
+          "observations": 20
+        },
+        {
+          "product": "Kop",
+          "avg_days_between_repurchase": 51.9,
+          "observations": 19
+        },
+        {
+          "product": "Kaffe",
+          "avg_days_between_repurchase": 53.2,
+          "observations": 35
+        },
+        {
+          "product": "Kande",
+          "avg_days_between_repurchase": 69.5,
+          "observations": 14
+        }
+      ],
+      "reorder_list": [
+        {
+          "product": "Kaffe",
+          "units_per_day": 0.773,
+          "suggested_reorder_cadence_days": 53.2,
+          "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 53. dag."
+        },
+        {
+          "product": "Filter",
+          "units_per_day": 0.67,
+          "suggested_reorder_cadence_days": 39.3,
+          "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 39. dag."
+        },
+        {
+          "product": "The",
+          "units_per_day": 0.489,
+          "suggested_reorder_cadence_days": 40.2,
+          "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 40. dag."
+        },
+        {
+          "product": "Kop",
+          "units_per_day": 0.483,
+          "suggested_reorder_cadence_days": 51.9,
+          "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 52. dag."
+        },
+        {
+          "product": "Kande",
+          "units_per_day": 0.443,
+          "suggested_reorder_cadence_days": 69.5,
+          "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 70. dag."
+        },
+        {
+          "product": "Solcreme",
+          "units_per_day": 0.023,
+          "suggested_reorder_cadence_days": null,
+          "note": "Hold på lager — hurtig omsætning."
+        }
+      ],
+      "concentration": {
+        "total_units": 507.0,
+        "distinct_products": 6,
+        "top5_share_pct": 99.2,
+        "top10_share_pct": 100.0
+      }
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en analyse af jeres salgshistorik for perioden 2026-01-01 til 2026-06-25 (176 dage).\n\n**Kort resumé:**\nI perioden blev der registreret 276 salgslinjer. De 5 bedst sælgende produkter udgør 99.2% af det samlede salg på 507 enheder.\n\n**Hvad der skal bestilles hjem, og hvor tit:**\nGenbestilling bør primært fokusere på de hurtigst sælgende varer for at opretholde lagerbeholdningen:\n\n*   **Kaffe:** Sælger 0.773 enheder/dag. Kunder genkøber i gennemsnit hver 53.2 dag. Bør genbestilles ca. hver 53. dag.\n*   **Filter:** Sælger 0.67 enheder/dag. Kunder genkøber i gennemsnit hver 39.3 dag. Bør genbestilles ca. hver 39. dag.\n*   **The:** Sælger 0.489 enheder/dag. Kunder genkøber i gennemsnit hver 40.2 dag. Bør genbestilles ca. hver 40. dag.\n*   **Kop:** Sælger 0.483 enheder/dag. Kunder genkøber i gennemsnit hver 51.9 dag. Bør genbestilles ca. hver 52. dag.\n*   **Kande:** Sælger 0.443 enheder/dag. Kunder genkøber i gennemsnit hver 69.5 dag. Bør genbestilles ca. hver 70. dag.\n*   **Solcreme:** Sælger kun 0.023 enheder/dag. Der er ingen angivet genkøbsinterval. Denne vare bør bestilles sjældent og i små mængder grundet det meget lave salg.\n\n**Varer med risiko for udsolgt:**\nDe varer med højest salgshastighed har størst risiko for at blive udsolgt hurtigt, hvis lageret ikke vedligeholdes:\n\n1.  **Kaffe** (0.773 enheder/dag)\n2.  **Filter** (0.67 enheder/dag)\n3.  **The** (0.489 enheder/dag)\n4.  **Kop** (0.483 enheder/dag)\n5.  **Kande** (0.443 enheder/dag)\n\n**Prioriteret genbestillingsliste:**\nBaseret på salgshastighed og genkøbsinterval:\n\n1.  **Kaffe:** Genbestilles ca. hver 53. dag.\n2.  **Filter:** Genbestilles ca. hver 39. dag.\n3.  **The:** Genbestilles ca. hver 40. dag.\n4.  **Kop:** Genbestilles ca. hver 52. dag.\n5.  **Kande:** Genbestilles ca. hver 70. dag.",
+      "prompt_brugt": "PERIODE: 2026-01-01 til 2026-06-25 (176 dage). 276 salgslinjer.\nSALGSHASTIGHED (enheder/dag, hurtigst først):\n[{\"product\": \"Kaffe\", \"units_sold\": 136.0, \"units_per_day\": 0.773}, {\"product\": \"Filter\", \"units_sold\": 118.0, \"units_per_day\": 0.67}, {\"product\": \"The\", \"units_sold\": 86.0, \"units_per_day\": 0.489}, {\"product\": \"Kop\", \"units_sold\": 85.0, \"units_per_day\": 0.483}, {\"product\": \"Kande\", \"units_sold\": 78.0, \"units_per_day\": 0.443}, {\"product\": \"Solcreme\", \"units_sold\": 4.0, \"units_per_day\": 0.023}]\nGENKØBSINTERVAL (gns. dage før samme kunde køber igen):\n[{\"product\": \"Filter\", \"avg_days_between_repurchase\": 39.3, \"observations\": 55}, {\"product\": \"The\", \"avg_days_between_repurchase\": 40.2, \"observations\": 20}, {\"product\": \"Kop\", \"avg_days_between_repurchase\": 51.9, \"observations\": 19}, {\"product\": \"Kaffe\", \"avg_days_between_repurchase\": 53.2, \"observations\": 35}, {\"product\": \"Kande\", \"avg_days_between_repurchase\": 69.5, \"observations\": 14}]\nGENBESTILLINGSLISTE (rådata):\n[{\"product\": \"Kaffe\", \"units_per_day\": 0.773, \"suggested_reorder_cadence_days\": 53.2, \"note\": \"Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 53. dag.\"}, {\"product\": \"Filter\", \"units_per_day\": 0.67, \"suggested_reorder_cadence_days\": 39.3, \"note\": \"Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 39. dag.\"}, {\"product\": \"The\", \"units_per_day\": 0.489, \"suggested_reorder_cadence_days\": 40.2, \"note\": \"Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 40. dag.\"}, {\"product\": \"Kop\", \"units_per_day\": 0.483, \"suggested_reorder_cadence_days\": 51.9, \"note\": \"Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 52. dag.\"}, {\"product\": \"Kande\", \"units_per_day\": 0.443, \"suggested_reorder_cadence_days\": 69.5, \"note\": \"Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 70. dag.\"}, {\"product\": \"Solcreme\", \"units_per_day\": 0.023, \"suggested_reorder_cadence_days\": null, \"note\": \"Hold på lager — hurtig omsætning.\"}]\nKONCENTRATION:\n{\"total_units\": 507.0, \"distinct_products\": 6, \"top5_share_pct\": 99.2, \"top10_share_pct\": 100.0}\nSkriv: 1) kort resumé, 2) hvad der skal bestilles hjem og hvorfor, 3) varer med risiko for hurtig udsolgt, 4) prioriteret genbestillingsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "LLM-tekst ud fra deterministiske tal. Tal er beregnet, ikke gættet."
+    }
+  },
+  "lageranalyse": {
+    "ok": true,
+    "type": "lageranalyse",
+    "result": {
+      "meta": {
+        "column_mapping": {
+          "order_id": "Ordrenr",
+          "product": "Varenavn",
+          "quantity": "Antal",
+          "line_total": "Beloeb",
+          "date": "Ordredato",
+          "customer": "Kunde"
+        },
+        "rows_used": 276,
+        "reference_date": "2026-06-25",
+        "span_days": 176,
+        "warnings": []
+      },
+      "deadstock": [],
+      "slow_movers": [
+        {
+          "product": "Solcreme",
+          "units_sold": 4.0,
+          "units_per_day": 0.023
+        },
+        {
+          "product": "Kande",
+          "units_sold": 78.0,
+          "units_per_day": 0.443
+        },
+        {
+          "product": "Kop",
+          "units_sold": 85.0,
+          "units_per_day": 0.483
+        },
+        {
+          "product": "The",
+          "units_sold": 86.0,
+          "units_per_day": 0.489
+        },
+        {
+          "product": "Filter",
+          "units_sold": 118.0,
+          "units_per_day": 0.67
+        },
+        {
+          "product": "Kaffe",
+          "units_sold": 136.0,
+          "units_per_day": 0.773
+        }
+      ],
+      "seasonality": [
+        {
+          "month": "2026-01",
+          "revenue": 9047.0
+        },
+        {
+          "month": "2026-02",
+          "revenue": 4999.0
+        },
+        {
+          "month": "2026-03",
+          "revenue": 5912.5
+        },
+        {
+          "month": "2026-04",
+          "revenue": 7294.5
+        },
+        {
+          "month": "2026-05",
+          "revenue": 5824.5
+        },
+        {
+          "month": "2026-06",
+          "revenue": 6273.5
+        }
+      ],
+      "capital_tied": {
+        "total_capital_tied": 18042.0,
+        "by_product": [
+          {
+            "product": "Kande",
+            "stock": 111.0,
+            "unit_cost": 90.0,
+            "capital_tied": 9990.0
+          },
+          {
+            "product": "Solcreme",
+            "stock": 86.0,
+            "unit_cost": 45.0,
+            "capital_tied": 3870.0
+          },
+          {
+            "product": "The",
+            "stock": 89.0,
+            "unit_cost": 22.0,
+            "capital_tied": 1958.0
+          },
+          {
+            "product": "Kaffe",
+            "stock": 40.0,
+            "unit_cost": 40.0,
+            "capital_tied": 1600.0
+          },
+          {
+            "product": "Sukker",
+            "stock": 41.0,
+            "unit_cost": 6.0,
+            "capital_tied": 246.0
+          },
+          {
+            "product": "Kop",
+            "stock": 11.0,
+            "unit_cost": 18.0,
+            "capital_tied": 198.0
+          },
+          {
+            "product": "Filter",
+            "stock": 18.0,
+            "unit_cost": 10.0,
+            "capital_tied": 180.0
+          }
+        ]
+      }
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en analyse af jeres lagerdata:\n\n**Resumé:**\nJeres lager binder i alt 18.042 kr. i kapital. Ingen varer er klassificeret som dødvarer baseret på salgshistorikken. Dog er en betydelig del af kapitalen bundet i langsomtsælgende produkter, som også optager lagerplads.\n\n**Hvor bindes kapital og plads:**\nDen største kapitalbinding findes i følgende produkter:\n*   **Kande:** 9.990 kr. (111 stk. på lager)\n*   **Solcreme:** 3.870 kr. (86 stk. på lager)\n*   **The:** 1.958 kr. (89 stk. på lager)\nDisse tre produkter udgør ca. 87,7% af den samlede bundne kapital og optager tilsvarende en stor del af lagerpladsen.\n\n**Dødvarer at rydde ud:**\nSystemet identificerer ingen varer som \"dødvarer\" (intet salg længe). De langsomtsælgende varer, især dem med høj kapitalbinding, bør dog overvejes for oprydning for at frigøre kapital og plads.\n\n**Prioriteret oprydningsliste (maks 5):**\n1.  **Solcreme:** Ekstremt langsomt salg (0,023 enheder/dag) og høj kapitalbinding (3.870 kr.).\n2.  **Kande:** Langsomt salg (0,443 enheder/dag) og den største kapitalbinding (9.990 kr.).\n3.  **The:** Langsomt salg (0,489 enheder/dag) og betydelig kapitalbinding (1.958 kr.).\n4.  **Kaffe:** Langsomt salg (0,773 enheder/dag) og kapitalbinding (1.600 kr.).\n5.  **Kop:** Langsomt salg (0,483 enheder/dag), men lavere kapitalbinding (198 kr.).",
+      "prompt_brugt": "PERIODE frem til 2026-06-25 (176 dage), 276 linjer.\nDØDVARER (intet salg længe):\n[]\nLANGSOMTSÆLGENDE:\n[{\"product\": \"Solcreme\", \"units_sold\": 4.0, \"units_per_day\": 0.023}, {\"product\": \"Kande\", \"units_sold\": 78.0, \"units_per_day\": 0.443}, {\"product\": \"Kop\", \"units_sold\": 85.0, \"units_per_day\": 0.483}, {\"product\": \"The\", \"units_sold\": 86.0, \"units_per_day\": 0.489}, {\"product\": \"Filter\", \"units_sold\": 118.0, \"units_per_day\": 0.67}, {\"product\": \"Kaffe\", \"units_sold\": 136.0, \"units_per_day\": 0.773}]\nSÆSON (omsætning pr. måned):\n[{\"month\": \"2026-01\", \"revenue\": 9047.0}, {\"month\": \"2026-02\", \"revenue\": 4999.0}, {\"month\": \"2026-03\", \"revenue\": 5912.5}, {\"month\": \"2026-04\", \"revenue\": 7294.5}, {\"month\": \"2026-05\", \"revenue\": 5824.5}, {\"month\": \"2026-06\", \"revenue\": 6273.5}]\nKAPITALBINDING:\n{\"total_capital_tied\": 18042.0, \"by_product\": [{\"product\": \"Kande\", \"stock\": 111.0, \"unit_cost\": 90.0, \"capital_tied\": 9990.0}, {\"product\": \"Solcreme\", \"stock\": 86.0, \"unit_cost\": 45.0, \"capital_tied\": 3870.0}, {\"product\": \"The\", \"stock\": 89.0, \"unit_cost\": 22.0, \"capital_tied\": 1958.0}, {\"product\": \"Kaffe\", \"stock\": 40.0, \"unit_cost\": 40.0, \"capital_tied\": 1600.0}, {\"product\": \"Sukker\", \"stock\": 41.0, \"unit_cost\": 6.0, \"capital_tied\": 246.0}, {\"product\": \"Kop\", \"stock\": 11.0, \"unit_cost\": 18.0, \"capital_tied\": 198.0}, {\"product\": \"Filter\", \"stock\": 18.0, \"unit_cost\": 10.0, \"capital_tied\": 180.0}]}\nSkriv: 1) resumé, 2) hvor bindes kapital/plads, 3) dødvarer at rydde ud, 4) prioriteret oprydningsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "LLM-tekst ud fra deterministiske tal."
+    }
+  },
+  "kundeanalyse": {
+    "ok": true,
+    "type": "kundeanalyse",
+    "result": {
+      "meta": {
+        "column_mapping": {
+          "order_id": "Ordrenr",
+          "product": "Varenavn",
+          "quantity": "Antal",
+          "line_total": "Beloeb",
+          "date": "Ordredato",
+          "customer": "Kunde"
+        },
+        "rows_used": 276,
+        "distinct_customers": 25,
+        "reference_date": "2026-06-25",
+        "warnings": []
+      },
+      "clv": [
+        {
+          "customer": "kunde5@mail.dk",
+          "revenue": 3011.0,
+          "orders": 13,
+          "avg_order_value": 231.62
+        },
+        {
+          "customer": "kunde16@mail.dk",
+          "revenue": 2245.5,
+          "orders": 12,
+          "avg_order_value": 187.12
+        },
+        {
+          "customer": "kunde4@mail.dk",
+          "revenue": 2199.5,
+          "orders": 9,
+          "avg_order_value": 244.39
+        },
+        {
+          "customer": "kunde19@mail.dk",
+          "revenue": 2079.0,
+          "orders": 10,
+          "avg_order_value": 207.9
+        },
+        {
+          "customer": "kunde7@mail.dk",
+          "revenue": 1951.5,
+          "orders": 11,
+          "avg_order_value": 177.41
+        },
+        {
+          "customer": "kunde15@mail.dk",
+          "revenue": 1933.0,
+          "orders": 12,
+          "avg_order_value": 161.08
+        },
+        {
+          "customer": "kunde17@mail.dk",
+          "revenue": 1826.5,
+          "orders": 12,
+          "avg_order_value": 152.21
+        },
+        {
+          "customer": "kunde1@mail.dk",
+          "revenue": 1684.0,
+          "orders": 9,
+          "avg_order_value": 187.11
+        },
+        {
+          "customer": "kunde23@mail.dk",
+          "revenue": 1653.5,
+          "orders": 10,
+          "avg_order_value": 165.35
+        },
+        {
+          "customer": "kunde11@mail.dk",
+          "revenue": 1583.5,
+          "orders": 12,
+          "avg_order_value": 131.96
+        },
+        {
+          "customer": "kunde13@mail.dk",
+          "revenue": 1570.5,
+          "orders": 12,
+          "avg_order_value": 130.88
+        },
+        {
+          "customer": "kunde18@mail.dk",
+          "revenue": 1562.0,
+          "orders": 9,
+          "avg_order_value": 173.56
+        },
+        {
+          "customer": "kunde24@mail.dk",
+          "revenue": 1561.5,
+          "orders": 9,
+          "avg_order_value": 173.5
+        },
+        {
+          "customer": "kunde3@mail.dk",
+          "revenue": 1551.0,
+          "orders": 14,
+          "avg_order_value": 110.79
+        },
+        {
+          "customer": "kunde8@mail.dk",
+          "revenue": 1540.5,
+          "orders": 7,
+          "avg_order_value": 220.07
+        },
+        {
+          "customer": "kunde21@mail.dk",
+          "revenue": 1534.5,
+          "orders": 9,
+          "avg_order_value": 170.5
+        },
+        {
+          "customer": "kunde14@mail.dk",
+          "revenue": 1503.5,
+          "orders": 8,
+          "avg_order_value": 187.94
+        },
+        {
+          "customer": "kunde25@mail.dk",
+          "revenue": 1379.5,
+          "orders": 10,
+          "avg_order_value": 137.95
+        },
+        {
+          "customer": "kunde12@mail.dk",
+          "revenue": 1274.0,
+          "orders": 8,
+          "avg_order_value": 159.25
+        },
+        {
+          "customer": "kunde20@mail.dk",
+          "revenue": 1256.5,
+          "orders": 6,
+          "avg_order_value": 209.42
+        }
+      ],
+      "rfm": [
+        {
+          "customer": "kunde5@mail.dk",
+          "recency_days": 7,
+          "frequency_orders": 13,
+          "monetary": 3011.0
+        },
+        {
+          "customer": "kunde16@mail.dk",
+          "recency_days": 7,
+          "frequency_orders": 12,
+          "monetary": 2245.5
+        },
+        {
+          "customer": "kunde4@mail.dk",
+          "recency_days": 28,
+          "frequency_orders": 9,
+          "monetary": 2199.5
+        },
+        {
+          "customer": "kunde19@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 10,
+          "monetary": 2079.0
+        },
+        {
+          "customer": "kunde7@mail.dk",
+          "recency_days": 21,
+          "frequency_orders": 11,
+          "monetary": 1951.5
+        },
+        {
+          "customer": "kunde15@mail.dk",
+          "recency_days": 14,
+          "frequency_orders": 12,
+          "monetary": 1933.0
+        },
+        {
+          "customer": "kunde17@mail.dk",
+          "recency_days": 7,
+          "frequency_orders": 12,
+          "monetary": 1826.5
+        },
+        {
+          "customer": "kunde1@mail.dk",
+          "recency_days": 7,
+          "frequency_orders": 9,
+          "monetary": 1684.0
+        },
+        {
+          "customer": "kunde23@mail.dk",
+          "recency_days": 7,
+          "frequency_orders": 10,
+          "monetary": 1653.5
+        },
+        {
+          "customer": "kunde11@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 12,
+          "monetary": 1583.5
+        },
+        {
+          "customer": "kunde13@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 12,
+          "monetary": 1570.5
+        },
+        {
+          "customer": "kunde18@mail.dk",
+          "recency_days": 28,
+          "frequency_orders": 9,
+          "monetary": 1562.0
+        },
+        {
+          "customer": "kunde24@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 9,
+          "monetary": 1561.5
+        },
+        {
+          "customer": "kunde3@mail.dk",
+          "recency_days": 14,
+          "frequency_orders": 14,
+          "monetary": 1551.0
+        },
+        {
+          "customer": "kunde8@mail.dk",
+          "recency_days": 42,
+          "frequency_orders": 7,
+          "monetary": 1540.5
+        },
+        {
+          "customer": "kunde21@mail.dk",
+          "recency_days": 35,
+          "frequency_orders": 9,
+          "monetary": 1534.5
+        },
+        {
+          "customer": "kunde14@mail.dk",
+          "recency_days": 49,
+          "frequency_orders": 8,
+          "monetary": 1503.5
+        },
+        {
+          "customer": "kunde25@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 10,
+          "monetary": 1379.5
+        },
+        {
+          "customer": "kunde12@mail.dk",
+          "recency_days": 0,
+          "frequency_orders": 8,
+          "monetary": 1274.0
+        },
+        {
+          "customer": "kunde20@mail.dk",
+          "recency_days": 70,
+          "frequency_orders": 6,
+          "monetary": 1256.5
+        }
+      ],
+      "churn_signal": [
+        {
+          "customer": "kunde2@mail.dk",
+          "last_purchase": "2026-01-01",
+          "days_since": 175
+        }
+      ],
+      "segments": {
+        "one_time_customers": 1,
+        "repeat_customers": 24,
+        "repeat_share_pct": 96.0,
+        "revenue_from_repeat_pct": 99.3
+      }
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en analyse af kundedata for SLS Tech:\n\n**Resumé**\nWebshoppen har 25 kunder. En meget stor del af omsætningen (99.3%) kommer fra gentagne kunder, som udgør 96% af den samlede kundebase. Dette indikerer en sund kerne af loyale kunder.\n\n**Hvem tjener butikken penge?**\nDe kunder, der driver mest omsætning, er:\n*   **kunde5@mail.dk:** 3011.0 kr. fordelt på 13 ordrer.\n*   **kunde16@mail.dk:** 2245.5 kr. fordelt på 12 ordrer.\n*   **kunde4@mail.dk:** 2199.5 kr. fordelt på 9 ordrer.\n*   **kunde19@mail.dk:** 2079.0 kr. fordelt på 10 ordrer.\n*   **kunde7@mail.dk:** 1951.5 kr. fordelt på 11 ordrer.\n\nDisse kunder er butikkens mest værdifulde og hyppige købere.\n\n**Hvem er ved at forsvinde, og hvad skal man gøre?**\n*   **kunde2@mail.dk** er allerede forsvundet, da det er 175 dage siden sidste køb.\n*   **Potentielle churnere** (kunder med høj recency):\n    *   **kunde20@mail.dk:** 70 dage siden sidste køb.\n    *   **kunde14@mail.dk:** 49 dage siden sidste køb.\n    *   **kunde8@mail.dk:** 42 dage siden sidste køb.\n    *   **kunde21@mail.dk:** 35 dage siden sidste køb.\n\nDisse kunder har ikke handlet i længere tid og er i risiko for at forsvinde helt.\n\n**Prioriteret handlingsliste:**\n\n1.  **Plej topkunder:** Identificer og beløn kunder som kunde5@mail.dk, kunde16@mail.dk, kunde4@mail.dk og kunde19@mail.dk for at fastholde deres loyalitet.\n2.  **Re-engager potentielle churnere:** Kontakt proaktivt kunder som kunde20@mail.dk (70 dage), kunde14@mail.dk (49 dage), kunde8@mail.dk (42 dage) og kunde21@mail.dk (35 dage) med et målrettet tilbud.\n3.  **Win-back forsøg:** Send et genaktiveringstilbud til kunde2@mail.dk, som ikke har handlet i 175 dage.\n4.  **Fasthold gentagne kunder:** Fortsæt med at optimere oplevelsen for de 96% af kunderne, der er gentagne købere og står for 99.3% af omsætningen.\n5.  **Løbende RFM-overvågning:** Etabler en proces for regelmæssigt at identificere kunder med stigende recency for at forebygge churn.",
+      "prompt_brugt": "25 kunder, frem til 2026-06-25, 276 linjer.\nTOP KUNDER (livstidsværdi):\n[{\"customer\": \"kunde5@mail.dk\", \"revenue\": 3011.0, \"orders\": 13, \"avg_order_value\": 231.62}, {\"customer\": \"kunde16@mail.dk\", \"revenue\": 2245.5, \"orders\": 12, \"avg_order_value\": 187.12}, {\"customer\": \"kunde4@mail.dk\", \"revenue\": 2199.5, \"orders\": 9, \"avg_order_value\": 244.39}, {\"customer\": \"kunde19@mail.dk\", \"revenue\": 2079.0, \"orders\": 10, \"avg_order_value\": 207.9}, {\"customer\": \"kunde7@mail.dk\", \"revenue\": 1951.5, \"orders\": 11, \"avg_order_value\": 177.41}, {\"customer\": \"kunde15@mail.dk\", \"revenue\": 1933.0, \"orders\": 12, \"avg_order_value\": 161.08}, {\"customer\": \"kunde17@mail.dk\", \"revenue\": 1826.5, \"orders\": 12, \"avg_order_value\": 152.21}, {\"customer\": \"kunde1@mail.dk\", \"revenue\": 1684.0, \"orders\": 9, \"avg_order_value\": 187.11}, {\"customer\": \"kunde23@mail.dk\", \"revenue\": 1653.5, \"orders\": 10, \"avg_order_value\": 165.35}, {\"customer\": \"kunde11@mail.dk\", \"revenue\": 1583.5, \"orders\": 12, \"avg_order_value\": 131.96}, {\"customer\": \"kunde13@mail.dk\", \"revenue\": 1570.5, \"orders\": 12, \"avg_order_value\": 130.88}, {\"customer\": \"kunde18@mail.dk\", \"revenue\": 1562.0, \"orders\": 9, \"avg_order_value\": 173.56}, {\"customer\": \"kunde24@mail.dk\", \"revenue\": 1561.5, \"orders\": 9, \"avg_order_value\": 173.5}, {\"customer\": \"kunde3@mail.dk\", \"revenue\": 1551.0, \"orders\": 14, \"avg_order_value\": 110.79}, {\"customer\": \"kunde8@mail.dk\", \"revenue\": 1540.5, \"orders\": 7, \"avg_order_value\": 220.07}, {\"customer\": \"kunde21@mail.dk\", \"revenue\": 1534.5, \"orders\": 9, \"avg_order_value\": 170.5}, {\"customer\": \"kunde14@mail.dk\", \"revenue\": 1503.5, \"orders\": 8, \"avg_order_value\": 187.94}, {\"customer\": \"kunde25@mail.dk\", \"revenue\": 1379.5, \"orders\": 10, \"avg_order_value\": 137.95}, {\"customer\": \"kunde12@mail.dk\", \"revenue\": 1274.0, \"orders\": 8, \"avg_order_value\": 159.25}, {\"customer\": \"kunde20@mail.dk\", \"revenue\": 1256.5, \"orders\": 6, \"avg_order_value\": 209.42}]\nRFM (recency/frequency/monetary):\n[{\"customer\": \"kunde5@mail.dk\", \"recency_days\": 7, \"frequency_orders\": 13, \"monetary\": 3011.0}, {\"customer\": \"kunde16@mail.dk\", \"recency_days\": 7, \"frequency_orders\": 12, \"monetary\": 2245.5}, {\"customer\": \"kunde4@mail.dk\", \"recency_days\": 28, \"frequency_orders\": 9, \"monetary\": 2199.5}, {\"customer\": \"kunde19@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 10, \"monetary\": 2079.0}, {\"customer\": \"kunde7@mail.dk\", \"recency_days\": 21, \"frequency_orders\": 11, \"monetary\": 1951.5}, {\"customer\": \"kunde15@mail.dk\", \"recency_days\": 14, \"frequency_orders\": 12, \"monetary\": 1933.0}, {\"customer\": \"kunde17@mail.dk\", \"recency_days\": 7, \"frequency_orders\": 12, \"monetary\": 1826.5}, {\"customer\": \"kunde1@mail.dk\", \"recency_days\": 7, \"frequency_orders\": 9, \"monetary\": 1684.0}, {\"customer\": \"kunde23@mail.dk\", \"recency_days\": 7, \"frequency_orders\": 10, \"monetary\": 1653.5}, {\"customer\": \"kunde11@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 12, \"monetary\": 1583.5}, {\"customer\": \"kunde13@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 12, \"monetary\": 1570.5}, {\"customer\": \"kunde18@mail.dk\", \"recency_days\": 28, \"frequency_orders\": 9, \"monetary\": 1562.0}, {\"customer\": \"kunde24@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 9, \"monetary\": 1561.5}, {\"customer\": \"kunde3@mail.dk\", \"recency_days\": 14, \"frequency_orders\": 14, \"monetary\": 1551.0}, {\"customer\": \"kunde8@mail.dk\", \"recency_days\": 42, \"frequency_orders\": 7, \"monetary\": 1540.5}, {\"customer\": \"kunde21@mail.dk\", \"recency_days\": 35, \"frequency_orders\": 9, \"monetary\": 1534.5}, {\"customer\": \"kunde14@mail.dk\", \"recency_days\": 49, \"frequency_orders\": 8, \"monetary\": 1503.5}, {\"customer\": \"kunde25@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 10, \"monetary\": 1379.5}, {\"customer\": \"kunde12@mail.dk\", \"recency_days\": 0, \"frequency_orders\": 8, \"monetary\": 1274.0}, {\"customer\": \"kunde20@mail.dk\", \"recency_days\": 70, \"frequency_orders\": 6, \"monetary\": 1256.5}]\nCHURN-SIGNAL (kunder der er forsvundet):\n[{\"customer\": \"kunde2@mail.dk\", \"last_purchase\": \"2026-01-01\", \"days_since\": 175}]\nSEGMENTER:\n{\"one_time_customers\": 1, \"repeat_customers\": 24, \"repeat_share_pct\": 96.0, \"revenue_from_repeat_pct\": 99.3}\nSkriv: 1) resumé, 2) hvem driver omsætningen, 3) hvem er ved at churne og hvad gør man, 4) prioriteret handlingsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "LLM-tekst ud fra deterministiske tal."
+    }
+  },
+  "butiksanalyse": {
+    "ok": true,
+    "type": "butiksanalyse",
+    "result": {
+      "meta": {
+        "column_mapping": {
+          "order_id": "Ordrenr",
+          "product": "Varenavn",
+          "quantity": "Antal",
+          "line_total": "Beloeb",
+          "date": "Ordredato",
+          "customer": "Kunde"
+        },
+        "rows_used": 276,
+        "distinct_products": 6,
+        "distinct_orders": 231,
+        "total_revenue": 39351.0,
+        "avg_order_value": 170.35
+      },
+      "salgsanalyse": {
+        "meta": {
+          "column_mapping": {
+            "order_id": "Ordrenr",
+            "product": "Varenavn",
+            "quantity": "Antal",
+            "line_total": "Beloeb",
+            "date": "Ordredato",
+            "customer": "Kunde"
+          },
+          "rows_used": 276,
+          "distinct_products": 6,
+          "distinct_orders": 231,
+          "total_revenue": 39351.0,
+          "avg_order_value": 170.35
+        },
+        "bestsellers": {
+          "by_revenue": [
+            {
+              "product": "Kande",
+              "revenue": 15522.0,
+              "quantity": 78.0
+            },
+            {
+              "product": "Kaffe",
+              "revenue": 10812.0,
+              "quantity": 136.0
+            },
+            {
+              "product": "The",
+              "revenue": 5074.0,
+              "quantity": 86.0
+            },
+            {
+              "product": "Kop",
+              "revenue": 4165.0,
+              "quantity": 85.0
+            },
+            {
+              "product": "Filter",
+              "revenue": 3422.0,
+              "quantity": 118.0
+            },
+            {
+              "product": "Solcreme",
+              "revenue": 356.0,
+              "quantity": 4.0
+            }
+          ],
+          "by_quantity": [
+            {
+              "product": "Kaffe",
+              "quantity": 136.0,
+              "revenue": 10812.0
+            },
+            {
+              "product": "Filter",
+              "quantity": 118.0,
+              "revenue": 3422.0
+            },
+            {
+              "product": "The",
+              "quantity": 86.0,
+              "revenue": 5074.0
+            },
+            {
+              "product": "Kop",
+              "quantity": 85.0,
+              "revenue": 4165.0
+            },
+            {
+              "product": "Kande",
+              "quantity": 78.0,
+              "revenue": 15522.0
+            },
+            {
+              "product": "Solcreme",
+              "quantity": 4.0,
+              "revenue": 356.0
+            }
+          ],
+          "worst_by_revenue": [
+            {
+              "product": "Solcreme",
+              "revenue": 356.0,
+              "quantity": 4.0
+            },
+            {
+              "product": "Filter",
+              "revenue": 3422.0,
+              "quantity": 118.0
+            },
+            {
+              "product": "Kop",
+              "revenue": 4165.0,
+              "quantity": 85.0
+            },
+            {
+              "product": "The",
+              "revenue": 5074.0,
+              "quantity": 86.0
+            },
+            {
+              "product": "Kaffe",
+              "revenue": 10812.0,
+              "quantity": 136.0
+            },
+            {
+              "product": "Kande",
+              "revenue": 15522.0,
+              "quantity": 78.0
+            }
+          ]
+        },
+        "co_purchase": [
+          {
+            "pair": [
+              "Filter",
+              "Kaffe"
+            ],
+            "orders_together": 45,
+            "lift": 1.0
+          }
+        ],
+        "bundles": [],
+        "cannibalization": [
+          {
+            "products": [
+              "Filter",
+              "Kop"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 16.4,
+            "revenue_each": [
+              3422.0,
+              4165.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Filter",
+              "The"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 15.3,
+            "revenue_each": [
+              3422.0,
+              5074.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Filter",
+              "Kande"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 14.1,
+            "revenue_each": [
+              3422.0,
+              15522.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Kaffe",
+              "Kop"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 12.0,
+            "revenue_each": [
+              10812.0,
+              4165.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Kaffe",
+              "The"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 11.2,
+            "revenue_each": [
+              10812.0,
+              5074.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          }
+        ]
+      },
+      "indkobsanalyse": {
+        "meta": {
+          "column_mapping": {
+            "order_id": "Ordrenr",
+            "product": "Varenavn",
+            "quantity": "Antal",
+            "line_total": "Beloeb",
+            "date": "Ordredato",
+            "customer": "Kunde"
+          },
+          "rows_used": 276,
+          "date_from": "2026-01-01",
+          "date_to": "2026-06-25",
+          "span_days": 176,
+          "warnings": []
+        },
+        "velocity": [
+          {
+            "product": "Kaffe",
+            "units_sold": 136.0,
+            "units_per_day": 0.773
+          },
+          {
+            "product": "Filter",
+            "units_sold": 118.0,
+            "units_per_day": 0.67
+          },
+          {
+            "product": "The",
+            "units_sold": 86.0,
+            "units_per_day": 0.489
+          },
+          {
+            "product": "Kop",
+            "units_sold": 85.0,
+            "units_per_day": 0.483
+          },
+          {
+            "product": "Kande",
+            "units_sold": 78.0,
+            "units_per_day": 0.443
+          },
+          {
+            "product": "Solcreme",
+            "units_sold": 4.0,
+            "units_per_day": 0.023
+          }
+        ],
+        "repurchase_intervals": [
+          {
+            "product": "Filter",
+            "avg_days_between_repurchase": 39.3,
+            "observations": 55
+          },
+          {
+            "product": "The",
+            "avg_days_between_repurchase": 40.2,
+            "observations": 20
+          },
+          {
+            "product": "Kop",
+            "avg_days_between_repurchase": 51.9,
+            "observations": 19
+          },
+          {
+            "product": "Kaffe",
+            "avg_days_between_repurchase": 53.2,
+            "observations": 35
+          },
+          {
+            "product": "Kande",
+            "avg_days_between_repurchase": 69.5,
+            "observations": 14
+          }
+        ],
+        "reorder_list": [
+          {
+            "product": "Kaffe",
+            "units_per_day": 0.773,
+            "suggested_reorder_cadence_days": 53.2,
+            "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 53. dag."
+          },
+          {
+            "product": "Filter",
+            "units_per_day": 0.67,
+            "suggested_reorder_cadence_days": 39.3,
+            "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 39. dag."
+          },
+          {
+            "product": "The",
+            "units_per_day": 0.489,
+            "suggested_reorder_cadence_days": 40.2,
+            "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 40. dag."
+          },
+          {
+            "product": "Kop",
+            "units_per_day": 0.483,
+            "suggested_reorder_cadence_days": 51.9,
+            "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 52. dag."
+          },
+          {
+            "product": "Kande",
+            "units_per_day": 0.443,
+            "suggested_reorder_cadence_days": 69.5,
+            "note": "Hold på lager — hurtig omsætning. Kunder genkøber ca. hver 70. dag."
+          },
+          {
+            "product": "Solcreme",
+            "units_per_day": 0.023,
+            "suggested_reorder_cadence_days": null,
+            "note": "Hold på lager — hurtig omsætning."
+          }
+        ],
+        "concentration": {
+          "total_units": 507.0,
+          "distinct_products": 6,
+          "top5_share_pct": 99.2,
+          "top10_share_pct": 100.0
+        }
+      },
+      "lageranalyse": {
+        "meta": {
+          "column_mapping": {
+            "order_id": "Ordrenr",
+            "product": "Varenavn",
+            "quantity": "Antal",
+            "line_total": "Beloeb",
+            "date": "Ordredato",
+            "customer": "Kunde"
+          },
+          "rows_used": 276,
+          "reference_date": "2026-06-25",
+          "span_days": 176,
+          "warnings": []
+        },
+        "deadstock": [],
+        "slow_movers": [
+          {
+            "product": "Solcreme",
+            "units_sold": 4.0,
+            "units_per_day": 0.023
+          },
+          {
+            "product": "Kande",
+            "units_sold": 78.0,
+            "units_per_day": 0.443
+          },
+          {
+            "product": "Kop",
+            "units_sold": 85.0,
+            "units_per_day": 0.483
+          },
+          {
+            "product": "The",
+            "units_sold": 86.0,
+            "units_per_day": 0.489
+          },
+          {
+            "product": "Filter",
+            "units_sold": 118.0,
+            "units_per_day": 0.67
+          },
+          {
+            "product": "Kaffe",
+            "units_sold": 136.0,
+            "units_per_day": 0.773
+          }
+        ],
+        "seasonality": [
+          {
+            "month": "2026-01",
+            "revenue": 9047.0
+          },
+          {
+            "month": "2026-02",
+            "revenue": 4999.0
+          },
+          {
+            "month": "2026-03",
+            "revenue": 5912.5
+          },
+          {
+            "month": "2026-04",
+            "revenue": 7294.5
+          },
+          {
+            "month": "2026-05",
+            "revenue": 5824.5
+          },
+          {
+            "month": "2026-06",
+            "revenue": 6273.5
+          }
+        ],
+        "capital_tied": {
+          "total_capital_tied": 18042.0,
+          "by_product": [
+            {
+              "product": "Kande",
+              "stock": 111.0,
+              "unit_cost": 90.0,
+              "capital_tied": 9990.0
+            },
+            {
+              "product": "Solcreme",
+              "stock": 86.0,
+              "unit_cost": 45.0,
+              "capital_tied": 3870.0
+            },
+            {
+              "product": "The",
+              "stock": 89.0,
+              "unit_cost": 22.0,
+              "capital_tied": 1958.0
+            },
+            {
+              "product": "Kaffe",
+              "stock": 40.0,
+              "unit_cost": 40.0,
+              "capital_tied": 1600.0
+            },
+            {
+              "product": "Sukker",
+              "stock": 41.0,
+              "unit_cost": 6.0,
+              "capital_tied": 246.0
+            },
+            {
+              "product": "Kop",
+              "stock": 11.0,
+              "unit_cost": 18.0,
+              "capital_tied": 198.0
+            },
+            {
+              "product": "Filter",
+              "stock": 18.0,
+              "unit_cost": 10.0,
+              "capital_tied": 180.0
+            }
+          ]
+        }
+      },
+      "kundeanalyse": {
+        "meta": {
+          "column_mapping": {
+            "order_id": "Ordrenr",
+            "product": "Varenavn",
+            "quantity": "Antal",
+            "line_total": "Beloeb",
+            "date": "Ordredato",
+            "customer": "Kunde"
+          },
+          "rows_used": 276,
+          "distinct_customers": 25,
+          "reference_date": "2026-06-25",
+          "warnings": []
+        },
+        "clv": [
+          {
+            "customer": "kunde5@mail.dk",
+            "revenue": 3011.0,
+            "orders": 13,
+            "avg_order_value": 231.62
+          },
+          {
+            "customer": "kunde16@mail.dk",
+            "revenue": 2245.5,
+            "orders": 12,
+            "avg_order_value": 187.12
+          },
+          {
+            "customer": "kunde4@mail.dk",
+            "revenue": 2199.5,
+            "orders": 9,
+            "avg_order_value": 244.39
+          },
+          {
+            "customer": "kunde19@mail.dk",
+            "revenue": 2079.0,
+            "orders": 10,
+            "avg_order_value": 207.9
+          },
+          {
+            "customer": "kunde7@mail.dk",
+            "revenue": 1951.5,
+            "orders": 11,
+            "avg_order_value": 177.41
+          },
+          {
+            "customer": "kunde15@mail.dk",
+            "revenue": 1933.0,
+            "orders": 12,
+            "avg_order_value": 161.08
+          },
+          {
+            "customer": "kunde17@mail.dk",
+            "revenue": 1826.5,
+            "orders": 12,
+            "avg_order_value": 152.21
+          },
+          {
+            "customer": "kunde1@mail.dk",
+            "revenue": 1684.0,
+            "orders": 9,
+            "avg_order_value": 187.11
+          },
+          {
+            "customer": "kunde23@mail.dk",
+            "revenue": 1653.5,
+            "orders": 10,
+            "avg_order_value": 165.35
+          },
+          {
+            "customer": "kunde11@mail.dk",
+            "revenue": 1583.5,
+            "orders": 12,
+            "avg_order_value": 131.96
+          },
+          {
+            "customer": "kunde13@mail.dk",
+            "revenue": 1570.5,
+            "orders": 12,
+            "avg_order_value": 130.88
+          },
+          {
+            "customer": "kunde18@mail.dk",
+            "revenue": 1562.0,
+            "orders": 9,
+            "avg_order_value": 173.56
+          },
+          {
+            "customer": "kunde24@mail.dk",
+            "revenue": 1561.5,
+            "orders": 9,
+            "avg_order_value": 173.5
+          },
+          {
+            "customer": "kunde3@mail.dk",
+            "revenue": 1551.0,
+            "orders": 14,
+            "avg_order_value": 110.79
+          },
+          {
+            "customer": "kunde8@mail.dk",
+            "revenue": 1540.5,
+            "orders": 7,
+            "avg_order_value": 220.07
+          },
+          {
+            "customer": "kunde21@mail.dk",
+            "revenue": 1534.5,
+            "orders": 9,
+            "avg_order_value": 170.5
+          },
+          {
+            "customer": "kunde14@mail.dk",
+            "revenue": 1503.5,
+            "orders": 8,
+            "avg_order_value": 187.94
+          },
+          {
+            "customer": "kunde25@mail.dk",
+            "revenue": 1379.5,
+            "orders": 10,
+            "avg_order_value": 137.95
+          },
+          {
+            "customer": "kunde12@mail.dk",
+            "revenue": 1274.0,
+            "orders": 8,
+            "avg_order_value": 159.25
+          },
+          {
+            "customer": "kunde20@mail.dk",
+            "revenue": 1256.5,
+            "orders": 6,
+            "avg_order_value": 209.42
+          }
+        ],
+        "rfm": [
+          {
+            "customer": "kunde5@mail.dk",
+            "recency_days": 7,
+            "frequency_orders": 13,
+            "monetary": 3011.0
+          },
+          {
+            "customer": "kunde16@mail.dk",
+            "recency_days": 7,
+            "frequency_orders": 12,
+            "monetary": 2245.5
+          },
+          {
+            "customer": "kunde4@mail.dk",
+            "recency_days": 28,
+            "frequency_orders": 9,
+            "monetary": 2199.5
+          },
+          {
+            "customer": "kunde19@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 10,
+            "monetary": 2079.0
+          },
+          {
+            "customer": "kunde7@mail.dk",
+            "recency_days": 21,
+            "frequency_orders": 11,
+            "monetary": 1951.5
+          },
+          {
+            "customer": "kunde15@mail.dk",
+            "recency_days": 14,
+            "frequency_orders": 12,
+            "monetary": 1933.0
+          },
+          {
+            "customer": "kunde17@mail.dk",
+            "recency_days": 7,
+            "frequency_orders": 12,
+            "monetary": 1826.5
+          },
+          {
+            "customer": "kunde1@mail.dk",
+            "recency_days": 7,
+            "frequency_orders": 9,
+            "monetary": 1684.0
+          },
+          {
+            "customer": "kunde23@mail.dk",
+            "recency_days": 7,
+            "frequency_orders": 10,
+            "monetary": 1653.5
+          },
+          {
+            "customer": "kunde11@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 12,
+            "monetary": 1583.5
+          },
+          {
+            "customer": "kunde13@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 12,
+            "monetary": 1570.5
+          },
+          {
+            "customer": "kunde18@mail.dk",
+            "recency_days": 28,
+            "frequency_orders": 9,
+            "monetary": 1562.0
+          },
+          {
+            "customer": "kunde24@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 9,
+            "monetary": 1561.5
+          },
+          {
+            "customer": "kunde3@mail.dk",
+            "recency_days": 14,
+            "frequency_orders": 14,
+            "monetary": 1551.0
+          },
+          {
+            "customer": "kunde8@mail.dk",
+            "recency_days": 42,
+            "frequency_orders": 7,
+            "monetary": 1540.5
+          },
+          {
+            "customer": "kunde21@mail.dk",
+            "recency_days": 35,
+            "frequency_orders": 9,
+            "monetary": 1534.5
+          },
+          {
+            "customer": "kunde14@mail.dk",
+            "recency_days": 49,
+            "frequency_orders": 8,
+            "monetary": 1503.5
+          },
+          {
+            "customer": "kunde25@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 10,
+            "monetary": 1379.5
+          },
+          {
+            "customer": "kunde12@mail.dk",
+            "recency_days": 0,
+            "frequency_orders": 8,
+            "monetary": 1274.0
+          },
+          {
+            "customer": "kunde20@mail.dk",
+            "recency_days": 70,
+            "frequency_orders": 6,
+            "monetary": 1256.5
+          }
+        ],
+        "churn_signal": [
+          {
+            "customer": "kunde2@mail.dk",
+            "last_purchase": "2026-01-01",
+            "days_since": 175
+          }
+        ],
+        "segments": {
+          "one_time_customers": 1,
+          "repeat_customers": 24,
+          "repeat_share_pct": 96.0,
+          "revenue_from_repeat_pct": 99.3
+        }
+      },
+      "kryds": {
+        "margin_paa_tvaers": {
+          "by_product": [
+            {
+              "product": "Kande",
+              "revenue": 15522.0,
+              "cogs": 7020.0,
+              "gross_margin": 8502.0,
+              "margin_pct": 54.8
+            },
+            {
+              "product": "Kaffe",
+              "revenue": 10812.0,
+              "cogs": 5440.0,
+              "gross_margin": 5372.0,
+              "margin_pct": 49.7
+            },
+            {
+              "product": "The",
+              "revenue": 5074.0,
+              "cogs": 1892.0,
+              "gross_margin": 3182.0,
+              "margin_pct": 62.7
+            },
+            {
+              "product": "Kop",
+              "revenue": 4165.0,
+              "cogs": 1530.0,
+              "gross_margin": 2635.0,
+              "margin_pct": 63.3
+            },
+            {
+              "product": "Filter",
+              "revenue": 3422.0,
+              "cogs": 1180.0,
+              "gross_margin": 2242.0,
+              "margin_pct": 65.5
+            },
+            {
+              "product": "Solcreme",
+              "revenue": 356.0,
+              "cogs": 180.0,
+              "gross_margin": 176.0,
+              "margin_pct": 49.4
+            }
+          ]
+        },
+        "kannibalisering": [
+          {
+            "products": [
+              "Filter",
+              "Kop"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 16.4,
+            "revenue_each": [
+              3422.0,
+              4165.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Filter",
+              "The"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 15.3,
+            "revenue_each": [
+              3422.0,
+              5074.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Filter",
+              "Kande"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 14.1,
+            "revenue_each": [
+              3422.0,
+              15522.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Kaffe",
+              "Kop"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 12.0,
+            "revenue_each": [
+              10812.0,
+              4165.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          },
+          {
+            "products": [
+              "Kaffe",
+              "The"
+            ],
+            "orders_together": 0,
+            "expected_if_independent": 11.2,
+            "revenue_each": [
+              10812.0,
+              5074.0
+            ],
+            "signal": "Sælger hver for sig, men købes sjældent sammen — mulig substitution. Undersøg om de kannibaliserer."
+          }
+        ]
+      },
+      "handlingsplan": [
+        "Beskyt din topseller 'Kande' (15522.0 kr) — sørg for den aldrig er udsolgt.",
+        "Genbestil hurtigt-bevægende varer, start med 'Kaffe'.",
+        "Vind churn-kunder tilbage — 1 kunder har ikke købt længe.",
+        "Undersøg mulig kannibalisering: Filter vs. Kop."
+      ]
+    }
+  },
+  "konkurrentanalyse": {
+    "ok": true,
+    "type": "konkurrentanalyse",
+    "result": {
+      "meta": {
+        "own": "minshop.dk",
+        "competitors": [
+          "konkA.dk",
+          "konkB.dk"
+        ],
+        "n_competitors": 2
+      },
+      "side_by_side": {
+        "actors": [
+          "minshop.dk",
+          "konkA.dk",
+          "konkB.dk"
+        ],
+        "fields": {
+          "avg_price": {
+            "minshop.dk": 250,
+            "konkA.dk": 200,
+            "konkB.dk": 220
+          },
+          "product_count": {
+            "minshop.dk": 100,
+            "konkA.dk": 300,
+            "konkB.dk": 250
+          },
+          "traffic_estimate": {
+            "minshop.dk": 5000,
+            "konkA.dk": 20000,
+            "konkB.dk": 15000
+          },
+          "ai_visibility": {
+            "minshop.dk": 20,
+            "konkA.dk": 60,
+            "konkB.dk": 45
+          },
+          "shipping_free_over": {
+            "minshop.dk": 299,
+            "konkA.dk": 499,
+            "konkB.dk": 399
+          }
+        }
+      },
+      "gaps": [
+        {
+          "field": "avg_price",
+          "own": 250,
+          "best_competitor": 200,
+          "status": "bagud",
+          "gap": 50.0
+        },
+        {
+          "field": "product_count",
+          "own": 100,
+          "best_competitor": 300,
+          "status": "bagud",
+          "gap": 200.0
+        },
+        {
+          "field": "traffic_estimate",
+          "own": 5000,
+          "best_competitor": 20000,
+          "status": "bagud",
+          "gap": 15000.0
+        },
+        {
+          "field": "ai_visibility",
+          "own": 20,
+          "best_competitor": 60,
+          "status": "bagud",
+          "gap": 40.0
+        },
+        {
+          "field": "shipping_free_over",
+          "own": 299,
+          "best_competitor": 399,
+          "status": "foran",
+          "gap": 100.0
+        }
+      ],
+      "where_to_win": [
+        {
+          "field": "traffic_estimate",
+          "gap": 15000.0,
+          "action": "Du får mindre trafik — styrk SEO/AI-synlighed og markedsføring."
+        },
+        {
+          "field": "product_count",
+          "gap": 200.0,
+          "action": "Dit sortiment er smallere — udvid i de kategorier konkurrenterne dækker."
+        },
+        {
+          "field": "ai_visibility",
+          "gap": 40.0,
+          "action": "Du nævnes sjældnere i AI-svar — kør AEO-optimering (se AI-synlighedsproduktet)."
+        },
+        {
+          "field": "avg_price",
+          "gap": 50.0,
+          "action": "Din gennemsnitspris er højere — overvej at justere eller tydeliggøre værdi."
+        }
+      ]
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en nøgtern analyse af minshop.dk's position i markedet:\n\n**Resumé af hvor minshop.dk står:**\nminshop.dk er markant bagud på trafik, produktsortiment, gennemsnitspris og AI-synlighed sammenlignet med konkurrenterne. Den eneste klare styrke er en lavere grænse for fri fragt.\n\n**Hvor minshop.dk står stærkt:**\n*   **Fri fragt:** minshop.dk tilbyder fri fragt ved 299 DKK, hvilket er lavere end konkB.dk (399 DKK) og konkA.dk (499 DKK).\n\n**Hvor minshop.dk er bagud:**\n*   **Gennemsnitspris:** Med 250 DKK er gennemsnitsprisen 50 DKK højere end konkA.dk (200 DKK).\n*   **Produktsortiment:** minshop.dk har kun 100 produkter, hvilket er 200 færre end konkA.dk (300 produkter).\n*   **Trafik:** Trafikestimatet på 5000 besøgende er 15000 lavere end konkA.dk (20000 besøgende).\n*   **AI-synlighed:** Med en score på 20 er minshop.dk 40 point mindre synlig i AI-svar end konkA.dk (60 point).\n\n**Prioriteret handlingsliste:**\n1.  **Styrk SEO/AI-synlighed og markedsføring:** Adresser den store trafikforskel på 15000 besøgende.\n2.  **Udvid produktsortimentet:** Luk hullet på 200 produkter i forhold til den bedste konkurrent.\n3.  **Overvej prisjustering eller tydeliggørelse af værdi:** Håndter den højere gennemsnitspris på 50 DKK.\n4.  **Kør AEO-optimering:** Forbedr AI-synligheden, som er 40 point lavere end den bedste konkurrent.",
+      "prompt_brugt": "SAMMENLIGNING: minshop.dk vs. konkA.dk, konkB.dk.\nSIDE-OM-SIDE:\n{\"actors\": [\"minshop.dk\", \"konkA.dk\", \"konkB.dk\"], \"fields\": {\"avg_price\": {\"minshop.dk\": 250, \"konkA.dk\": 200, \"konkB.dk\": 220}, \"product_count\": {\"minshop.dk\": 100, \"konkA.dk\": 300, \"konkB.dk\": 250}, \"traffic_estimate\": {\"minshop.dk\": 5000, \"konkA.dk\": 20000, \"konkB.dk\": 15000}, \"ai_visibility\": {\"minshop.dk\": 20, \"konkA.dk\": 60, \"konkB.dk\": 45}, \"shipping_free_over\": {\"minshop.dk\": 299, \"konkA.dk\": 499, \"konkB.dk\": 399}}}\nGAPS (foran/bagud pr. felt):\n[{\"field\": \"avg_price\", \"own\": 250, \"best_competitor\": 200, \"status\": \"bagud\", \"gap\": 50.0}, {\"field\": \"product_count\", \"own\": 100, \"best_competitor\": 300, \"status\": \"bagud\", \"gap\": 200.0}, {\"field\": \"traffic_estimate\", \"own\": 5000, \"best_competitor\": 20000, \"status\": \"bagud\", \"gap\": 15000.0}, {\"field\": \"ai_visibility\", \"own\": 20, \"best_competitor\": 60, \"status\": \"bagud\", \"gap\": 40.0}, {\"field\": \"shipping_free_over\", \"own\": 299, \"best_competitor\": 399, \"status\": \"foran\", \"gap\": 100.0}]\nHVOR DU KAN VINDE:\n[{\"field\": \"traffic_estimate\", \"gap\": 15000.0, \"action\": \"Du får mindre trafik — styrk SEO/AI-synlighed og markedsføring.\"}, {\"field\": \"product_count\", \"gap\": 200.0, \"action\": \"Dit sortiment er smallere — udvid i de kategorier konkurrenterne dækker.\"}, {\"field\": \"ai_visibility\", \"gap\": 40.0, \"action\": \"Du nævnes sjældnere i AI-svar — kør AEO-optimering (se AI-synlighedsproduktet).\"}, {\"field\": \"avg_price\", \"gap\": 50.0, \"action\": \"Din gennemsnitspris er højere — overvej at justere eller tydeliggøre værdi.\"}]\nSkriv: 1) resumé af hvor kunden står, 2) styrker, 3) svagheder, 4) prioriteret handlingsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "LLM-tekst ud fra deterministiske sammenligningstal."
+    }
+  },
+  "ai_synlighed": {
+    "ok": true,
+    "type": "ai_synlighed",
+    "result": {
+      "meta": {
+        "brand": "MinShop",
+        "competitors": [
+          "KonkA",
+          "KonkB"
+        ],
+        "queries": 4
+      },
+      "geo": {
+        "queries_run": 4,
+        "brand_mention_rate_pct": 50.0,
+        "share_of_voice_pct": 33.3,
+        "brand_mentions": 2,
+        "competitor_mentions": {
+          "KonkA": 3,
+          "KonkB": 1
+        },
+        "per_query": [
+          {
+            "query": "bedste webshop til kaffe?",
+            "brand_mentioned": false,
+            "competitors_mentioned": [
+              "KonkA",
+              "KonkB"
+            ]
+          },
+          {
+            "query": "hvor køber man stempelkande?",
+            "brand_mentioned": true,
+            "competitors_mentioned": [
+              "KonkA"
+            ]
+          },
+          {
+            "query": "billigste kaffe online?",
+            "brand_mentioned": false,
+            "competitors_mentioned": [
+              "KonkA"
+            ]
+          },
+          {
+            "query": "god kvalitetskaffe?",
+            "brand_mentioned": true,
+            "competitors_mentioned": []
+          }
+        ],
+        "score": 50.0,
+        "quick_wins": [
+          "'KonkA' nævnes oftere end dig — analysér deres indhold og luk hullet."
+        ]
+      },
+      "aeo": {
+        "pages": [
+          {
+            "page": "forside",
+            "checks": {
+              "har_spoergsmaalsoverskrifter": true,
+              "har_faq_struktur": true,
+              "har_schema_markup": true,
+              "har_korte_svar": true,
+              "har_lister": true
+            },
+            "score": 100.0,
+            "anbefalinger": []
+          },
+          {
+            "page": "om",
+            "checks": {
+              "har_spoergsmaalsoverskrifter": false,
+              "har_faq_struktur": false,
+              "har_schema_markup": false,
+              "har_korte_svar": true,
+              "har_lister": false
+            },
+            "score": 20.0,
+            "anbefalinger": [
+              "Tilføj overskrifter formuleret som spørgsmål (sådan søger folk i AI).",
+              "Tilføj en FAQ-sektion med konkrete spørgsmål og svar.",
+              "Tilføj FAQPage/Product schema (JSON-LD) så AI kan læse strukturen.",
+              "Brug punktlister — de citeres lettere af AI."
+            ]
+          }
+        ],
+        "avg_score": 60.0
+      }
+    },
+    "forklaring": {
+      "forklaring_tekst": "Her er en analyse af MinShops AI-synlighed:\n\n**Resumé**\nMinShop nævnes i 50,0% af de kørte AI-forespørgsler.\n\n**GEO – Synlighed vs. konkurrenter**\nMinShop nævnes i 50,0% af forespørgslerne, hvilket giver en Share of Voice på 33,3%. MinShop nævnes 2 gange. Konkurrenten KonkA nævnes 3 gange, og KonkB nævnes 1 gang. KonkA nævnes altså oftere end MinShop.\n\n**AEO – Hvad skal sider rettes**\nDen gennemsnitlige AI-læsbarhedsscore for MinShops sider er 60,0%.\n*   **Forsiden** har en score på 100,0% og er velfungerende med spørgsmålsoverskrifter, FAQ-struktur, schema markup, korte svar og lister.\n*   **\"Om\"-siden** har en score på 20,0% og mangler spørgsmålsoverskrifter, FAQ-struktur, schema markup og lister.\n\n**Prioriteret handlingsliste**\n1.  **Analysér KonkA's indhold:** Undersøg KonkA's indhold for at forstå, hvorfor de nævnes oftere, og luk hullet.\n2.  **Optimer \"om\"-siden med spørgsmålsoverskrifter:** Tilføj overskrifter formuleret som spørgsmål på \"om\"-siden.\n3.  **Implementer FAQ-struktur på \"om\"-siden:** Tilføj en FAQ-sektion med konkrete spørgsmål og svar på \"om\"-siden.\n4.  **Tilføj schema markup på \"om\"-siden:** Implementer FAQPage/Product schema (JSON-LD) på \"om\"-siden.\n5.  **Brug punktlister på \"om\"-siden:** Indfør punktlister på \"om\"-siden for at forbedre AI-læsbarheden.",
+      "prompt_brugt": "BRAND: MinShop vs. KonkA, KonkB. 4 AI-forespørgsler kørt.\nGEO (synlighed i AI-svar):\n{\"queries_run\": 4, \"brand_mention_rate_pct\": 50.0, \"share_of_voice_pct\": 33.3, \"brand_mentions\": 2, \"competitor_mentions\": {\"KonkA\": 3, \"KonkB\": 1}, \"per_query\": [{\"query\": \"bedste webshop til kaffe?\", \"brand_mentioned\": false, \"competitors_mentioned\": [\"KonkA\", \"KonkB\"]}, {\"query\": \"hvor køber man stempelkande?\", \"brand_mentioned\": true, \"competitors_mentioned\": [\"KonkA\"]}, {\"query\": \"billigste kaffe online?\", \"brand_mentioned\": false, \"competitors_mentioned\": [\"KonkA\"]}, {\"query\": \"god kvalitetskaffe?\", \"brand_mentioned\": true, \"competitors_mentioned\": []}], \"score\": 50.0, \"quick_wins\": [\"'KonkA' nævnes oftere end dig — analysér deres indhold og luk hullet.\"]}\nAEO (sidernes AI-læsbarhed):\n{\"pages\": [{\"page\": \"forside\", \"checks\": {\"har_spoergsmaalsoverskrifter\": true, \"har_faq_struktur\": true, \"har_schema_markup\": true, \"har_korte_svar\": true, \"har_lister\": true}, \"score\": 100.0, \"anbefalinger\": []}, {\"page\": \"om\", \"checks\": {\"har_spoergsmaalsoverskrifter\": false, \"har_faq_struktur\": false, \"har_schema_markup\": false, \"har_korte_svar\": true, \"har_lister\": false}, \"score\": 20.0, \"anbefalinger\": [\"Tilføj overskrifter formuleret som spørgsmål (sådan søger folk i AI).\", \"Tilføj en FAQ-sektion med konkrete spørgsmål og svar.\", \"Tilføj FAQPage/Product schema (JSON-LD) så AI kan læse strukturen.\", \"Brug punktlister — de citeres lettere af AI.\"]}], \"avg_score\": 60.0}\nSkriv: 1) resumé (nævnes de eller ej), 2) GEO — synlighed vs. konkurrenter, 3) AEO — hvad skal sider rettes, 4) prioriteret handlingsliste (maks 5).",
+      "model": "gemini (vertex)",
+      "note": "LLM-tekst ud fra deterministiske synligheds-/audit-tal."
+    }
+  },
+  "prisovervagning": {
+    "ok": true,
+    "type": "prisovervagning",
+    "result": {
+      "meta": {
+        "products": 2,
+        "has_previous": true,
+        "threshold_pct": 1.0
+      },
+      "positions": [
+        {
+          "product": "Kaffe",
+          "own": 79,
+          "cheapest_competitor": {
+            "name": "KonkA",
+            "price": 75.0
+          },
+          "dearest_competitor": {
+            "name": "KonkB",
+            "price": 85.0
+          },
+          "position": "midt",
+          "gap_to_cheapest": 4.0
+        },
+        {
+          "product": "The",
+          "own": 59,
+          "cheapest_competitor": {
+            "name": "KonkB",
+            "price": 62.0
+          },
+          "dearest_competitor": {
+            "name": "KonkA",
+            "price": 65.0
+          },
+          "position": "billigst",
+          "gap_to_cheapest": -3.0
+        }
+      ],
+      "alerts": [
+        {
+          "product": "Kaffe",
+          "competitor": "KonkA",
+          "old_price": 90.0,
+          "new_price": 75.0,
+          "change_pct": -16.7,
+          "direction": "ned"
+        },
+        {
+          "product": "The",
+          "competitor": "KonkB",
+          "old_price": 60.0,
+          "new_price": 62.0,
+          "change_pct": 3.3,
+          "direction": "op"
+        }
+      ],
+      "recommendations": [
+        "'KonkA' sænkede prisen på Kaffe med 16.7% — reager hvis du vil matche.",
+        "'KonkB' hævede prisen på The — du kan evt. tjene mere uden at miste position."
+      ]
+    }
+  },
+  "naevner_ai_alarm": {
+    "ok": true,
+    "type": "naevner_ai_alarm",
+    "result": {
+      "brand": "MinShop",
+      "measurement": {
+        "queries_run": 4,
+        "brand_mention_rate_pct": 75.0,
+        "share_of_voice_pct": 60.0,
+        "brand_mentions": 3,
+        "competitor_mentions": {
+          "KonkA": 1,
+          "KonkB": 1
+        },
+        "per_query": [
+          {
+            "query": "q1",
+            "brand_mentioned": true,
+            "competitors_mentioned": []
+          },
+          {
+            "query": "q2",
+            "brand_mentioned": true,
+            "competitors_mentioned": [
+              "KonkA"
+            ]
+          },
+          {
+            "query": "q3",
+            "brand_mentioned": false,
+            "competitors_mentioned": [
+              "KonkB"
+            ]
+          },
+          {
+            "query": "q4",
+            "brand_mentioned": true,
+            "competitors_mentioned": []
+          }
+        ],
+        "score": 75.0
+      },
+      "comparison": {
+        "current": {
+          "brand_mention_rate_pct": 75.0,
+          "share_of_voice_pct": 60.0
+        },
+        "deltas": {},
+        "alerts": [
+          {
+            "type": "baseline",
+            "besked": "Første måling registreret — næste måned kan vi vise ændringer."
+          }
+        ],
+        "alarm": false
+      }
+    }
+  },
+  "produkttekst": {
+    "ok": true,
+    "type": "produkttekst",
+    "result": {
+      "meta": {
+        "columns": {
+          "name": "Produktnavn",
+          "desc": "Beskrivelse",
+          "price": null
+        },
+        "products": 4,
+        "avg_aeo_score": 45.0
+      },
+      "weakest": [
+        {
+          "product": "KRUS I KERAMIK",
+          "words": 4,
+          "checks": {
+            "laengde_ok": false,
+            "har_specifikationer": false,
+            "har_spoergsmaal_svar": false,
+            "ikke_kun_store_bogstaver": false,
+            "har_flere_saetninger": false
+          },
+          "aeo_score": 0.0
+        },
+        {
+          "product": "Kaffefilter str. 4",
+          "words": 1,
+          "checks": {
+            "laengde_ok": false,
+            "har_specifikationer": false,
+            "har_spoergsmaal_svar": false,
+            "ikke_kun_store_bogstaver": true,
+            "har_flere_saetninger": false
+          },
+          "aeo_score": 20.0
+        }
+      ],
+      "all_scores": [
+        {
+          "product": "Håndbrygget kaffe 500g",
+          "words": 22,
+          "checks": {
+            "laengde_ok": true,
+            "har_specifikationer": true,
+            "har_spoergsmaal_svar": true,
+            "ikke_kun_store_bogstaver": true,
+            "har_flere_saetninger": true
+          },
+          "aeo_score": 100.0
+        },
+        {
+          "product": "Kaffefilter str. 4",
+          "words": 1,
+          "checks": {
+            "laengde_ok": false,
+            "har_specifikationer": false,
+            "har_spoergsmaal_svar": false,
+            "ikke_kun_store_bogstaver": true,
+            "har_flere_saetninger": false
+          },
+          "aeo_score": 20.0
+        },
+        {
+          "product": "KRUS I KERAMIK",
+          "words": 4,
+          "checks": {
+            "laengde_ok": false,
+            "har_specifikationer": false,
+            "har_spoergsmaal_svar": false,
+            "ikke_kun_store_bogstaver": false,
+            "har_flere_saetninger": false
+          },
+          "aeo_score": 0.0
+        },
+        {
+          "product": "Termokande 1L",
+          "words": 12,
+          "checks": {
+            "laengde_ok": false,
+            "har_specifikationer": true,
+            "har_spoergsmaal_svar": false,
+            "ikke_kun_store_bogstaver": true,
+            "har_flere_saetninger": true
+          },
+          "aeo_score": 60.0
+        }
+      ],
+      "pris": {
+        "products": 4,
+        "pris_pr_produkt": 20,
+        "minimum": 250,
+        "batch_rabat": 0,
+        "total_ekskl_moms": 250.0
+      }
+    }
+  },
+  "review_analyse": {
+    "ok": true,
+    "type": "review_analyse",
+    "result": {
+      "meta": {
+        "columns": {
+          "rating": "Rating",
+          "text": "Tekst",
+          "product": null
+        },
+        "reviews": 7,
+        "avg_rating": 3.0,
+        "low_rating_share_pct": 57.1,
+        "low_threshold": 3.0
+      },
+      "rating_distribution": {
+        "1": 2,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 2
+      },
+      "themes": [
+        [
+          "levering",
+          3
+        ],
+        [
+          "kvalitet",
+          3
+        ],
+        [
+          "kundeservice",
+          1
+        ],
+        [
+          "pris",
+          1
+        ],
+        [
+          "størrelse/pasform",
+          1
+        ]
+      ],
+      "themes_in_low_reviews": [
+        [
+          "levering",
+          2
+        ],
+        [
+          "kvalitet",
+          2
+        ],
+        [
+          "kundeservice",
+          1
+        ]
+      ]
+    }
+  },
+  "landingsside": {
+    "ok": true,
+    "type": "landingsside",
+    "result": {
+      "meta": {
+        "page": "landingsside",
+        "words": 41
+      },
+      "checks": {
+        "har_overskrift": true,
+        "har_cta": true,
+        "har_vaerditilbud": true,
+        "har_trust_signaler": true,
+        "har_kontakt": true,
+        "har_konkrete_tal": true,
+        "ikke_for_lang_uden_struktur": true
+      },
+      "score": 100.0,
+      "anbefalinger": []
+    }
+  },
+  "annonce_spild": {
+    "ok": true,
+    "type": "annonce_spild",
+    "result": {
+      "meta": {
+        "columns": {
+          "campaign": "Kampagne",
+          "spend": "Forbrug",
+          "clicks": "Klik",
+          "conversions": "Konverteringer",
+          "revenue": "Omsætning"
+        },
+        "campaigns": 5,
+        "total_spend": 3160.0,
+        "total_revenue": 13750.0,
+        "overall_roas": 4.35,
+        "min_spend_flag": 100.0
+      },
+      "per_campaign": [
+        {
+          "campaign": "Brand-search",
+          "spend": 1200.0,
+          "clicks": 600.0,
+          "conversions": 70.0,
+          "revenue": 9800.0,
+          "roas": 8.17,
+          "cpa": 17.14,
+          "conversion_rate_pct": 11.67
+        },
+        {
+          "campaign": "Shopping-alle",
+          "spend": 900.0,
+          "clicks": 500.0,
+          "conversions": 0.0,
+          "revenue": 0.0,
+          "roas": 0.0,
+          "cpa": null,
+          "conversion_rate_pct": 0.0
+        },
+        {
+          "campaign": "Display-bred",
+          "spend": 700.0,
+          "clicks": 800.0,
+          "conversions": 4.0,
+          "revenue": 350.0,
+          "roas": 0.5,
+          "cpa": 175.0,
+          "conversion_rate_pct": 0.5
+        },
+        {
+          "campaign": "Retargeting",
+          "spend": 300.0,
+          "clicks": 200.0,
+          "conversions": 25.0,
+          "revenue": 3600.0,
+          "roas": 12.0,
+          "cpa": 12.0,
+          "conversion_rate_pct": 12.5
+        },
+        {
+          "campaign": "Test-ny",
+          "spend": 60.0,
+          "clicks": 30.0,
+          "conversions": 0.0,
+          "revenue": 0.0,
+          "roas": 0.0,
+          "cpa": null,
+          "conversion_rate_pct": 0.0
+        }
+      ],
+      "waste": [
+        {
+          "campaign": "Shopping-alle",
+          "spend": 900.0,
+          "clicks": 500.0,
+          "conversions": 0.0,
+          "revenue": 0.0,
+          "roas": 0.0,
+          "cpa": null,
+          "conversion_rate_pct": 0.0,
+          "reason": "ingen konverteringer"
+        },
+        {
+          "campaign": "Display-bred",
+          "spend": 700.0,
+          "clicks": 800.0,
+          "conversions": 4.0,
+          "revenue": 350.0,
+          "roas": 0.5,
+          "cpa": 175.0,
+          "conversion_rate_pct": 0.5,
+          "reason": "ROAS 0.5 (tab)"
+        }
+      ],
+      "estimated_wasted_spend": 1600.0
+    }
+  },
+  "soegeords_gap": {
+    "ok": true,
+    "type": "soegeords_gap",
+    "result": {
+      "meta": {
+        "columns": {
+          "term": "Søgeterm",
+          "count": "Antal",
+          "results": "Resultater"
+        },
+        "distinct_terms": 4,
+        "has_results_column": true
+      },
+      "note": "Termer med mange søgninger og ingen resultater = manglende produkter/kategorier.",
+      "gaps": [
+        {
+          "term": "espressomaskine",
+          "searches": 300.0,
+          "avg_results": 0.0
+        },
+        {
+          "term": "stempelkande",
+          "searches": 160.0,
+          "avg_results": 0.0
+        }
+      ],
+      "top_searches": [
+        {
+          "term": "espressomaskine",
+          "searches": 300.0,
+          "avg_results": 0.0
+        },
+        {
+          "term": "kaffefilter",
+          "searches": 180.0,
+          "avg_results": 12.0
+        },
+        {
+          "term": "stempelkande",
+          "searches": 160.0,
+          "avg_results": 0.0
+        },
+        {
+          "term": "økologisk the",
+          "searches": 90.0,
+          "avg_results": 4.0
+        }
+      ]
+    }
+  }
+}
