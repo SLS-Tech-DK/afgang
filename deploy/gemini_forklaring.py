@@ -63,17 +63,18 @@ def _byg_prompt(analysis: dict) -> str:
 # --- Model-callere -----------------------------------------------------------
 # En caller er: (system_instruktion: str, prompt: str) -> str
 
-def vertex_gemini_caller(model: str = "gemini-1.5-pro") -> Callable[[str, str], str]:
+def vertex_gemini_caller(model: Optional[str] = None) -> Callable[[str, str], str]:
     """Live Vertex AI-caller. Kræver at google-cloud-aiplatform er installeret
     og at miljøet er autentificeret (GOOGLE_CLOUD_PROJECT + ADC / service-konto).
     UTESTET mod live API i denne session — verificér ved deployment."""
     def _call(system: str, prompt: str) -> str:
+        mdl = model or os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
         import vertexai
         from vertexai.generative_models import GenerativeModel
         project = os.environ.get("GOOGLE_CLOUD_PROJECT")
         location = os.environ.get("VERTEX_LOCATION", "europe-north1")
         vertexai.init(project=project, location=location)
-        gm = GenerativeModel(model, system_instruction=system)
+        gm = GenerativeModel(mdl, system_instruction=system)
         resp = gm.generate_content(prompt, generation_config={"temperature": 0.2})
         return resp.text
     return _call
