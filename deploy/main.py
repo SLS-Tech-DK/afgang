@@ -15,6 +15,7 @@ AI-query wires ved deploy — se README-deploy.md.
 """
 from __future__ import annotations
 import os, json
+from paths import resolve_type
 
 # Motorer (deterministisk analyze) + valgfrit forklar-lag pr. type.
 import salgsanalyse, indkobsanalyse, lageranalyse, kundeanalyse, butiksanalyse
@@ -64,16 +65,30 @@ def route(body: dict) -> dict:
 
 
 # --- functions-framework entrypoint (HTTP) ----------------------------------
+def _json(payload, code):
+    return (json.dumps(payload, ensure_ascii=False, default=str), code,
+            {"Content-Type": "application/json; charset=utf-8"})
+
+
 def handler(request):
-    """Cloud Function/Run HTTP-entry. functions-framework kalder denne."""
+    path = getattr(request, "path", "") or "/"
+    if request.method == "GET":
+        seg = path.strip("/").split("/", 1)[0]
+        if seg in ("", "health", "healthz"):
+            return _json({"ok": True, "service": "afgang-motorer", "products": sorted(REGISTRY)}, 200)
+        t = resolve_type({}, path)
+        if t in REGISTRY:
+            return _json({"ok": True, "type": t, "hint": "POST JSON hertil for at k\u00f8re analysen."}, 200)
+        return _json({"ok": False, "error": f"Ukendt sti '{path}'. Gyldige produkter: {sorted(REGISTRY)}"}, 404)
     if request.method != "POST":
-        return (json.dumps({"ok": False, "error": "Brug POST med JSON"}), 405,
-                {"Content-Type": "application/json"})
+        return _json({"ok": False, "error": "Brug POST med JSON"}, 405)
     try:
         body = request.get_json(silent=True) or {}
     except Exception:
         body = {}
+    t = resolve_type(body, path)
+    if t and not body.get("type"):
+        body = {**body, "type": t}
     resp = route(body)
     code = 200 if resp.get("ok") else 400
-    return (json.dumps(resp, ensure_ascii=False, default=str), code,
-            {"Content-Type": "application/json; charset=utf-8"})
+    return _json(resp, code)
