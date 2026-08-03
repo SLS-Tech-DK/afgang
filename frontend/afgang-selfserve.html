@@ -2490,7 +2490,7 @@ function runAnalysis(p){
   }
   collectInput(p,function(body){
     out.innerHTML='<div class="result">Kører analyse…</div>';
-    fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify(body)})
       .then(function(r){return r.json();})
       .then(function(data){ renderResult(data); })
       .catch(function(e){ out.innerHTML='<div class="result">Kunne ikke kontakte motoren: '+e.message+'</div>'; });
@@ -2501,9 +2501,13 @@ function showDemoAppend(p){
 }
 function renderResult(data){
   var out=document.getElementById('out');
-  if(!data.ok){ out.innerHTML='<div class="result">Fejl: '+(data.error||(data.result&&data.result.error)||'ukendt')+'</div>'; return; }
-  out.innerHTML='<div class="result"><h4>Resultat</h4>'+escapeHtml(JSON.stringify(data.result,null,2))+'</div>'+
-                (data.forklaring?'<div class="result"><h4>Forklaring</h4>'+escapeHtml(data.forklaring.forklaring_tekst||'')+'</div>':'');
+  if(!data.ok){ out.innerHTML='<div class="result">Fejl: '+escapeHtml(String(data.error||(data.result&&data.result.error)||'ukendt'))+'</div>'; return; }
+  var r=data.result||{}, html='';
+  var k=kpis(r.meta); if(k)html+='<div class="result">'+k+'</div>';
+  if(data.forklaring&&data.forklaring.forklaring_tekst){html+='<div class="result"><h4>Analyse (Gemini)</h4>'+mdLite(data.forklaring.forklaring_tekst)+'</div>';}
+  else if(r.handlingsplan){html+='<div class="result"><h4>Handlingsplan</h4>'+escapeHtml(Array.isArray(r.handlingsplan)?r.handlingsplan.join('\n'):JSON.stringify(r.handlingsplan,null,2))+'</div>';}
+  html+='<details style="margin-top:10px"><summary class="cfg" style="cursor:pointer">Se rå motor-output (JSON)</summary><div class="result">'+escapeHtml(JSON.stringify(r,null,2))+'</div></details>';
+  out.innerHTML=html;
 }
 function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
