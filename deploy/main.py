@@ -22,7 +22,7 @@ import salgsanalyse, indkobsanalyse, lageranalyse, kundeanalyse, butiksanalyse
 import konkurrentanalyse, ai_synlighed, prisovervagning, naevner_ai_alarm
 import produkttekst, review_analyse, landingsside, annonce_spild, soegeords_gap
 import gemini_forklaring, indkob_forklaring, lager_forklaring, kunde_forklaring
-import konk_forklaring, ai_forklaring
+import konk_forklaring, ai_forklaring, butiks_forklaring, review_forklaring
 
 
 def _csv(body):     # motorer der tager rå CSV-tekst
@@ -35,13 +35,13 @@ REGISTRY = {
     "indkobsanalyse":   (lambda b: indkobsanalyse.analyze(_csv(b)), indkob_forklaring),
     "lageranalyse":     (lambda b: lageranalyse.analyze(_csv(b), b.get("stock_csv")), lager_forklaring),
     "kundeanalyse":     (lambda b: kundeanalyse.analyze(_csv(b)), kunde_forklaring),
-    "butiksanalyse":    (lambda b: butiksanalyse.analyze(_csv(b), b.get("stock_csv")), None),
-    "konkurrentanalyse":(lambda b: konkurrentanalyse.analyze(b.get("own", {}), b.get("competitors", [])), konk_forklaring),
-    "ai_synlighed":     (lambda b: ai_synlighed.analyze(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("pages")), ai_forklaring),
+    "butiksanalyse":    (lambda b: butiksanalyse.analyze(_csv(b), b.get("stock_csv")), butiks_forklaring),
+    "konkurrentanalyse":(lambda b: konkurrentanalyse.analyze_web(b.get("domain") or b.get("own_domain"), b.get("competitor_domains") or ([c for c in b.get("competitors", []) if isinstance(c, str)])) if (b.get("domain") or b.get("own_domain")) else konkurrentanalyse.analyze(b.get("own", {}), b.get("competitors", [])), None),
+    "ai_synlighed":     (lambda b: ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages")) if (b.get("brand") and not b.get("query_results")) else ai_synlighed.analyze(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("pages")), ai_forklaring),
     "prisovervagning":  (lambda b: prisovervagning.analyze(b.get("current", []), b.get("previous"), b.get("threshold_pct", 1.0)), None),
     "naevner_ai_alarm": (lambda b: naevner_ai_alarm.run_check(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("previous_measurement")), None),
     "produkttekst":     (lambda b: produkttekst.analyze(_csv(b)), None),
-    "review_analyse":   (lambda b: review_analyse.analyze(_csv(b)), None),
+    "review_analyse":   (lambda b: review_analyse.analyze(_csv(b)), review_forklaring),
     "landingsside":     (lambda b: landingsside.analyze(b.get("page_text", ""), b.get("page_name", "landingsside")), None),
     "annonce_spild":    (lambda b: annonce_spild.analyze(_csv(b)), None),
     "soegeords_gap":    (lambda b: soegeords_gap.analyze(_csv(b)), None),

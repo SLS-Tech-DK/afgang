@@ -116,3 +116,64 @@ def _round(x, n=2):
 
 if __name__ == "__main__":
     print("Konkurrentanalyse-motor. Kør test_konk.py for demo.")
+
+
+# ============================================================================
+# TUNG TIER — grounded web-analyse (går på nettet + Gemini Pro)
+# ============================================================================
+import webfetch as _wf
+import gemini_pro as _gp
+
+_KONK_SYSTEM = (
+    "Du er en nøgtern dansk e-handels- og markedsanalytiker for SLS Tech. "
+    "Du får rå, hentet sidetekst fra en kundes eget domæne og navngivne konkurrenter. "
+    "Vurdér KUN ud fra teksten du får — opfind ALDRIG tal, priser eller påstande der ikke "
+    "kan udledes af indholdet; er noget ukendt, skriv 'ukendt'. Skriv på dansk, konkret, uden "
+    "floskler. Returnér UDELUKKENDE gyldig JSON efter det angivne skema."
+)
+
+
+def _byg_konk_prompt(pages: list[dict], own_name: str, competitors: list[str]) -> str:
+    dele = [f"EGEN AKTØR: {own_name}", f"KONKURRENTER: {', '.join(competitors) or 'ingen'}", ""]
+    for p in pages:
+        head = f"--- {p.get('name')} ({p.get('url')}) ---"
+        body = p.get("text") or f"[kunne ikke hentes: {p.get('error','')}]"
+        dele += [head, body[:5000], ""]
+    dele += [
+        "Lav en konkurrentanalyse og returnér JSON med præcis denne struktur:",
+        '{',
+        '  "aktorer": [{"navn": str, "pris_niveau": "lav|middel|hoej|ukendt", '
+        '"sortiment_bredde": "smal|middel|bred|ukendt", "styrker": [str], "svagheder": [str]}],',
+        '  "gaps": [{"omraade": str, "din_position": str, "bedste_konkurrent": str, "status": "foran|bagud"}],',
+        '  "hvor_du_kan_vinde": [{"omraade": str, "handling": str}],',
+        '  "resume": str,',
+        '  "handlingsplan": [str]  // prioriteret, maks 5',
+        '}',
+    ]
+    return "\n".join(dele)
+
+
+def analyze_web(own_domain: str, competitor_domains: list[str],
+                fetcher=None, caller=None) -> dict:
+    """Grounded konkurrentanalyse: hent sider → Gemini Pro → struktureret JSON.
+    fetcher(url)->{ok,text} og caller(system,prompt)->tekst kan injiceres (test)."""
+    if not own_domain:
+        return {"error": "Mangler eget domæne."}
+    competitor_domains = [d for d in (competitor_domains or []) if d]
+    fetch = fetcher or _wf.fetch_text
+    pages = [{"name": "DIG: " + own_domain, **fetch(own_domain)}]
+    for d in competitor_domains:
+        pages.append({"name": "KONKURRENT: " + d, **fetch(d)})
+    fetched_ok = [p for p in pages if p.get("ok")]
+    if not fetched_ok:
+        return {"error": "Kunne ikke hente nogen af siderne.",
+                "details": [{"url": p.get("url"), "error": p.get("error")} for p in pages]}
+    prompt = _byg_konk_prompt(pages, own_domain, competitor_domains)
+    analysis = _gp.call_json(_KONK_SYSTEM, prompt, caller=caller)
+    return {
+        "meta": {"own": own_domain, "competitors": competitor_domains,
+                 "pages_fetched": [{"url": p.get("url"), "ok": p.get("ok")} for p in pages],
+                 "model": "gemini-pro (grounded web)"},
+        "analyse": analysis,
+        "note": "Vurderinger er groundet på hentet sidetekst. Trafiktal kræver separat kilde.",
+    }
