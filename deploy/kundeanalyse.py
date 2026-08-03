@@ -76,6 +76,60 @@ def segments(rev, orders):
     }
 
 
+def rfm_segments(rev, orders, last, ref_date):
+    """Ægte RFM: quintil-score (1-5) for Recency, Frequency, Monetary → segmenter.
+    Returnerer segment-fordeling + eksempel-kunder pr. segment."""
+    custs = list(rev.keys())
+    if not custs or not ref_date:
+        return {"note": "Kræver kunde- og dato-data for RFM-segmentering."}
+    rec = {c: (ref_date - last[c]).days if c in last else 10**6 for c in custs}
+    freq = {c: len(orders[c]) for c in custs}
+    mon = {c: rev[c] for c in custs}
+
+    def score(vals, reverse):
+        # reverse=True: lav værdi = høj score (recency: nyligt køb = bedst)
+        order = sorted(vals, key=lambda c: vals[c], reverse=not reverse)
+        n = len(order)
+        out = {}
+        for i, c in enumerate(order):
+            out[c] = 5 - min(4, int(i * 5 / n)) if n else 3
+        return out
+
+    R = score(rec, reverse=True)   # lav recency-dage = høj score
+    F = score(freq, reverse=False)
+    M = score(mon, reverse=False)
+
+    def seg(c):
+        r, f, m = R[c], F[c], M[c]
+        fm = (f + m) / 2
+        if r >= 4 and fm >= 4: return "Champions"
+        if r >= 3 and fm >= 3: return "Loyale"
+        if r >= 4 and fm <= 2: return "Nye/lovende"
+        if r <= 2 and fm >= 4: return "Ved at miste (høj værdi)"
+        if r <= 2 and fm >= 3: return "At-risk"
+        if r <= 2 and fm <= 2: return "Tabt/dvale"
+        return "Skal plejes"
+
+    seg_of = {c: seg(c) for c in custs}
+    from collections import defaultdict as _dd
+    buckets = _dd(list)
+    for c in custs:
+        buckets[seg_of[c]].append(c)
+    dist = []
+    for name, cs in buckets.items():
+        cs_sorted = sorted(cs, key=lambda c: mon[c], reverse=True)
+        dist.append({
+            "segment": name,
+            "customers": len(cs),
+            "revenue": _round(sum(mon[c] for c in cs)),
+            "examples": [{"customer": c, "recency_days": rec[c], "orders": freq[c],
+                          "monetary": _round(mon[c])} for c in cs_sorted[:3]],
+        })
+    dist.sort(key=lambda x: x["revenue"], reverse=True)
+    return {"by_segment": dist,
+            "note": "RFM-quintiler (1-5) pr. kunde vejet til segmenter. Handl først på Champions (plej), Ved-at-miste (vind tilbage) og At-risk."}
+
+
 def analyze(csv_text: str, churn_days: int = 120) -> dict:
     lines, mapping = load_lines(csv_text)
     if not lines:
@@ -94,6 +148,7 @@ def analyze(csv_text: str, churn_days: int = 120) -> dict:
         "rfm": rfm(rev, orders, last, ref),
         "churn_signal": churn_signal(last, ref, churn_days),
         "segments": segments(rev, orders),
+        "rfm_segments": rfm_segments(rev, orders, last, ref),
     }
 
 
