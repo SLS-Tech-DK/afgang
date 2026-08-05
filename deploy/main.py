@@ -51,6 +51,7 @@ def _suite(product, b):
 
 
 def _konk(b):
+    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_konkurrent()}
     dom = b.get("domain") or b.get("own_domain")
     if dom:
         r = konkurrentanalyse.analyze_web(dom, b.get("competitor_domains") or [c for c in b.get("competitors", []) if isinstance(c, str)])
@@ -62,6 +63,7 @@ def _konk(b):
     return r
 
 def _ai(b):
+    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_ai()}
     if b.get("brand") and not b.get("query_results"):
         r = ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages"))
     else:
@@ -73,6 +75,7 @@ def _ai(b):
 
 
 def _review(b):
+    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_review()}
     r = review_analyse.analyze(_csv(b))
     if r.get("error"): return r
     plan = None

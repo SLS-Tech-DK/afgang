@@ -563,3 +563,42 @@ def render_review_html(res, plan=None, shop_name=""):
 new Chart(document.getElementById('cr'),{{type:'bar',data:{{labels:{_json.dumps(labels)},datasets:[{{data:{_json.dumps(vals)},backgroundColor:'#57c98a',borderRadius:5}}]}},options:{{plugins:{{legend:{{display:false}}}}}}}});
 </script>""")
     return _shell("Review-analyse", "".join(H), shop_name)
+
+
+# --- DEMO for konkurrent / AI-synlighed / review (frosset prøvedata) ---
+SAMPLE_KONK = {"meta":{"own":"minshop.dk","competitors":["konkA.dk","konkB.dk"],"blokeret":[],"kan_vaelge_ny":False},
+ "analyse":{"aktorer":[
+   {"navn":"minshop.dk","pris_niveau":"middel","sortiment_bredde":"smal","styrker":["Fri fragt","Personlig service","Stærk brandhistorie"],"svagheder":["Smalt sortiment","Lav AI-synlighed"]},
+   {"navn":"konkA.dk","pris_niveau":"lav","sortiment_bredde":"bred","styrker":["Aggressiv pris","Stort sortiment","Konverteringsoptimeret shop"],"svagheder":["Ingen brandhistorie","Lav service"]}],
+  "gaps":[{"omraade":"Sortiment","din_position":"smal","bedste_konkurrent":"konkA.dk","status":"bagud"},
+          {"omraade":"Pris","din_position":"middel","bedste_konkurrent":"konkA.dk","status":"bagud"},
+          {"omraade":"Service & brand","din_position":"stærk","bedste_konkurrent":"konkA.dk","status":"foran"}],
+  "hvor_du_kan_vinde":[{"omraade":"Kvalitet","handling":"Fremhæv premium-udvalg og ekspertise frem for at konkurrere på pris"},
+                       {"omraade":"AI-synlighed","handling":"Byg FAQ/guide-indhold som AI-modeller citerer"}],
+  "resume":"Du er bagud på sortiment og pris, men klart foran på service og brand. Vind ved at dyrke kvalitet og synlighed frem for at matche lavpris.",
+  "handlingsplan":["Udvid de bedst sælgende kategorier","Fremhæv din service som den afgørende forskel","Byg AI-venligt indhold (FAQ, guides)","Tydeliggør værdi frem for at sænke prisen"]}}
+def demo_konkurrent(): return render_konkurrent_html(SAMPLE_KONK)
+
+SAMPLE_AI = {"meta":{"brand":"MinShop","competitors":["KonkA","KonkB"],"queries":5,"field":"kaffe og stempelkander","live":True},
+ "geo":{"queries_run":5,"brand_mention_rate_pct":40.0,"share_of_voice_pct":33.3,"brand_mentions":2,"competitor_mentions":{"KonkA":3,"KonkB":1},
+   "per_query":[{"query":"Bedste webshop til kaffe i Danmark?","brand_mentioned":False,"competitors_mentioned":["KonkA"]},
+                {"query":"Hvor køber man en stempelkande?","brand_mentioned":True,"competitors_mentioned":["KonkA"]},
+                {"query":"God kvalitetskaffe online?","brand_mentioned":True,"competitors_mentioned":[]},
+                {"query":"Billigste kaffe?","brand_mentioned":False,"competitors_mentioned":["KonkA","KonkB"]},
+                {"query":"Anbefaling til keramik-udstyr?","brand_mentioned":False,"competitors_mentioned":[]}],
+   "quick_wins":["MinShop nævnes i under halvdelen af AI-svarene — byg autoritetsindhold (FAQ, guides) som modellerne kan citere.",
+                 "Din share-of-voice er lav vs. konkurrenterne — få omtaler/links fra sider AI-modeller ofte trækker på.",
+                 "'KonkA' nævnes oftere end dig — analysér deres indhold og luk hullet."]},
+ "aeo":{"pages":[{"page":"forside","score":100.0,"anbefalinger":[]},
+                 {"page":"om","score":20.0,"anbefalinger":["Tilføj overskrifter formuleret som spørgsmål","Tilføj en FAQ-sektion","Tilføj FAQPage-schema (JSON-LD)"]}],
+        "avg_score":60.0}}
+def demo_ai(): return render_ai_html(SAMPLE_AI)
+
+SAMPLE_REVIEW = {"meta":{"reviews":7,"avg_rating":3.0,"low_rating_share_pct":57.1,"low_threshold":3.0},
+ "rating_distribution":{"1":2,"2":1,"3":1,"4":1,"5":2},
+ "themes":[["levering",3],["kvalitet",3],["kundeservice",1],["pris",1]],
+ "themes_in_low_reviews":[["levering",2],["kvalitet",2],["kundeservice",1]]}
+SAMPLE_REVIEW_PLAN = ("Resumé: 7 anmeldelser, gennemsnit 3,0 — 57% er dårlige (1-3 stjerner).\n\n"
+ "Hvad går galt: 'levering' og 'kvalitet' fylder mest i de dårlige anmeldelser, 'kundeservice' også.\n\n"
+ "Prioriteret handlingsliste:\n1. Fix leveringstider og kommunikation om levering.\n2. Undersøg kvalitetsklagerne på de nævnte produkter.\n3. Styrk kundeservice-svartider.\n4. Bed tilfredse kunder om anmeldelser for at løfte snittet.")
+def demo_review(): return render_review_html(SAMPLE_REVIEW, SAMPLE_REVIEW_PLAN, "Demo-butik")
