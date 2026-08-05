@@ -545,3 +545,21 @@ def render_ai_html(res, shop_name=""):
     elif aeo.get("note"):
         H.append('<div class="card" style="color:var(--muted)">'+_html.escape(aeo["note"])+'</div>')
     return _shell("AI-synlighed (GEO+AEO)", "".join(H), f"{m.get('brand','')} · {m.get('field','')}")
+
+
+def render_review_html(res, plan=None, shop_name=""):
+    if res.get("error"): return _shell("Review-analyse", f'<div class="card">Fejl: {_html.escape(res["error"])}</div>')
+    m=res.get("meta",{}); dist=res.get("rating_distribution",{}) or {}
+    H=[f'<div class="kpis"><div class="kpi"><div class="n">{m.get("reviews",0)}</div><div class="l">Anmeldelser</div></div>'
+       f'<div class="kpi"><div class="n">{m.get("avg_rating","–")}</div><div class="l">Gns. rating</div></div>'
+       f'<div class="kpi"><div class="n">{m.get("low_rating_share_pct",0)}%</div><div class="l">Dårlige anmeldelser</div></div></div>']
+    labels=[str(k) for k in sorted(dist, key=lambda x:str(x))]; vals=[dist[k] for k in sorted(dist, key=lambda x:str(x))]
+    H.append('<div class="eyebrow">Ratingfordeling</div><div class="card"><canvas id="cr"></canvas></div>')
+    def themes(t): return _tbl(["Tema","Antal"],[[a,b] for a,b in (t or [])])
+    H.append('<div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="card"><h3>Temaer (alle)</h3>'+themes(res.get("themes"))+'</div><div class="card"><h3>Temaer i dårlige anmeldelser</h3>'+themes(res.get("themes_in_low_reviews"))+'</div></div>')
+    if plan:
+        H.append('<div class="eyebrow">Handlingsplan</div><div class="card" style="white-space:pre-wrap;font-size:14.5px">'+_html.escape(plan)+'</div>')
+    H.append(f"""<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script>
+new Chart(document.getElementById('cr'),{{type:'bar',data:{{labels:{_json.dumps(labels)},datasets:[{{data:{_json.dumps(vals)},backgroundColor:'#57c98a',borderRadius:5}}]}},options:{{plugins:{{legend:{{display:false}}}}}}}});
+</script>""")
+    return _shell("Review-analyse", "".join(H), shop_name)

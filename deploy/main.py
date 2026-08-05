@@ -72,6 +72,19 @@ def _ai(b):
     return r
 
 
+def _review(b):
+    r = review_analyse.analyze(_csv(b))
+    if r.get("error"): return r
+    plan = None
+    if os.environ.get("GEMINI_ENABLED") == "1":
+        try: plan = review_forklaring.forklar(r).get("forklaring_tekst")
+        except Exception as e: r["forklaring_error"] = str(e)
+    if plan: r["forklaring"] = {"forklaring_tekst": plan}
+    try: r["html"] = webshop_suite.render_review_html(r, plan, b.get("shop_name", ""))
+    except Exception as e: r["html_error"] = str(e)
+    return r
+
+
 REGISTRY = {
     # type: (analyze(body) -> dict, forklar-modul eller None)
     "salgsanalyse":     (lambda b: _suite("salgsanalyse", b), None),
@@ -84,7 +97,7 @@ REGISTRY = {
     "prisovervagning":  (lambda b: prisovervagning.analyze(b.get("current", []), b.get("previous"), b.get("threshold_pct", 1.0)), None),
     "naevner_ai_alarm": (lambda b: naevner_ai_alarm.run_check(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("previous_measurement")), None),
     "produkttekst":     (lambda b: produkttekst.analyze(_csv(b)), None),
-    "review_analyse":   (lambda b: review_analyse.analyze(_csv(b)), review_forklaring),
+    "review_analyse":   (lambda b: _review(b), None),
     "landingsside":     (lambda b: landingsside.analyze(b.get("page_text", ""), b.get("page_name", "landingsside")), None),
     "annonce_spild":    (lambda b: annonce_spild.analyze(_csv(b)), None),
     "fuld_butiksanalyse": (lambda b: _suite("fuld_butiksanalyse", b), None),
