@@ -170,10 +170,13 @@ def analyze_web(own_domain: str, competitor_domains: list[str],
                 "details": [{"url": p.get("url"), "error": p.get("error")} for p in pages]}
     prompt = _byg_konk_prompt(pages, own_domain, competitor_domains)
     analysis = _gp.call_json(_KONK_SYSTEM, prompt, caller=caller)
+    blokeret = [p.get("url") for p in pages if (not p.get("ok")) and str(p.get("name","")).startswith("KONKURRENT")]
     return {
         "meta": {"own": own_domain, "competitors": competitor_domains,
                  "pages_fetched": [{"url": p.get("url"), "ok": p.get("ok")} for p in pages],
+                 "blokeret": blokeret, "kan_vaelge_ny": bool(blokeret),
                  "model": "gemini-pro (grounded web)"},
         "analyse": analysis,
-        "note": "Vurderinger er groundet på hentet sidetekst. Trafiktal kræver separat kilde.",
+        "note": ("Vurderinger er groundet på hentet sidetekst. Trafiktal kræver separat kilde."
+                 + (f" BEMÆRK: {len(blokeret)} konkurrent-side(r) kunne ikke hentes (blokerer scraping) — vælg evt. en anden." if blokeret else "")),
     }

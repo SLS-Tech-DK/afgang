@@ -50,6 +50,28 @@ def _suite(product, b):
     return out
 
 
+def _konk(b):
+    dom = b.get("domain") or b.get("own_domain")
+    if dom:
+        r = konkurrentanalyse.analyze_web(dom, b.get("competitor_domains") or [c for c in b.get("competitors", []) if isinstance(c, str)])
+    else:
+        r = konkurrentanalyse.analyze(b.get("own", {}), b.get("competitors", []))
+    if not r.get("error"):
+        try: r["html"] = webshop_suite.render_konkurrent_html(r, b.get("shop_name", ""))
+        except Exception as e: r["html_error"] = str(e)
+    return r
+
+def _ai(b):
+    if b.get("brand") and not b.get("query_results"):
+        r = ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages"))
+    else:
+        r = ai_synlighed.analyze(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("pages"))
+    if not r.get("error"):
+        try: r["html"] = webshop_suite.render_ai_html(r, b.get("shop_name", ""))
+        except Exception as e: r["html_error"] = str(e)
+    return r
+
+
 REGISTRY = {
     # type: (analyze(body) -> dict, forklar-modul eller None)
     "salgsanalyse":     (lambda b: _suite("salgsanalyse", b), None),
@@ -57,8 +79,8 @@ REGISTRY = {
     "lageranalyse":     (lambda b: _suite("lageranalyse", b), None),
     "kundeanalyse":     (lambda b: _suite("kundeanalyse", b), None),
     "butiksanalyse":    (lambda b: _suite("fuld_butiksanalyse", b), None),
-    "konkurrentanalyse":(lambda b: konkurrentanalyse.analyze_web(b.get("domain") or b.get("own_domain"), b.get("competitor_domains") or ([c for c in b.get("competitors", []) if isinstance(c, str)])) if (b.get("domain") or b.get("own_domain")) else konkurrentanalyse.analyze(b.get("own", {}), b.get("competitors", [])), None),
-    "ai_synlighed":     (lambda b: ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages")) if (b.get("brand") and not b.get("query_results")) else ai_synlighed.analyze(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("pages")), ai_forklaring),
+    "konkurrentanalyse": (lambda b: _konk(b), None),
+    "ai_synlighed":     (lambda b: _ai(b), ai_forklaring),
     "prisovervagning":  (lambda b: prisovervagning.analyze(b.get("current", []), b.get("previous"), b.get("threshold_pct", 1.0)), None),
     "naevner_ai_alarm": (lambda b: naevner_ai_alarm.run_check(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("previous_measurement")), None),
     "produkttekst":     (lambda b: produkttekst.analyze(_csv(b)), None),
