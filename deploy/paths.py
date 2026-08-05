@@ -21,7 +21,7 @@ CANONICAL = {
     "salgsanalyse", "indkobsanalyse", "lageranalyse", "kundeanalyse",
     "butiksanalyse", "konkurrentanalyse", "ai_synlighed", "prisovervagning",
     "naevner_ai_alarm", "produkttekst", "review_analyse", "landingsside",
-    "annonce_spild", "soegeords_gap",
+    "annonce_spild", "soegeords_gap", "fuld_butiksanalyse", "spoerg_data",
 }
 
 # Ekstra sti-aliaser (kunde-/URL-venlige navne) → kanonisk type.

@@ -16,6 +16,7 @@ AI-query wires ved deploy — se README-deploy.md.
 from __future__ import annotations
 import os, json
 from paths import resolve_type
+import base64, webshop_suite
 
 # Motorer (deterministisk analyze) + valgfrit forklar-lag pr. type.
 import salgsanalyse, indkobsanalyse, lageranalyse, kundeanalyse, butiksanalyse
@@ -27,6 +28,23 @@ import konk_forklaring, ai_forklaring, butiks_forklaring, review_forklaring
 
 def _csv(body):     # motorer der tager rå CSV-tekst
     return body.get("csv", "")
+
+
+
+def _fuld_butik(b):
+    a = webshop_suite.analyze(b.get("vare_csv", ""), b.get("ordre_csv", ""))
+    if a.get("error"):
+        return a
+    out = {"meta": a["meta"], "analyse": a}
+    try:
+        out["html"] = webshop_suite.render_html(a, b.get("shop_name", ""))
+    except Exception as e:
+        out["html_error"] = str(e)
+    try:
+        out["xlsx_base64"] = base64.b64encode(webshop_suite.render_xlsx(a)).decode()
+    except Exception as e:
+        out["xlsx_error"] = str(e)
+    return out
 
 
 REGISTRY = {
@@ -44,6 +62,8 @@ REGISTRY = {
     "review_analyse":   (lambda b: review_analyse.analyze(_csv(b)), review_forklaring),
     "landingsside":     (lambda b: landingsside.analyze(b.get("page_text", ""), b.get("page_name", "landingsside")), None),
     "annonce_spild":    (lambda b: annonce_spild.analyze(_csv(b)), None),
+    "fuld_butiksanalyse": (lambda b: _fuld_butik(b), None),
+    "spoerg_data":        (lambda b: webshop_suite.gemini_qa(b.get("analyse", {}), b.get("spoergsmaal", "")), None),
     "soegeords_gap":    (lambda b: soegeords_gap.analyze(_csv(b)), None),
 }
 

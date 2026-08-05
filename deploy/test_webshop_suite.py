@@ -38,3 +38,18 @@ chk("error" in ws.analyze("Varenummer;Navn\n1;X","Ordrenr\n"),"tom ordre -> pæn
 
 print("RESULTAT:", "OK" if ok else "FEJL")
 sys.exit(0 if ok else 1)
+
+# 5) render + qa (mock) — bygger på embedded-datasæt fra test 1
+def _extra():
+    va="Varenummer;Navn;Primær kategori;Mærke;Pris;Indkøbspris;Lager\n1;Kaffe;Kaffe;A;100;60;40\n2;Filter;Tilbehør;B;30;10;200"
+    od=("Ordrenr;Produkt varenumre;Produkt titler;Ordredato;Kunde postnr.;Fragtmetode\n"
+        "1;1|||2;Kaffe (2)|||Filter (1);01-03-2026;9300;Afhentning\n2;1;Kaffe (1);02-03-2026;2100;Levering")
+    an=ws.analyze(va,od)
+    h=ws.render_html(an,"Test"); chk("<canvas" in h and "Fejl" not in h[:200],"render_html producerer grafer")
+    import io as _io, openpyxl
+    xb=ws.render_xlsx(an); wb=openpyxl.load_workbook(_io.BytesIO(xb))
+    chk("Indkobsordre" in wb.sheetnames and "Raadata" in wb.sheetnames,"render_xlsx har interaktive faner")
+    q=ws.gemini_qa(an,"bedste kategori?",caller=lambda s,p:"Kaffe" if "kategori" in p.lower() else "?")
+    chk(q["svar"]=="Kaffe","gemini_qa svarer via mock")
+_extra()
+print("RESULTAT2:", "OK" if ok else "FEJL"); sys.exit(0 if ok else 1)
