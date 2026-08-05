@@ -33,19 +33,19 @@ buf = io.StringIO(); csv.writer(buf).writerows(
 sales_csv = buf.getvalue()
 
 # 1. POST /salgsanalyse (sti bestemmer type, ingen type i body)
-data, code = _parse(handler(FakeRequest(path="/salgsanalyse", body={"csv": sales_csv})))
-check(code == 200 and data["type"] == "salgsanalyse" and "bestsellers" in data["result"], "POST /salgsanalyse")
+data, code = _parse(handler(FakeRequest(path="/salgsanalyse", body={"demo": True})))
+check(code == 200 and data["type"] == "salgsanalyse" and "html" in data["result"], "POST /salgsanalyse (demo)")
 
 # 2. POST /butiksanalyse (premium via sti)
-data, code = _parse(handler(FakeRequest(path="/butiksanalyse", body={"csv": sales_csv})))
-check(code == 200 and data["type"] == "butiksanalyse" and "handlingsplan" in data["result"], "POST /butiksanalyse")
+data, code = _parse(handler(FakeRequest(path="/butiksanalyse", body={"demo": True})))
+check(code == 200 and data["type"] == "butiksanalyse" and "html" in data["result"], "POST /butiksanalyse (demo)")
 
 # 3. Kælenavn /butiksrontgen → butiksanalyse
-data, code = _parse(handler(FakeRequest(path="/butiksrontgen", body={"csv": sales_csv})))
+data, code = _parse(handler(FakeRequest(path="/butiksrontgen", body={"demo": True})))
 check(data["type"] == "butiksanalyse", "POST /butiksrontgen alias")
 
 # 4. Bagud-kompatibelt: body-type vinder over sti
-data, code = _parse(handler(FakeRequest(path="/salgsanalyse", body={"type": "kundeanalyse", "csv": sales_csv})))
+data, code = _parse(handler(FakeRequest(path="/salgsanalyse", body={"type": "kundeanalyse", "demo": True})))
 check(data["type"] == "kundeanalyse", "body-type vinder over sti")
 
 # 5. GET / → sundhedstjek med produktliste

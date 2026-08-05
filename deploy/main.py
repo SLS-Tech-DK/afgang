@@ -31,29 +31,32 @@ def _csv(body):     # motorer der tager rå CSV-tekst
 
 
 
-def _fuld_butik(b):
+
+def _suite(product, b):
+    if b.get("demo"):
+        out = {"demo": True, "produkt": product}
+        try: out["html"] = webshop_suite.demo(product, "html")
+        except Exception as e: out["html_error"] = str(e)
+        try: out["xlsx_base64"] = base64.b64encode(webshop_suite.demo(product, "xlsx")).decode()
+        except Exception as e: out["xlsx_error"] = str(e)
+        return out
     a = webshop_suite.analyze(b.get("vare_csv", ""), b.get("ordre_csv", ""))
-    if a.get("error"):
-        return a
+    if a.get("error"): return a
     out = {"meta": a["meta"], "analyse": a}
-    try:
-        out["html"] = webshop_suite.render_html(a, b.get("shop_name", ""))
-    except Exception as e:
-        out["html_error"] = str(e)
-    try:
-        out["xlsx_base64"] = base64.b64encode(webshop_suite.render_xlsx(a)).decode()
-    except Exception as e:
-        out["xlsx_error"] = str(e)
+    try: out["html"] = webshop_suite.render_html(a, b.get("shop_name", ""), product=product)
+    except Exception as e: out["html_error"] = str(e)
+    try: out["xlsx_base64"] = base64.b64encode(webshop_suite.render_xlsx(a, product=product)).decode()
+    except Exception as e: out["xlsx_error"] = str(e)
     return out
 
 
 REGISTRY = {
     # type: (analyze(body) -> dict, forklar-modul eller None)
-    "salgsanalyse":     (lambda b: salgsanalyse.analyze(_csv(b)), gemini_forklaring),
-    "indkobsanalyse":   (lambda b: indkobsanalyse.analyze(_csv(b)), indkob_forklaring),
-    "lageranalyse":     (lambda b: lageranalyse.analyze(_csv(b), b.get("stock_csv")), lager_forklaring),
-    "kundeanalyse":     (lambda b: kundeanalyse.analyze(_csv(b)), kunde_forklaring),
-    "butiksanalyse":    (lambda b: butiksanalyse.analyze(_csv(b), b.get("stock_csv")), butiks_forklaring),
+    "salgsanalyse":     (lambda b: _suite("salgsanalyse", b), None),
+    "indkobsanalyse":   (lambda b: _suite("indkobsanalyse", b), None),
+    "lageranalyse":     (lambda b: _suite("lageranalyse", b), None),
+    "kundeanalyse":     (lambda b: _suite("kundeanalyse", b), None),
+    "butiksanalyse":    (lambda b: _suite("fuld_butiksanalyse", b), None),
     "konkurrentanalyse":(lambda b: konkurrentanalyse.analyze_web(b.get("domain") or b.get("own_domain"), b.get("competitor_domains") or ([c for c in b.get("competitors", []) if isinstance(c, str)])) if (b.get("domain") or b.get("own_domain")) else konkurrentanalyse.analyze(b.get("own", {}), b.get("competitors", [])), None),
     "ai_synlighed":     (lambda b: ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages")) if (b.get("brand") and not b.get("query_results")) else ai_synlighed.analyze(b.get("query_results", []), b.get("brand", ""), b.get("competitors", []), b.get("pages")), ai_forklaring),
     "prisovervagning":  (lambda b: prisovervagning.analyze(b.get("current", []), b.get("previous"), b.get("threshold_pct", 1.0)), None),
@@ -62,7 +65,7 @@ REGISTRY = {
     "review_analyse":   (lambda b: review_analyse.analyze(_csv(b)), review_forklaring),
     "landingsside":     (lambda b: landingsside.analyze(b.get("page_text", ""), b.get("page_name", "landingsside")), None),
     "annonce_spild":    (lambda b: annonce_spild.analyze(_csv(b)), None),
-    "fuld_butiksanalyse": (lambda b: _fuld_butik(b), None),
+    "fuld_butiksanalyse": (lambda b: _suite("fuld_butiksanalyse", b), None),
     "spoerg_data":        (lambda b: webshop_suite.gemini_qa(b.get("analyse", {}), b.get("spoergsmaal", "")), None),
     "soegeords_gap":    (lambda b: soegeords_gap.analyze(_csv(b)), None),
 }
