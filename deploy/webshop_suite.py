@@ -303,6 +303,37 @@ def _lockcss():
 @media(max-width:720px){.lockgrid{grid-template-columns:1fr}}
 """
 
+# Hvilken sektion hvert produkt åbner på (gratis hook i demo) — skræddersyet pr. produkt.
+HOOK = {"salgsanalyse":"maaned","indkobsanalyse":"lager","lageranalyse":"lager",
+        "kundeanalyse":"kunder","fuld_butiksanalyse":"maaned"}
+
+def _kpi(nv, lb): return f'<div class="kpi"><div class="n">{nv}</div><div class="l">{lb}</div></div>'
+
+def _kpis_for(product, m, a):
+    K=[]
+    if product in ("lageranalyse","indkobsanalyse"):
+        K.append(_kpi(_kr(m["lagervaerdi"])+" kr","Lagerværdi"))
+        K.append(_kpi(_kr(m["dodt_total"])+" kr","Dødt lager"))
+        K.append(_kpi(_kr(m["varer"]),"Varenumre"))
+        K.append(_kpi(_kr(m["omsætning"])+" kr","Omsætning"))
+    elif product=="kundeanalyse":
+        K.append(_kpi(_kr(m["omsætning"])+" kr","Omsætning"))
+        K.append(_kpi(_kr(m["ordrer"]),"Ordrer"))
+        K.append(_kpi(_kr(m["gns_ordre"])+" kr","Gns. ordre"))
+        if a.get("b2b"):
+            tot=(a["b2b"]["privat"]+a["b2b"]["b2b"]) or 1
+            K.append(_kpi(str(round(a["b2b"]["b2b"]/tot*100))+"%","B2B-andel"))
+    else:  # salgsanalyse + fuld_butiksanalyse
+        K.append(_kpi(_kr(m["omsætning"])+" kr","Omsætning"))
+        if m["kan"]["margin"]:
+            K.append(_kpi(_kr(m["dækningsbidrag"])+" kr","Dækningsbidrag"))
+            K.append(_kpi(str(m["margin_pct"])+"%","Gns. margin"))
+        K.append(_kpi(_kr(m["ordrer"]),"Ordrer"))
+        K.append(_kpi(_kr(m["gns_ordre"])+" kr","Gns. ordre"))
+        if product=="fuld_butiksanalyse":
+            K.append(_kpi(_kr(m["dodt_total"])+" kr","Dødt lager"))
+    return "".join(K)
+
 def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
     if a.get("error"): return f"<html><body style='font-family:sans-serif;background:#0f1218;color:#eee;padding:40px'>Fejl: {_html.escape(a['error'])}</body></html>"
     m=a["meta"]; kan=m["kan"]; S=_secs(product); pnavn=PRODUCTS.get(product,{}).get("navn","Butiksanalyse")
@@ -310,12 +341,12 @@ def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
     def cid(): n[0]+=1; return f"c{n[0]}"
     def has(tok): return tok in S
     secs=[]
-    def sec(label, teaser, body, ch=None):
-        secs.append((label, teaser, body, ch or {}))
+    def sec(token, label, teaser, body, ch=None):
+        secs.append((token, label, teaser, body, ch or {}))
     if has("maaned") and kan["tid"] and a.get("maaned"):
         c=cid(); ch={c:("line",[x for x,_ in a["maaned"]],[round(float(v)) for _,v in a["maaned"]],"money")}
         best=max(a["maaned"],key=lambda x:x[1]); worst=min(a["maaned"],key=lambda x:x[1])
-        sec("Omsætning over tid", f"Bedste måned <b>{best[0]}</b> ({_kr(best[1])} kr) — svageste <b>{worst[0]}</b> ({_kr(worst[1])} kr).",
+        sec("maaned","Omsætning over tid", f"Bedste måned <b>{best[0]}</b> ({_kr(best[1])} kr) — svageste <b>{worst[0]}</b> ({_kr(worst[1])} kr).",
             f'<div class="card"><canvas id="{c}"></canvas></div>', ch)
     if has("kategori") and a.get("kategori"):
         c1=cid(); ch={c1:("bar",[k for k,_,_,_ in a["kategori"][:10]],[v for _,v,_,_ in a["kategori"][:10]],"money")}
@@ -324,25 +355,25 @@ def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
             c2=cid(); ch[c2]=("bar",[k for k,_,mp,_ in a["kategori"][:10] if mp is not None],[mp for _,_,mp,_ in a["kategori"][:10] if mp is not None],"pct")
             blk+=f'<div class="card"><h3>Margin % pr. kategori</h3><canvas id="{c2}"></canvas></div>'
         top=a["kategori"][0]
-        sec("Kategorier", f"Største kategori: <b>{_html.escape(str(top[0]))}</b> med {_kr(top[1])} kr.", blk+'</div>', ch)
+        sec("kategori","Kategorier", f"Største kategori: <b>{_html.escape(str(top[0]))}</b> med {_kr(top[1])} kr.", blk+'</div>', ch)
     if has("top") and a.get("top_omsaetning"):
         c1=cid(); c2=cid()
         ch={c1:("hbar",[k for k,_ in a["top_omsaetning"]],[v for _,v in a["top_omsaetning"]],"money"),
             c2:("hbar",[k for k,_ in a["top_antal"]],[v for _,v in a["top_antal"]],"num")}
         tv=a["top_omsaetning"][0]
-        sec("Topsælgere", f"Bedste vare: <b>{_html.escape(str(tv[0]))}</b> ({_kr(tv[1])} kr).",
+        sec("top","Topsælgere", f"Bedste vare: <b>{_html.escape(str(tv[0]))}</b> ({_kr(tv[1])} kr).",
             f'<div class="two"><div class="card"><h3>Top efter omsætning</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Top efter antal</h3><canvas id="{c2}"></canvas></div></div>', ch)
     if has("maerke") and a.get("maerke"):
         c=cid(); ch={c:("bar",[k for k,_,_ in a["maerke"][:10]],[v for _,v,_ in a["maerke"][:10]],"money")}
         tm=a["maerke"][0]
-        sec("Mærker", f"Største mærke: <b>{_html.escape(str(tm[0]))}</b> ({_kr(tm[1])} kr).",
+        sec("maerke","Mærker", f"Største mærke: <b>{_html.escape(str(tm[0]))}</b> ({_kr(tm[1])} kr).",
             f'<div class="card"><h3>Omsætning pr. mærke</h3><canvas id="{c}"></canvas></div>', ch)
     if has("prisjustering") and a.get("prisjustering"):
         body='<div class="card">'+_tbl(["Vare","Margin %","Omsætning","Solgt"],[[nn,f"{mp}%",_kr(r)+" kr",_kr(q)] for nn,mp,r,q in a["prisjustering"]])+'<div class="insight">Sælger meget, tjener lidt — små justeringer rykker bundlinjen.</div></div>'
-        sec("Prisjusterings-kandidater", f"<b>{len(a['prisjustering'])} varer</b> sælger meget men tjener for lidt — direkte bundlinje at hente.", body)
+        sec("prisjustering","Prisjusterings-kandidater", f"<b>{len(a['prisjustering'])} varer</b> sælger meget men tjener for lidt — direkte bundlinje at hente.", body)
     if has("lager") and (a.get("genbestil") or a.get("dodt")):
         body='<div class="two"><div class="card"><h3>Genbestil snart</h3>'+_tbl(["Vare","Salg/uge","Lager","Uger"],a.get("genbestil",[]))+'</div><div class="card"><h3>Dødt lager — '+_kr(m["dodt_total"])+' kr bundet</h3>'+_tbl(["Vare","Lager","Bundet"],[[nn,l,_kr(v)+" kr"] for nn,l,v in a.get("dodt",[])])+'</div></div>'
-        sec("Lager & indkøb", f"<b>{_kr(m['dodt_total'])} kr</b> bundet i dødt lager — og {len(a.get('genbestil',[]))} varer skal snart genbestilles.", body)
+        sec("lager","Lager & indkøb", f"<b>{_kr(m['dodt_total'])} kr</b> bundet i dødt lager — og {len(a.get('genbestil',[]))} varer skal snart genbestilles.", body)
     if has("geografi") and kan["geografi"] and a.get("geografi"):
         c1=cid(); ch={c1:("bar",[x[0] for x in a["geografi"]],[x[1] for x in a["geografi"]],"money")}
         inner='<div class="card"><h3>Omsætning pr. område</h3><canvas id="'+c1+'"></canvas></div>'
@@ -353,7 +384,7 @@ def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
         if a.get("byer"): inner+='<div class="card"><h3>Top byer</h3>'+_tbl(["By","Ordrer","Omsætning"],[[b,c,_kr(r)+" kr"] for b,c,r in a["byer"]])+'</div>'
         if a.get("hvad_hvor"): inner+='<div class="card"><h3>Hvad køber de — hvor</h3>'+"".join(f'<div style="margin:8px 0"><b>{x[0]}</b> &nbsp; '+" ".join(f'<span class="pill">{_html.escape(k)}</span>' for k in x[1])+'</div>' for x in a["hvad_hvor"])+'</div>'
         tg=a["geografi"][0]
-        sec("Geografi", f"Stærkeste område: <b>{_html.escape(str(tg[0]))}</b> ({_kr(tg[1])} kr).", inner, ch)
+        sec("geografi","Geografi", f"Stærkeste område: <b>{_html.escape(str(tg[0]))}</b> ({_kr(tg[1])} kr).", inner, ch)
     if has("kunder") and a.get("kunder"):
         inner=""; ch={}
         if a.get("b2b"):
@@ -361,26 +392,21 @@ def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
             inner+=f'<div class="two"><div class="card"><h3>B2B vs. privat</h3><canvas id="{c}"></canvas></div><div class="card"><h3>Største firmakunder</h3>'+_tbl(["Firma","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a.get("firmakunder",[])])+'</div></div>'
         inner+='<div class="card"><h3>Største kunder</h3>'+_tbl(["Kunde","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a["kunder"]])+'</div>'
         tk=a["kunder"][0]
-        sec("Kunder", f"Største kunde står for <b>{_kr(tk[1])} kr</b> alene.", inner, ch)
+        sec("kunder","Kunder", f"Største kunde står for <b>{_kr(tk[1])} kr</b> alene.", inner, ch)
     if has("kombinationer") and a.get("kombinationer"):
         body='<div class="card">'+_tbl(["Kategori-par","Ordrer sammen"],[[p,c] for p,c in a["kombinationer"]])+'<div class="insight">Køb-sammen — oplagt til bundles og krydssalg.</div></div>'
         kp=a["kombinationer"][0]
-        sec("Kategori-kombinationer", f"<b>{_html.escape(str(kp[0]))}</b> købes ofte sammen — oplagt bundle.", body)
+        sec("kombinationer","Kategori-kombinationer", f"<b>{_html.escape(str(kp[0]))}</b> købes ofte sammen — oplagt bundle.", body)
     if has("timing") and kan["tid"] and a.get("timing"):
         c1=cid(); c2=cid()
         ch={c1:("bar",["Man","Tir","Ons","Tor","Fre","Lør","Søn"],a["timing"]["ugedag"],"num"),
             c2:("bar",[f"{h:02d}" for h in range(6,22)],a["timing"]["time"],"num")}
         dage=["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"]
         bd=dage[a["timing"]["ugedag"].index(max(a["timing"]["ugedag"]))]
-        sec("Hvornår køber de", f"Travleste dag: <b>{bd}</b>.",
+        sec("timing","Hvornår køber de", f"Travleste dag: <b>{bd}</b>.",
             f'<div class="two"><div class="card"><h3>Ordrer pr. ugedag</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Ordrer pr. klokkeslæt</h3><canvas id="{c2}"></canvas></div></div>', ch)
 
-    KP=[f'<div class="kpi"><div class="n">{_kr(m["omsætning"])} kr</div><div class="l">Omsætning</div></div>']
-    if kan["margin"]:
-        KP.append(f'<div class="kpi"><div class="n">{_kr(m["dækningsbidrag"])} kr</div><div class="l">Dækningsbidrag</div></div><div class="kpi"><div class="n">{m["margin_pct"]}%</div><div class="l">Gns. margin</div></div>')
-    KP.append(f'<div class="kpi"><div class="n">{_kr(m["ordrer"])}</div><div class="l">Ordrer</div></div><div class="kpi"><div class="n">{_kr(m["enheder"])}</div><div class="l">Enheder</div></div><div class="kpi"><div class="n">{_kr(m["gns_ordre"])} kr</div><div class="l">Gns. ordre</div></div>')
-
-    lead = ("Dette er dine egne tal. Du ser de første indsigter gratis — resten låser du op med den fulde analyse." if demo
+    lead = ("Dette er dine egne tal. Du ser de vigtigste indsigter gratis — resten låser du op med den fulde analyse." if demo
             else "Fra dine egne tal — med de handlinger der flytter mest. Automatisk genereret.")
     badge = '<div class="demoflag">GRATIS SMAGSPRØVE PÅ DINE EGNE TAL</div>' if demo else ''
     markextra = (' · '+_html.escape(shop_name)) if shop_name else ''
@@ -394,26 +420,31 @@ def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
 {badge}
 <h1>{_html.escape(pnavn)}.</h1>
 <p class="lead">{lead}</p>
-<div class="kpis">{''.join(KP)}</div>"""]
+<div class="kpis">{_kpis_for(product, m, a)}</div>"""]
 
     if not demo:
-        for label,teaser,body,ch in secs:
+        for token,label,teaser,body,ch in secs:
             H.append(f'<div class="eyebrow">{_html.escape(label)}</div>'+body)
             charts.update(ch)
     else:
-        if secs:
-            label,teaser,body,ch=secs[0]
+        # Vælg produktets hook-sektion som gratis; resten låses.
+        hook_tok=HOOK.get(product)
+        hook_idx=next((i for i,s in enumerate(secs) if s[0]==hook_tok), 0 if secs else None)
+        if hook_idx is not None and secs:
+            token,label,teaser,body,ch=secs[hook_idx]
             H.append(f'<div class="eyebrow">{_html.escape(label)}</div>'+body)
             charts.update(ch)
+            rest=[s for i,s in enumerate(secs) if i!=hook_idx]
+        else:
+            rest=[]
         pris=_pris(product)
         prisstr=f' — <span class="price">{_kr(pris)} kr</span>' if pris else ''
-        rest=secs[1:]
         H.append('<div class="unlock"><h3>Lås hele din analyse op'+prisstr+'</h3>'
                  +'<p>Du har set toppen. Den fulde analyse giver dig alle '+str(len(secs))+' områder nedenfor — med de konkrete varer, tal og handlinger — plus et interaktivt Excel-ark du kan arbejde videre i.</p>'
                  +'<a class="cta" href="#kob">Lås op — få hele analysen</a></div>')
         if rest:
             H.append('<div class="eyebrow">Det får du også i den fulde analyse</div><div class="lockgrid">')
-            for label,teaser,body,ch in rest:
+            for token,label,teaser,body,ch in rest:
                 H.append('<div class="locked"><div class="lk-lock">🔒 låst</div><div class="lk-lab">'+_html.escape(label)+'</div><div class="lk-teaser">'+teaser+'</div></div>')
             H.append('</div>')
     H.append('<div class="foot">Genereret af Afgang på dit eget dataudtræk. Tal beregnet, ikke gættet. Et Afgang-produkt · SLS Tech · CVR 46634640.</div></div>')
