@@ -286,70 +286,136 @@ def _tbl(cols,rows):
     r="".join("<tr>"+"".join(f"<td>{_html.escape(str(c))}</td>" for c in row)+"</tr>" for row in rows)
     return f'<table><tr>{h}</tr>{r}</table>'
 
+def _lockcss():
+    return """
+.demoflag{display:inline-block;background:#123026;color:#57c98a;border:1px solid #1f5a44;font-size:12px;padding:5px 12px;border-radius:20px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.unlock{background:linear-gradient(135deg,#123026,#0f1218);border:1px solid #1f5a44;border-radius:16px;padding:26px 28px;margin:34px 0}
+.unlock h3{margin:0 0 6px;font-family:'Bricolage Grotesque';font-size:22px;color:#eaf7f0}
+.unlock p{margin:0 0 16px;color:#aeb6c2;font-size:15px;max-width:640px;line-height:1.5}
+.unlock .cta{display:inline-block;background:#57c98a;color:#08130d;font-weight:700;padding:12px 22px;border-radius:10px;text-decoration:none;font-size:15px}
+.unlock .price{color:#57c98a;font-weight:700}
+.locked{position:relative;border:1px dashed #333c4c;border-radius:14px;padding:18px 20px;background:#141922}
+.locked .lk-lab{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#7f8794;margin-bottom:7px}
+.locked .lk-teaser{font-size:16px;color:#dfe5ee;font-weight:600;line-height:1.4}
+.locked .lk-teaser b{color:#57c98a}
+.locked .lk-lock{position:absolute;top:13px;right:15px;font-size:12px;color:#7f8794;font-family:'JetBrains Mono',monospace}
+.lockgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+@media(max-width:720px){.lockgrid{grid-template-columns:1fr}}
+"""
+
 def render_html(a, shop_name="", product="fuld_butiksanalyse", demo=False):
     if a.get("error"): return f"<html><body style='font-family:sans-serif;background:#0f1218;color:#eee;padding:40px'>Fejl: {_html.escape(a['error'])}</body></html>"
     m=a["meta"]; kan=m["kan"]; S=_secs(product); pnavn=PRODUCTS.get(product,{}).get("navn","Butiksanalyse")
     charts={}; n=[0]
     def cid(): n[0]+=1; return f"c{n[0]}"
     def has(tok): return tok in S
+    secs=[]
+    def sec(label, teaser, body, ch=None):
+        secs.append((label, teaser, body, ch or {}))
+    if has("maaned") and kan["tid"] and a.get("maaned"):
+        c=cid(); ch={c:("line",[x for x,_ in a["maaned"]],[round(float(v)) for _,v in a["maaned"]],"money")}
+        best=max(a["maaned"],key=lambda x:x[1]); worst=min(a["maaned"],key=lambda x:x[1])
+        sec("Omsætning over tid", f"Bedste måned <b>{best[0]}</b> ({_kr(best[1])} kr) — svageste <b>{worst[0]}</b> ({_kr(worst[1])} kr).",
+            f'<div class="card"><canvas id="{c}"></canvas></div>', ch)
+    if has("kategori") and a.get("kategori"):
+        c1=cid(); ch={c1:("bar",[k for k,_,_,_ in a["kategori"][:10]],[v for _,v,_,_ in a["kategori"][:10]],"money")}
+        blk=f'<div class="two"><div class="card"><h3>Omsætning pr. kategori</h3><canvas id="{c1}"></canvas></div>'
+        if kan["margin"]:
+            c2=cid(); ch[c2]=("bar",[k for k,_,mp,_ in a["kategori"][:10] if mp is not None],[mp for _,_,mp,_ in a["kategori"][:10] if mp is not None],"pct")
+            blk+=f'<div class="card"><h3>Margin % pr. kategori</h3><canvas id="{c2}"></canvas></div>'
+        top=a["kategori"][0]
+        sec("Kategorier", f"Største kategori: <b>{_html.escape(str(top[0]))}</b> med {_kr(top[1])} kr.", blk+'</div>', ch)
+    if has("top") and a.get("top_omsaetning"):
+        c1=cid(); c2=cid()
+        ch={c1:("hbar",[k for k,_ in a["top_omsaetning"]],[v for _,v in a["top_omsaetning"]],"money"),
+            c2:("hbar",[k for k,_ in a["top_antal"]],[v for _,v in a["top_antal"]],"num")}
+        tv=a["top_omsaetning"][0]
+        sec("Topsælgere", f"Bedste vare: <b>{_html.escape(str(tv[0]))}</b> ({_kr(tv[1])} kr).",
+            f'<div class="two"><div class="card"><h3>Top efter omsætning</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Top efter antal</h3><canvas id="{c2}"></canvas></div></div>', ch)
+    if has("maerke") and a.get("maerke"):
+        c=cid(); ch={c:("bar",[k for k,_,_ in a["maerke"][:10]],[v for _,v,_ in a["maerke"][:10]],"money")}
+        tm=a["maerke"][0]
+        sec("Mærker", f"Største mærke: <b>{_html.escape(str(tm[0]))}</b> ({_kr(tm[1])} kr).",
+            f'<div class="card"><h3>Omsætning pr. mærke</h3><canvas id="{c}"></canvas></div>', ch)
+    if has("prisjustering") and a.get("prisjustering"):
+        body='<div class="card">'+_tbl(["Vare","Margin %","Omsætning","Solgt"],[[nn,f"{mp}%",_kr(r)+" kr",_kr(q)] for nn,mp,r,q in a["prisjustering"]])+'<div class="insight">Sælger meget, tjener lidt — små justeringer rykker bundlinjen.</div></div>'
+        sec("Prisjusterings-kandidater", f"<b>{len(a['prisjustering'])} varer</b> sælger meget men tjener for lidt — direkte bundlinje at hente.", body)
+    if has("lager") and (a.get("genbestil") or a.get("dodt")):
+        body='<div class="two"><div class="card"><h3>Genbestil snart</h3>'+_tbl(["Vare","Salg/uge","Lager","Uger"],a.get("genbestil",[]))+'</div><div class="card"><h3>Dødt lager — '+_kr(m["dodt_total"])+' kr bundet</h3>'+_tbl(["Vare","Lager","Bundet"],[[nn,l,_kr(v)+" kr"] for nn,l,v in a.get("dodt",[])])+'</div></div>'
+        sec("Lager & indkøb", f"<b>{_kr(m['dodt_total'])} kr</b> bundet i dødt lager — og {len(a.get('genbestil',[]))} varer skal snart genbestilles.", body)
+    if has("geografi") and kan["geografi"] and a.get("geografi"):
+        c1=cid(); ch={c1:("bar",[x[0] for x in a["geografi"]],[x[1] for x in a["geografi"]],"money")}
+        inner='<div class="card"><h3>Omsætning pr. område</h3><canvas id="'+c1+'"></canvas></div>'
+        if a.get("levering"):
+            c2=cid(); ch[c2]=("donut",["Afhentning","Forsendelse"],[a["levering"]["afhentning"],a["levering"]["forsendelse"]],"")
+            inner=f'<div class="two">{inner}<div class="card"><h3>Afhentning vs. forsendelse</h3><canvas id="{c2}"></canvas></div></div>'
+        inner+='<div class="card"><h3>Område-overblik</h3>'+_tbl(["Område","Omsætning","Ordrer","Afhentning %"],[[x[0],_kr(x[1]),x[2],f"{x[3]}%"] for x in a["geografi"]])+'</div>'
+        if a.get("byer"): inner+='<div class="card"><h3>Top byer</h3>'+_tbl(["By","Ordrer","Omsætning"],[[b,c,_kr(r)+" kr"] for b,c,r in a["byer"]])+'</div>'
+        if a.get("hvad_hvor"): inner+='<div class="card"><h3>Hvad køber de — hvor</h3>'+"".join(f'<div style="margin:8px 0"><b>{x[0]}</b> &nbsp; '+" ".join(f'<span class="pill">{_html.escape(k)}</span>' for k in x[1])+'</div>' for x in a["hvad_hvor"])+'</div>'
+        tg=a["geografi"][0]
+        sec("Geografi", f"Stærkeste område: <b>{_html.escape(str(tg[0]))}</b> ({_kr(tg[1])} kr).", inner, ch)
+    if has("kunder") and a.get("kunder"):
+        inner=""; ch={}
+        if a.get("b2b"):
+            c=cid(); ch={c:("donut",["Privat","B2B/firma"],[a["b2b"]["privat"],a["b2b"]["b2b"]],"")}
+            inner+=f'<div class="two"><div class="card"><h3>B2B vs. privat</h3><canvas id="{c}"></canvas></div><div class="card"><h3>Største firmakunder</h3>'+_tbl(["Firma","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a.get("firmakunder",[])])+'</div></div>'
+        inner+='<div class="card"><h3>Største kunder</h3>'+_tbl(["Kunde","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a["kunder"]])+'</div>'
+        tk=a["kunder"][0]
+        sec("Kunder", f"Største kunde står for <b>{_kr(tk[1])} kr</b> alene.", inner, ch)
+    if has("kombinationer") and a.get("kombinationer"):
+        body='<div class="card">'+_tbl(["Kategori-par","Ordrer sammen"],[[p,c] for p,c in a["kombinationer"]])+'<div class="insight">Køb-sammen — oplagt til bundles og krydssalg.</div></div>'
+        kp=a["kombinationer"][0]
+        sec("Kategori-kombinationer", f"<b>{_html.escape(str(kp[0]))}</b> købes ofte sammen — oplagt bundle.", body)
+    if has("timing") and kan["tid"] and a.get("timing"):
+        c1=cid(); c2=cid()
+        ch={c1:("bar",["Man","Tir","Ons","Tor","Fre","Lør","Søn"],a["timing"]["ugedag"],"num"),
+            c2:("bar",[f"{h:02d}" for h in range(6,22)],a["timing"]["time"],"num")}
+        dage=["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"]
+        bd=dage[a["timing"]["ugedag"].index(max(a["timing"]["ugedag"]))]
+        sec("Hvornår køber de", f"Travleste dag: <b>{bd}</b>.",
+            f'<div class="two"><div class="card"><h3>Ordrer pr. ugedag</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Ordrer pr. klokkeslæt</h3><canvas id="{c2}"></canvas></div></div>', ch)
+
+    KP=[f'<div class="kpi"><div class="n">{_kr(m["omsætning"])} kr</div><div class="l">Omsætning</div></div>']
+    if kan["margin"]:
+        KP.append(f'<div class="kpi"><div class="n">{_kr(m["dækningsbidrag"])} kr</div><div class="l">Dækningsbidrag</div></div><div class="kpi"><div class="n">{m["margin_pct"]}%</div><div class="l">Gns. margin</div></div>')
+    KP.append(f'<div class="kpi"><div class="n">{_kr(m["ordrer"])}</div><div class="l">Ordrer</div></div><div class="kpi"><div class="n">{_kr(m["enheder"])}</div><div class="l">Enheder</div></div><div class="kpi"><div class="n">{_kr(m["gns_ordre"])} kr</div><div class="l">Gns. ordre</div></div>')
+
+    lead = ("Dette er dine egne tal. Du ser de første indsigter gratis — resten låser du op med den fulde analyse." if demo
+            else "Fra dine egne tal — med de handlinger der flytter mest. Automatisk genereret.")
+    badge = '<div class="demoflag">GRATIS SMAGSPRØVE PÅ DINE EGNE TAL</div>' if demo else ''
+    markextra = (' · '+_html.escape(shop_name)) if shop_name else ''
     H=[f"""<!DOCTYPE html><html lang="da"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_html.escape(pnavn)} — Afgang</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-<style>{_CSS}</style></head><body><div class="wrap">
-<div class="mark"><b>afgang</b><span>.</span> · {_html.escape(pnavn)}{(' · '+_html.escape(shop_name)) if shop_name else ''}</div>
-{'<div class="demoflag">DEMO — eksempel på prøvedata, ikke din egen</div>' if demo else ''}
+<style>{_CSS}{_lockcss()}</style></head><body><div class="wrap">
+<div class="mark"><b>afgang</b><span>.</span> · {_html.escape(pnavn)}{markextra}</div>
+{badge}
 <h1>{_html.escape(pnavn)}.</h1>
-<p class="lead">Fra dine egne tal — med de handlinger der flytter mest. Automatisk genereret.</p>
-<div class="kpis"><div class="kpi"><div class="n">{_kr(m['omsætning'])} kr</div><div class="l">Omsætning</div></div>"""]
-    if kan["margin"]:
-        H.append(f'<div class="kpi"><div class="n">{_kr(m["dækningsbidrag"])} kr</div><div class="l">Dækningsbidrag</div></div><div class="kpi"><div class="n">{m["margin_pct"]}%</div><div class="l">Gns. margin</div></div>')
-    H.append(f'<div class="kpi"><div class="n">{_kr(m["ordrer"])}</div><div class="l">Ordrer</div></div><div class="kpi"><div class="n">{_kr(m["enheder"])}</div><div class="l">Enheder</div></div><div class="kpi"><div class="n">{_kr(m["gns_ordre"])} kr</div><div class="l">Gns. ordre</div></div></div>')
-    if has("maaned") and kan["tid"] and a.get("maaned"):
-        c=cid(); charts[c]=("line",[x for x,_ in a["maaned"]],[round(float(v)) for _,v in a["maaned"]],"money")
-        H.append(f'<div class="eyebrow">Omsætning over tid</div><div class="card"><canvas id="{c}"></canvas></div>')
-    if has("kategori") and a.get("kategori"):
-        c1=cid(); charts[c1]=("bar",[k for k,_,_,_ in a["kategori"][:10]],[v for _,v,_,_ in a["kategori"][:10]],"money")
-        blk=f'<div class="eyebrow">Kategorier</div><div class="two"><div class="card"><h3>Omsætning pr. kategori</h3><canvas id="{c1}"></canvas></div>'
-        if kan["margin"]:
-            c2=cid(); charts[c2]=("bar",[k for k,_,mp,_ in a["kategori"][:10] if mp is not None],[mp for _,_,mp,_ in a["kategori"][:10] if mp is not None],"pct")
-            blk+=f'<div class="card"><h3>Margin % pr. kategori</h3><canvas id="{c2}"></canvas></div>'
-        H.append(blk+'</div>')
-    if has("top") and a.get("top_omsaetning"):
-        c1=cid(); charts[c1]=("hbar",[k for k,_ in a["top_omsaetning"]],[v for _,v in a["top_omsaetning"]],"money")
-        c2=cid(); charts[c2]=("hbar",[k for k,_ in a["top_antal"]],[v for _,v in a["top_antal"]],"num")
-        H.append(f'<div class="eyebrow">Topsælgere</div><div class="two"><div class="card"><h3>Top efter omsætning</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Top efter antal</h3><canvas id="{c2}"></canvas></div></div>')
-    if has("maerke") and a.get("maerke"):
-        c=cid(); charts[c]=("bar",[k for k,_,_ in a["maerke"][:10]],[v for _,v,_ in a["maerke"][:10]],"money")
-        H.append(f'<div class="eyebrow">Mærker</div><div class="card"><h3>Omsætning pr. mærke</h3><canvas id="{c}"></canvas></div>')
-    if has("prisjustering") and a.get("prisjustering"):
-        H.append('<div class="eyebrow">Prisjusterings-kandidater</div><div class="card">'+_tbl(["Vare","Margin %","Omsætning","Solgt"],[[nn,f"{mp}%",_kr(r)+" kr",_kr(q)] for nn,mp,r,q in a["prisjustering"]])+'<div class="insight">Sælger meget, tjener lidt — små justeringer rykker bundlinjen.</div></div>')
-    if has("lager") and (a.get("genbestil") or a.get("dodt")):
-        H.append('<div class="eyebrow">Lager & indkøb</div><div class="two"><div class="card"><h3>Genbestil snart</h3>'+_tbl(["Vare","Salg/uge","Lager","Uger"],a.get("genbestil",[]))+'</div><div class="card"><h3>Dødt lager — '+_kr(m["dodt_total"])+' kr bundet</h3>'+_tbl(["Vare","Lager","Bundet"],[[nn,l,_kr(v)+" kr"] for nn,l,v in a.get("dodt",[])])+'</div></div>')
-    if has("geografi") and kan["geografi"] and a.get("geografi"):
-        c1=cid(); charts[c1]=("bar",[x[0] for x in a["geografi"]],[x[1] for x in a["geografi"]],"money")
-        H.append('<div class="eyebrow">Geografi</div>')
-        if a.get("levering"):
-            c2=cid(); charts[c2]=("donut",["Afhentning","Forsendelse"],[a["levering"]["afhentning"],a["levering"]["forsendelse"]],"")
-            H.append(f'<div class="two"><div class="card"><h3>Omsætning pr. område</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Afhentning vs. forsendelse</h3><canvas id="{c2}"></canvas></div></div>')
-        else:
-            H.append(f'<div class="card"><h3>Omsætning pr. område</h3><canvas id="{c1}"></canvas></div>')
-        H.append('<div class="card"><h3>Område-overblik</h3>'+_tbl(["Område","Omsætning","Ordrer","Afhentning %"],[[x[0],_kr(x[1]),x[2],f"{x[3]}%"] for x in a["geografi"]])+'</div>')
-        if a.get("byer"): H.append('<div class="card"><h3>Top byer</h3>'+_tbl(["By","Ordrer","Omsætning"],[[b,c,_kr(r)+" kr"] for b,c,r in a["byer"]])+'</div>')
-        if a.get("hvad_hvor"): H.append('<div class="card"><h3>Hvad køber de — hvor</h3>'+"".join(f'<div style="margin:8px 0"><b>{x[0]}</b> &nbsp; '+" ".join(f'<span class="pill">{_html.escape(k)}</span>' for k in x[1])+'</div>' for x in a["hvad_hvor"])+'</div>')
-    if has("kunder") and a.get("kunder"):
-        H.append('<div class="eyebrow">Kunder</div>')
-        if a.get("b2b"):
-            c=cid(); charts[c]=("donut",["Privat","B2B/firma"],[a["b2b"]["privat"],a["b2b"]["b2b"]],"")
-            H.append(f'<div class="two"><div class="card"><h3>B2B vs. privat</h3><canvas id="{c}"></canvas></div><div class="card"><h3>Største firmakunder</h3>'+_tbl(["Firma","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a.get("firmakunder",[])])+'</div></div>')
-        H.append('<div class="card"><h3>Største kunder</h3>'+_tbl(["Kunde","Omsætning"],[[k,_kr(v)+" kr"] for k,v in a["kunder"]])+'</div>')
-    if has("kombinationer") and a.get("kombinationer"):
-        H.append('<div class="eyebrow">Kategori-kombinationer</div><div class="card">'+_tbl(["Kategori-par","Ordrer sammen"],[[p,c] for p,c in a["kombinationer"]])+'<div class="insight">Køb-sammen — oplagt til bundles og krydssalg.</div></div>')
-    if has("timing") and kan["tid"] and a.get("timing"):
-        c1=cid(); charts[c1]=("bar",["Man","Tir","Ons","Tor","Fre","Lør","Søn"],a["timing"]["ugedag"],"num")
-        c2=cid(); charts[c2]=("bar",[f"{h:02d}" for h in range(6,22)],a["timing"]["time"],"num")
-        H.append(f'<div class="eyebrow">Hvornår køber de</div><div class="two"><div class="card"><h3>Ordrer pr. ugedag</h3><canvas id="{c1}"></canvas></div><div class="card"><h3>Ordrer pr. klokkeslæt</h3><canvas id="{c2}"></canvas></div></div>')
+<p class="lead">{lead}</p>
+<div class="kpis">{''.join(KP)}</div>"""]
+
+    if not demo:
+        for label,teaser,body,ch in secs:
+            H.append(f'<div class="eyebrow">{_html.escape(label)}</div>'+body)
+            charts.update(ch)
+    else:
+        if secs:
+            label,teaser,body,ch=secs[0]
+            H.append(f'<div class="eyebrow">{_html.escape(label)}</div>'+body)
+            charts.update(ch)
+        pris=_pris(product)
+        prisstr=f' — <span class="price">{_kr(pris)} kr</span>' if pris else ''
+        rest=secs[1:]
+        H.append('<div class="unlock"><h3>Lås hele din analyse op'+prisstr+'</h3>'
+                 +'<p>Du har set toppen. Den fulde analyse giver dig alle '+str(len(secs))+' områder nedenfor — med de konkrete varer, tal og handlinger — plus et interaktivt Excel-ark du kan arbejde videre i.</p>'
+                 +'<a class="cta" href="#kob">Lås op — få hele analysen</a></div>')
+        if rest:
+            H.append('<div class="eyebrow">Det får du også i den fulde analyse</div><div class="lockgrid">')
+            for label,teaser,body,ch in rest:
+                H.append('<div class="locked"><div class="lk-lock">🔒 låst</div><div class="lk-lab">'+_html.escape(label)+'</div><div class="lk-teaser">'+teaser+'</div></div>')
+            H.append('</div>')
     H.append('<div class="foot">Genereret af Afgang på dit eget dataudtræk. Tal beregnet, ikke gættet. Et Afgang-produkt · SLS Tech · CVR 46634640.</div></div>')
     H.append("<script>\n"+f"const CH={_json.dumps(charts)};\n"+"""
 const GR='#57c98a',GU='#e0aa4e',BL='#5b8def',MU='#939aa8',LN='#262c38';
@@ -483,11 +549,31 @@ def gemini_qa(analysis, question, caller=None):
 # ============================================================================
 # RENDER — Konkurrentanalyse + AI-synlighed (samme Afgang-brand)
 # ============================================================================
+# Låste priser (kr) — kilde: afgang_produkter i Supabase. Opdigtes aldrig.
+PRICES = {"salgsanalyse":495,"indkobsanalyse":495,"lageranalyse":495,"kundeanalyse":495,
+          "fuld_butiksanalyse":1195,"review_analyse":129,"konkurrentanalyse":495,"ai_synlighed":149}
+
+def _pris(product): return PRICES.get(product)
+
+def _unlock_cta(product, n_omraader):
+    pris=_pris(product)
+    prisstr=f' — <span class="price">{_kr(pris)} kr</span>' if pris else ''
+    return ('<div class="unlock"><h3>Lås hele analysen op'+prisstr+'</h3>'
+            +'<p>Du har set toppen. Den fulde analyse giver dig alle '+str(n_omraader)+' områder nedenfor — med de konkrete vurderinger og handlinger — samlet i en Afgang-rapport du kan handle på.</p>'
+            +'<a class="cta" href="#kob">Lås op — få hele analysen</a></div>')
+
+def _locked_cards(items):
+    h=['<div class="eyebrow">Det får du også i den fulde analyse</div><div class="lockgrid">']
+    for label,teaser in items:
+        h.append('<div class="locked"><div class="lk-lock">🔒 låst</div><div class="lk-lab">'+_html.escape(label)+'</div><div class="lk-teaser">'+teaser+'</div></div>')
+    h.append('</div>')
+    return "".join(h)
+
 def _shell(title, inner, subtitle=""):
     return (f"""<!DOCTYPE html><html lang="da"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{_html.escape(title)} — Afgang</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>{_CSS}
+<style>{_CSS}{_lockcss()}
 .grid2{{display:grid;grid-template-columns:1fr 1fr;gap:14px}}@media(max-width:800px){{.grid2{{grid-template-columns:1fr}}}}
 .tag{{display:inline-block;font-size:11px;font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:6px;margin-right:6px}}
 .bad{{background:rgba(224,116,90,.15);color:#e0745a;border:1px solid #5a2b22}}
@@ -498,9 +584,26 @@ li{{margin:5px 0 5px 18px;font-size:14px}}</style></head><body><div class="wrap"
 {inner}
 <div class="foot">Genereret af Afgang. Et Afgang-produkt · SLS Tech · CVR 46634640.</div></div></body></html>""")
 
-def render_konkurrent_html(res, shop_name=""):
+def render_konkurrent_html(res, shop_name="", demo=False):
     if res.get("error"): return _shell("Konkurrentanalyse", f'<div class="card">Fejl: {_html.escape(res["error"])}</div>')
     m=res.get("meta",{}); a=res.get("analyse",{}) or {}
+    if demo:
+        H=['<div class="demoflag">GRATIS SMAGSPRØVE PÅ DIN EGEN KONKURRENCE</div>']
+        if a.get("resume"): H.append('<div class="card"><h3>Resumé</h3><p style="font-size:14.5px">'+_html.escape(a["resume"])+'</p></div>')
+        ak=a.get("aktorer",[])
+        if ak:
+            x=ak[0]
+            H.append('<div class="eyebrow">Aktører</div><div class="grid2"><div class="card"><h3>'+_html.escape(str(x.get("navn","")))+'</h3>'
+                     +f'<div style="margin:6px 0"><span class="tag good">pris: {_html.escape(str(x.get("pris_niveau","?")))}</span><span class="tag good">sortiment: {_html.escape(str(x.get("sortiment_bredde","?")))}</span></div>'
+                     +'<b style="font-size:13px;color:var(--gron)">Styrker</b><ul>'+"".join(f'<li>{_html.escape(str(s))}</li>' for s in (x.get("styrker") or []))+'</ul></div></div>')
+        H.append(_unlock_cta("konkurrentanalyse", 4))
+        locked=[]
+        if len(a.get("aktorer",[]))>1: locked.append(("Alle konkurrenter", f"<b>{len(a['aktorer'])} aktører</b> vurderet på pris, sortiment, styrker og svagheder."))
+        if a.get("gaps"): locked.append(("Hvor du står", f"<b>{len(a['gaps'])} områder</b> hvor du er foran eller bagud — direkte sammenlignet."))
+        if a.get("hvor_du_kan_vinde"): locked.append(("Hvor du kan vinde", "De konkrete steder du kan tage markedsandel — med handling."))
+        if a.get("handlingsplan"): locked.append(("Handlingsplan", f"<b>{len(a['handlingsplan'])} prioriterede skridt</b> til at rykke din position."))
+        if locked: H.append(_locked_cards(locked))
+        return _shell("Konkurrentanalyse", "".join(H), f"{m.get('own','')} vs. {', '.join(m.get('competitors',[]))}")
     H=[]
     if m.get("blokeret"):
         H.append('<div class="card" style="border-color:#5a2b22">'
@@ -528,9 +631,21 @@ def render_konkurrent_html(res, shop_name=""):
         H.append('<div class="eyebrow">Handlingsplan</div><div class="card"><ol>'+"".join(f'<li>{_html.escape(str(p))}</li>' for p in a["handlingsplan"])+'</ol></div>')
     return _shell("Konkurrentanalyse", "".join(H), f"{m.get('own','')} vs. {', '.join(m.get('competitors',[]))}")
 
-def render_ai_html(res, shop_name=""):
+def render_ai_html(res, shop_name="", demo=False):
     if res.get("error"): return _shell("AI-synlighed", f'<div class="card">Fejl: {_html.escape(res["error"])}</div>')
     m=res.get("meta",{}); geo=res.get("geo",{}); aeo=res.get("aeo",{})
+    if demo:
+        H=['<div class="demoflag">GRATIS SMAGSPRØVE — SÅDAN SER AI DIT BRAND</div>',
+           f'<div class="kpis"><div class="kpi"><div class="n">{geo.get("brand_mention_rate_pct",0)}%</div><div class="l">Nævnt i AI-svar</div></div>'
+           f'<div class="kpi"><div class="n">{geo.get("share_of_voice_pct",0)}%</div><div class="l">Share of voice</div></div>'
+           f'<div class="kpi"><div class="n">{geo.get("queries_run",0)}</div><div class="l">AI-forespørgsler</div></div></div>']
+        H.append(_unlock_cta("ai_synlighed", 3))
+        locked=[]
+        if geo.get("per_query"): locked.append(("Bliver du nævnt?", f"Præcis hvilke af <b>{len(geo['per_query'])} spørgsmål</b> du nævnes i — og hvilke konkurrenter der tager pladsen."))
+        if geo.get("quick_wins"): locked.append(("Quick wins (GEO)", f"<b>{len(geo['quick_wins'])} konkrete træk</b> der får AI til at nævne dig oftere."))
+        if aeo.get("pages"): locked.append(("AEO — AI-læsbarhed", f"Score + anbefalinger for <b>{len(aeo['pages'])} af dine sider</b>."))
+        if locked: H.append(_locked_cards(locked))
+        return _shell("AI-synlighed (GEO+AEO)", "".join(H), f"{m.get('brand','')} · {m.get('field','')}")
     H=[f'<div class="kpis"><div class="kpi"><div class="n">{geo.get("brand_mention_rate_pct",0)}%</div><div class="l">Nævnt i AI-svar</div></div>'
        f'<div class="kpi"><div class="n">{geo.get("share_of_voice_pct",0)}%</div><div class="l">Share of voice</div></div>'
        f'<div class="kpi"><div class="n">{geo.get("queries_run",0)}</div><div class="l">AI-forespørgsler</div></div></div>']
@@ -547,13 +662,29 @@ def render_ai_html(res, shop_name=""):
     return _shell("AI-synlighed (GEO+AEO)", "".join(H), f"{m.get('brand','')} · {m.get('field','')}")
 
 
-def render_review_html(res, plan=None, shop_name=""):
+def render_review_html(res, plan=None, shop_name="", demo=False):
     if res.get("error"): return _shell("Review-analyse", f'<div class="card">Fejl: {_html.escape(res["error"])}</div>')
     m=res.get("meta",{}); dist=res.get("rating_distribution",{}) or {}
+    labels=[str(k) for k in sorted(dist, key=lambda x:str(x))]; vals=[dist[k] for k in sorted(dist, key=lambda x:str(x))]
+    if demo:
+        H=['<div class="demoflag">GRATIS SMAGSPRØVE PÅ DINE ANMELDELSER</div>',
+           f'<div class="kpis"><div class="kpi"><div class="n">{m.get("reviews",0)}</div><div class="l">Anmeldelser</div></div>'
+           f'<div class="kpi"><div class="n">{m.get("avg_rating","–")}</div><div class="l">Gns. rating</div></div>'
+           f'<div class="kpi"><div class="n">{m.get("low_rating_share_pct",0)}%</div><div class="l">Dårlige anmeldelser</div></div></div>']
+        H.append('<div class="eyebrow">Ratingfordeling</div><div class="card"><canvas id="cr"></canvas></div>')
+        H.append(_unlock_cta("review_analyse", 3))
+        locked=[]
+        if res.get("themes"): locked.append(("Temaer", f"De <b>{len(res['themes'])} emner</b> kunderne skriver om — rangeret."))
+        if res.get("themes_in_low_reviews"): locked.append(("Hvad trækker ned", "Præcis hvad der går galt i de dårlige anmeldelser."))
+        locked.append(("Handlingsplan", "Prioriteret liste til at løfte dit snit — konkret."))
+        H.append(_locked_cards(locked))
+        H.append(f"""<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script>
+new Chart(document.getElementById('cr'),{{type:'bar',data:{{labels:{_json.dumps(labels)},datasets:[{{data:{_json.dumps(vals)},backgroundColor:'#57c98a',borderRadius:5}}]}},options:{{plugins:{{legend:{{display:false}}}}}}}});
+</script>""")
+        return _shell("Review-analyse", "".join(H), shop_name)
     H=[f'<div class="kpis"><div class="kpi"><div class="n">{m.get("reviews",0)}</div><div class="l">Anmeldelser</div></div>'
        f'<div class="kpi"><div class="n">{m.get("avg_rating","–")}</div><div class="l">Gns. rating</div></div>'
        f'<div class="kpi"><div class="n">{m.get("low_rating_share_pct",0)}%</div><div class="l">Dårlige anmeldelser</div></div></div>']
-    labels=[str(k) for k in sorted(dist, key=lambda x:str(x))]; vals=[dist[k] for k in sorted(dist, key=lambda x:str(x))]
     H.append('<div class="eyebrow">Ratingfordeling</div><div class="card"><canvas id="cr"></canvas></div>')
     def themes(t): return _tbl(["Tema","Antal"],[[a,b] for a,b in (t or [])])
     H.append('<div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><div class="card"><h3>Temaer (alle)</h3>'+themes(res.get("themes"))+'</div><div class="card"><h3>Temaer i dårlige anmeldelser</h3>'+themes(res.get("themes_in_low_reviews"))+'</div></div>')
@@ -577,7 +708,7 @@ SAMPLE_KONK = {"meta":{"own":"minshop.dk","competitors":["konkA.dk","konkB.dk"],
                        {"omraade":"AI-synlighed","handling":"Byg FAQ/guide-indhold som AI-modeller citerer"}],
   "resume":"Du er bagud på sortiment og pris, men klart foran på service og brand. Vind ved at dyrke kvalitet og synlighed frem for at matche lavpris.",
   "handlingsplan":["Udvid de bedst sælgende kategorier","Fremhæv din service som den afgørende forskel","Byg AI-venligt indhold (FAQ, guides)","Tydeliggør værdi frem for at sænke prisen"]}}
-def demo_konkurrent(): return render_konkurrent_html(SAMPLE_KONK)
+def demo_konkurrent(): return render_konkurrent_html(SAMPLE_KONK, demo=True)
 
 SAMPLE_AI = {"meta":{"brand":"MinShop","competitors":["KonkA","KonkB"],"queries":5,"field":"kaffe og stempelkander","live":True},
  "geo":{"queries_run":5,"brand_mention_rate_pct":40.0,"share_of_voice_pct":33.3,"brand_mentions":2,"competitor_mentions":{"KonkA":3,"KonkB":1},
@@ -592,7 +723,7 @@ SAMPLE_AI = {"meta":{"brand":"MinShop","competitors":["KonkA","KonkB"],"queries"
  "aeo":{"pages":[{"page":"forside","score":100.0,"anbefalinger":[]},
                  {"page":"om","score":20.0,"anbefalinger":["Tilføj overskrifter formuleret som spørgsmål","Tilføj en FAQ-sektion","Tilføj FAQPage-schema (JSON-LD)"]}],
         "avg_score":60.0}}
-def demo_ai(): return render_ai_html(SAMPLE_AI)
+def demo_ai(): return render_ai_html(SAMPLE_AI, demo=True)
 
 SAMPLE_REVIEW = {"meta":{"reviews":7,"avg_rating":3.0,"low_rating_share_pct":57.1,"low_threshold":3.0},
  "rating_distribution":{"1":2,"2":1,"3":1,"4":1,"5":2},
@@ -601,4 +732,4 @@ SAMPLE_REVIEW = {"meta":{"reviews":7,"avg_rating":3.0,"low_rating_share_pct":57.
 SAMPLE_REVIEW_PLAN = ("Resumé: 7 anmeldelser, gennemsnit 3,0 — 57% er dårlige (1-3 stjerner).\n\n"
  "Hvad går galt: 'levering' og 'kvalitet' fylder mest i de dårlige anmeldelser, 'kundeservice' også.\n\n"
  "Prioriteret handlingsliste:\n1. Fix leveringstider og kommunikation om levering.\n2. Undersøg kvalitetsklagerne på de nævnte produkter.\n3. Styrk kundeservice-svartider.\n4. Bed tilfredse kunder om anmeldelser for at løfte snittet.")
-def demo_review(): return render_review_html(SAMPLE_REVIEW, SAMPLE_REVIEW_PLAN, "Demo-butik")
+def demo_review(): return render_review_html(SAMPLE_REVIEW, SAMPLE_REVIEW_PLAN, "Demo-butik", demo=True)

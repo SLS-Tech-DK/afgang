@@ -34,12 +34,13 @@ def _csv(body):     # motorer der tager rå CSV-tekst
 
 def _suite(product, b):
     if b.get("demo"):
-        out = {"demo": True, "produkt": product}
-        try: out["html"] = webshop_suite.demo(product, "html")
-        except Exception as e: out["html_error"] = str(e)
-        try: out["xlsx_base64"] = base64.b64encode(webshop_suite.demo(product, "xlsx")).decode()
-        except Exception as e: out["xlsx_error"] = str(e)
-        return out
+        # Ægte teaser på kundens eget upload. Returnér KUN teaser-html (ingen data/xlsx = IP-sikkert).
+        a = webshop_suite.analyze(b.get("vare_csv", ""), b.get("ordre_csv", ""))
+        if a.get("error"):
+            return {"demo": True, "produkt": product, "sample": True,
+                    "html": webshop_suite.demo(product, "html")}
+        return {"demo": True, "produkt": product,
+                "html": webshop_suite.render_html(a, b.get("shop_name", ""), product=product, demo=True)}
     a = webshop_suite.analyze(b.get("vare_csv", ""), b.get("ordre_csv", ""))
     if a.get("error"): return a
     out = {"meta": a["meta"], "analyse": a}
@@ -51,7 +52,14 @@ def _suite(product, b):
 
 
 def _konk(b):
-    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_konkurrent()}
+    if b.get('demo'):
+        dom = b.get("domain") or b.get("own_domain")
+        comp = (b.get("competitor_domains") or [c for c in b.get("competitors", []) if isinstance(c, str)])
+        if dom:
+            r = konkurrentanalyse.analyze_web(dom, comp[:1])  # kun 1 konkurrent i demo = spar kald
+            if not r.get("error"):
+                return {"demo":True,"html":webshop_suite.render_konkurrent_html(r, b.get("shop_name",""), demo=True)}
+        return {"demo":True,"sample":True,"html":webshop_suite.demo_konkurrent()}
     dom = b.get("domain") or b.get("own_domain")
     if dom:
         r = konkurrentanalyse.analyze_web(dom, b.get("competitor_domains") or [c for c in b.get("competitors", []) if isinstance(c, str)])
@@ -63,7 +71,12 @@ def _konk(b):
     return r
 
 def _ai(b):
-    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_ai()}
+    if b.get('demo'):
+        if b.get("brand"):
+            r = ai_synlighed.analyze_live(b.get("brand",""), b.get("field",""), b.get("competitors",[]), b.get("pages"), max_queries=2)
+            if not r.get("error"):
+                return {"demo":True,"html":webshop_suite.render_ai_html(r, b.get("shop_name",""), demo=True)}
+        return {"demo":True,"sample":True,"html":webshop_suite.demo_ai()}
     if b.get("brand") and not b.get("query_results"):
         r = ai_synlighed.analyze_live(b.get("brand", ""), b.get("field", ""), b.get("competitors", []), b.get("pages"))
     else:
@@ -75,7 +88,13 @@ def _ai(b):
 
 
 def _review(b):
-    if b.get('demo'): return {'demo':True,'html':webshop_suite.demo_review()}
+    if b.get('demo'):
+        reviews = _csv(b)
+        if reviews:
+            r = review_analyse.analyze(reviews)
+            if not r.get("error"):
+                return {"demo":True,"html":webshop_suite.render_review_html(r, None, b.get("shop_name",""), demo=True)}
+        return {"demo":True,"sample":True,"html":webshop_suite.demo_review()}
     r = review_analyse.analyze(_csv(b))
     if r.get("error"): return r
     plan = None

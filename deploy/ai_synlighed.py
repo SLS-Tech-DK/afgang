@@ -153,12 +153,14 @@ def build_branche_prompts(field: str) -> list[str]:
 
 
 def analyze_live(brand: str, field: str, competitors=None, pages=None,
-                 querier=None, caller=None) -> dict:
+                 querier=None, caller=None, max_queries=None) -> dict:
     """Fuld live GEO+AEO: generér branche-prompts → spørg Gemini → tæl omtaler.
-    querier(prompt)->svar kan injiceres (mock i test)."""
+    querier(prompt)->svar kan injiceres (mock i test).
+    max_queries begrænser antal prompts (bruges til gratis demo-teaser for at spare kald)."""
     competitors = competitors or []
     q = querier or default_gemini_querier()
     prompts = build_branche_prompts(field)
+    if max_queries: prompts = prompts[:max_queries]
     query_results = [{"query": p, "response": q(p)} for p in prompts]
     result = analyze(query_results, brand, competitors, pages)
     result["meta"]["field"] = field

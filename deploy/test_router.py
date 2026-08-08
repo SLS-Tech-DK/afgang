@@ -8,7 +8,8 @@ ok = True
 # alle typer er registreret
 expected = {"salgsanalyse","indkobsanalyse","lageranalyse","kundeanalyse","butiksanalyse",
             "konkurrentanalyse","ai_synlighed","prisovervagning","naevner_ai_alarm",
-            "produkttekst","review_analyse","landingsside","annonce_spild","soegeords_gap"}
+            "produkttekst","review_analyse","landingsside","annonce_spild","soegeords_gap",
+            "fuld_butiksanalyse","spoerg_data"}
 if set(REGISTRY) != expected:
     ok = False; print("FEJL: registry mangler typer:", expected ^ set(REGISTRY))
 
@@ -17,13 +18,16 @@ r = route({"type": "findes_ikke"})
 if r["ok"] or "Ukendt type" not in r["error"]:
     ok = False; print("FEJL: ukendt type burde fejle pænt")
 
-# salgsanalyse via router
-buf = io.StringIO(); csv.writer(buf).writerows(
-    [["Order ID","Lineitem name","Lineitem quantity","Lineitem price"],
-     ["1","Kaffe","2","79.50"],["1","Filter","1","29.00"],["2","Kaffe","1","79.50"]])
-r = route({"type": "salgsanalyse", "csv": buf.getvalue()})
-if not r["ok"] or r["type"] != "salgsanalyse" or "bestsellers" not in r["result"]:
+# salgsanalyse via router (to-fil-model: vare + ordre)
+import webshop_suite as _ws
+r = route({"type": "salgsanalyse", "vare_csv": _ws.SAMPLE_VARE, "ordre_csv": _ws.SAMPLE_ORDRE})
+if not r["ok"] or r["type"] != "salgsanalyse" or "html" not in r["result"] or "analyse" not in r["result"]:
     ok = False; print("FEJL: salgsanalyse-routing")
+
+# salgsanalyse demo (ægte teaser) -> kun html, ingen rådata (IP-sikker)
+r = route({"type": "salgsanalyse", "demo": True, "vare_csv": _ws.SAMPLE_VARE, "ordre_csv": _ws.SAMPLE_ORDRE})
+if not r["ok"] or "html" not in r["result"] or any(k in r["result"] for k in ("analyse","xlsx_base64")):
+    ok = False; print("FEJL: salgsanalyse-demo ikke IP-sikker")
 
 # konkurrentanalyse via router (struktureret input)
 r = route({"type": "konkurrentanalyse",
