@@ -91,7 +91,7 @@ ORD_PATS=dict(
  cvr=[r"cvr",r"vatnumber"],
  frag=[r"fragtmetode",r"leveringsmetode",r"shippingmethod",r"fulfillment",r"delivery"],
  betaling=[r"betalingsmetode",r"paymentmethod"],
- kunde=[r"kundenavn",r"kundeid",r"kundeemail",r"^email$",r"customer",r"billingname"],
+ kunde=[r"kundenavn",r"kundeid",r"kundeemail",r"^email$",r"customer",r"billingname",r"^kunde$",r"^kunder$",r"k.ber"],
  belob=[r"bel.bvarer",r"bel.btotal",r"subtotal",r"^total$",r"amount"],
  # embedded produktlinjer (ideal.shop)
  pvnums=[r"produktvarenumre",r"varenumre"],
