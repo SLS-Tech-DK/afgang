@@ -92,7 +92,7 @@ ORD_PATS=dict(
  frag=[r"fragtmetode",r"leveringsmetode",r"shippingmethod",r"fulfillment",r"delivery"],
  betaling=[r"betalingsmetode",r"paymentmethod"],
  kunde=[r"kundenavn",r"kundeid",r"kundeemail",r"^email$",r"customer",r"billingname",r"^kunde$",r"^kunder$",r"k.ber"],
- belob=[r"bel.bvarer",r"bel.btotal",r"subtotal",r"^total$",r"amount"],
+ belob=[r"bel.bvarer",r"bel.btotal",r"subtotal",r"^total$",r"amount",r"^bel.{0,2}b$",r"^pris$",r"oms.{0,2}tning",r"revenue"],
  # embedded produktlinjer (ideal.shop)
  pvnums=[r"produktvarenumre",r"varenumre"],
  ptitler=[r"produkttitler",r"produkttitel"],
@@ -117,11 +117,12 @@ def parse_ordre(text, V):
             firma=(r.get(mp["firma"]) or "").strip() if mp["firma"] else "",
             frag=(r.get(mp["frag"]) or "").strip() if mp["frag"] else "",
             kunde=(r.get(mp["kunde"]) or "").strip() if mp["kunde"] else "")
-    def addline(b,vn,navn,qty):
+    def addline(b,vn,navn,qty,amt=None):
         v=V.get(vn) or byname.get(_norm(vn)) or byname.get(_norm(navn)); pris=(v["pris"] if v else None) or 0; kost=(v["kost"] if v else None)
+        rev=amt if amt is not None else pris*qty
         lines.append(dict(**b, vn=(v["vn"] if v else vn), navn=(v["navn"] if v else (navn or vn)),
             kat=v["kat"] if v else "Ukendt", maerke=v["maerke"] if v else "Ukendt",
-            qty=qty, rev=pris*qty, db=((pris-(kost or 0))*qty) if kost is not None else 0))
+            qty=qty, rev=rev, db=((pris-(kost or 0))*qty) if kost is not None else 0))
     mode="embedded" if mp["pvnums"] else ("perline" if (mp["li_sku"] or mp["li_name"] or mp["li_product"]) else "simple")
     synth=0
     for r in rows:
@@ -143,7 +144,8 @@ def parse_ordre(text, V):
                 vn=navn  # fald tilbage til navn som nøgle
             if not vn: continue
             qty=(_num(r.get(mp["li_qty"])) if mp["li_qty"] else None) or 1.0
-            addline(b,vn,navn,qty)
+            amt=(_num(r.get(mp["belob"])) if mp["belob"] else None)
+            addline(b,vn,navn,qty,amt)
     return lines, mp, mode
 
 
