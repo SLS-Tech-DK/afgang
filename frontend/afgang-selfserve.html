@@ -2517,7 +2517,9 @@ function runAnalysis(p){
     showDemoAppend(p); return;
   }
   collectInput(p,function(body){
-    out.innerHTML='<div class="result">Kører analyse…</div>';
+    var tok=PAID[p.type];
+    if(tok){ body.access_token=tok; } else { body.demo=true; }
+    out.innerHTML='<div class="result">'+(tok?'Kører fuld analyse…':'Kører gratis teaser…')+'</div>';
     fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify(body)})
       .then(function(r){return r.json();})
       .then(function(data){ renderResult(data); })
@@ -2545,5 +2547,29 @@ function buy(p){
   if(link){ window.location.href=link; return; }
   out.innerHTML='<div class="demoflag">Køb åbner snart — betalingslink er ikke aktiveret endnu.</div>';
 }
+
+/* Betaling: veksl session_id -> access_token efter Stripe-redirect */
+var PAID = {};
+(function(){
+  try{
+    var sid=new URLSearchParams(window.location.search).get('session_id');
+    if(!sid || !MOTOR_URL) return;
+    fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify({session_id:sid})})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var tok=data.access_token||(data.result&&data.result.access_token);
+        var prod=data.product||(data.result&&data.result.product);
+        if(!tok||!prod) return;
+        PAID[prod]=tok;
+        var p=null; for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].type===prod){ p=PRODUCTS[i]; break; } }
+        if(p){
+          openProduct(p);
+          var o=document.getElementById('out');
+          if(o){ o.innerHTML='<div class="demoflag">Betaling gennemført — fuld analyse er låst op. Upload dine data og klik "Kør analyse".</div>'; }
+        }
+      })
+      .catch(function(){});
+  }catch(e){}
+})();
 </script>
 </body></html>
