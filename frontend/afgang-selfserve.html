@@ -2344,7 +2344,19 @@
 var MOTOR_URL = (window.AFGANG_MOTOR_URL || "").trim();
 /* Stripe checkout-links pr. type sættes her når Stripe er oppe. Tom = knappen
    forklarer at køb kobles på ved launch. */
-var STRIPE_LINKS = window.AFGANG_STRIPE_LINKS || {};
+var STRIPE_LINKS = window.AFGANG_STRIPE_LINKS || {
+  /* PAST DINE LIVE STRIPE PAYMENT LINKS IND HER (dashboard.stripe.com -> Payment Links).
+     Noeglen SKAL matche produktets "type". Tom streng "" = knappen viser "Koeb aabner ved launch". */
+  "butiksanalyse":     "",  /* Fuld Butiksanalyse - 3.900 kr */
+  "salgsanalyse":      "",  /* 990 kr */
+  "indkobsanalyse":    "",  /* 990 kr */
+  "lageranalyse":      "",  /* 990 kr */
+  "kundeanalyse":      "",  /* 990 kr */
+  "konkurrentanalyse": "",  /* Pro 1.900 kr (Lite 500 kr kraever ekstra knap) */
+  "ai_synlighed":      "",  /* Pro 2.500 kr engangs (maanedlig kraever ekstra knap) */
+  "prisovervagning":   "",  /* abonnement fra 299 kr/md */
+  "naevner_ai_alarm":  ""   /* abonnement 249 kr/md */
+};
 
 /* ---------- Produktkatalog ----------
    inputkind: csv | csv_stock | domain_comp | brand_comp | pagetext */
@@ -2515,7 +2527,7 @@ function buy(p){
   var out=document.getElementById('out');
   var link=STRIPE_LINKS[p.type];
   if(link){ window.location.href=link; return; }
-  out.innerHTML='<div class="demoflag">Køb åbner ved launch.</div>';
+  out.innerHTML='<div class="demoflag">Køb åbner snart — betalingslink er ikke aktiveret endnu.</div>';
 }
 </script>
 </body></html>
