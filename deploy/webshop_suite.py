@@ -61,7 +61,7 @@ VARE_PATS=dict(
  vn=[r"varenummer",r"varenr",r"sku",r"artikel",r"^id$",r"itemnumber",r"produktid"],
  navn=[r"navn",r"titel",r"^name$",r"^title$",r"produktnavn",r"producttitle",r"varenavn"],
  kat=[r"prim.rkategori",r"kategori",r"category",r"producttype",r"^type$"],
- maerke=[r"m.rke",r"brand",r"vendor",r"producent",r"manufacturer"],
+ maerke=[r"m.{0,2}rke",r"maerke",r"brand",r"vendor",r"producent",r"leverand",r"manufacturer"],
  pris=[r"^pris$",r"salgspris",r"^price$",r"variantprice",r"udsalgspris"],
  kost=[r"indk.{0,2}bspris",r"kostpris",r"^kost",r"^cost",r"costperitem",r"costprice",r"buyprice",r"indkobspris"],
  lager=[r"^lager$",r"beholdning",r"^stock",r"inventory",r"onhand",r"variantinventory",r"antalp.lager"],
@@ -97,14 +97,15 @@ ORD_PATS=dict(
  pvnums=[r"produktvarenumre",r"varenumre"],
  ptitler=[r"produkttitler",r"produkttitel"],
  # per-linje (Shopify-stil)
- li_sku=[r"lineitemsku",r"linjesku"],
+ li_sku=[r"lineitemsku",r"linjesku",r"^sku$",r"varenr",r"varenummer",r"artikelnr",r"produktid"],
  li_name=[r"lineitemname",r"linjenavn"],
  li_qty=[r"lineitemquantity",r"linjeantal",r"^antal$",r"quantity",r"stk"],
- li_product=[r"^produkt$",r"vare$",r"produktnavn"],
+ li_product=[r"^produkt$",r"produkt$",r"produktnavn",r"varenavn",r"^vare$",r"vare$",r"^navn$"],
 )
 def parse_ordre(text, V):
     rows,_=_rows(text); heads=list(rows[0].keys()) if rows else []
     mp={k:_find(heads,p) for k,p in ORD_PATS.items()}
+    byname={_norm(v["navn"]):v for v in V.values() if _norm(v["navn"])}
     lines=[]
     def base(r):
         return dict(onr=(r.get(mp["onr"]) or "").strip() if mp["onr"] else "",
@@ -117,8 +118,8 @@ def parse_ordre(text, V):
             frag=(r.get(mp["frag"]) or "").strip() if mp["frag"] else "",
             kunde=(r.get(mp["kunde"]) or "").strip() if mp["kunde"] else "")
     def addline(b,vn,navn,qty):
-        v=V.get(vn); pris=(v["pris"] if v else None) or 0; kost=(v["kost"] if v else None)
-        lines.append(dict(**b, vn=vn, navn=(v["navn"] if v else (navn or vn)),
+        v=V.get(vn) or byname.get(_norm(vn)) or byname.get(_norm(navn)); pris=(v["pris"] if v else None) or 0; kost=(v["kost"] if v else None)
+        lines.append(dict(**b, vn=(v["vn"] if v else vn), navn=(v["navn"] if v else (navn or vn)),
             kat=v["kat"] if v else "Ukendt", maerke=v["maerke"] if v else "Ukendt",
             qty=qty, rev=pris*qty, db=((pris-(kost or 0))*qty) if kost is not None else 0))
     mode="embedded" if mp["pvnums"] else ("perline" if (mp["li_sku"] or mp["li_name"] or mp["li_product"]) else "simple")
@@ -175,7 +176,7 @@ def analyze(vare_csv, ordre_csv):
     prod_rev=A("navn"); prod_qty=A("navn","qty")
     pv=defaultdict(lambda:[0.0,0.0,0.0])
     for l in lines:
-        a=pv[l["navn"]]; a[0]+=l["rev"]; a[1]+=l["db"]; a[2]+=l["qty"]
+        a=pv[l["navn"].strip().casefold()]; a[0]+=l["rev"]; a[1]+=l["db"]; a[2]+=l["qty"]
     thresh=sorted((r for r,_,_ in pv.values()),reverse=True)
     cut=thresh[min(len(thresh)-1,int(len(thresh)*0.2))] if thresh else 0
     prisjust=sorted([(n,d/r*100,r,q) for n,(r,d,q) in pv.items() if r>=cut and r>0],key=lambda x:x[1])[:15] if has_margin else []
@@ -183,7 +184,7 @@ def analyze(vare_csv, ordre_csv):
     genbestil=[]; dodt=[]; lagervaerdi=0
     for vn,vv in V.items():
         s=sold.get(vn,0); lager=vv["lager"] or 0; vel=s/span_w if span_w else 0; lagervaerdi+=lager*(vv["kost"] or 0)
-        if s>0 and vel>0 and lager/vel<4: genbestil.append((vv["navn"],round(vel,1),int(lager),round(lager/vel,1)))
+        if s>0 and vel>0 and lager>=0 and lager/vel<4: genbestil.append((vv["navn"],round(vel,1),int(lager),round(lager/vel,1)))
         if lager>0 and s==0: dodt.append((vv["navn"],int(lager),round((vv["kost"] or 0)*lager)))
     genbestil.sort(key=lambda x:x[3]); dodt.sort(key=lambda x:-x[2]); dodt_total=sum(x[2] for x in dodt)
     omr_rev=defaultdict(float); omr_ord=defaultdict(int); omr_afh=defaultdict(int); omr_kat=defaultdict(lambda:defaultdict(float))
