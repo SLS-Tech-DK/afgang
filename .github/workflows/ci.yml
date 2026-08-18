@@ -24,3 +24,14 @@ jobs:
           done < <(find . -name 'test_*.py' | sort)
           if [ "$fail" -ne 0 ]; then echo "MINDST ÉN TEST FEJLEDE"; exit 1; fi
           echo "ALLE TESTS BESTÅET"
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Installer test-deps
+        run: cd frontend && npm install --no-audit --no-fund
+      - name: Kør funnel-kontrakttest
+        run: cd frontend && node test_funnel.mjs
