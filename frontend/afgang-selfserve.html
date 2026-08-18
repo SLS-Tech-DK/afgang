@@ -2467,6 +2467,9 @@ document.getElementById('back').onclick=function(){
 document.getElementById('demo').onclick=function(){ showDemo(CUR); };
 document.getElementById('run').onclick=function(){ runAnalysis(CUR); };
 document.getElementById('buy').onclick=function(){ buy(CUR); };
+/* suite-motorer: raa CSV som ordre_csv (+ vare_csv). NEXT bruger csv. */
+var SUITE={butiksanalyse:1,salgsanalyse:1,indkobsanalyse:1,lageranalyse:1,kundeanalyse:1};
+var PAID={};
 
 var REALDEMO={};
 try{REALDEMO=JSON.parse(document.getElementById('realdemo').textContent);}catch(e){}
@@ -2495,8 +2498,8 @@ function collectInput(p, cb){
       var r=new FileReader(); r.onload=function(){ body[key]=r.result; then(); }; r.readAsText(el.files[0]);
     } else then();
   }
-  if(k==='csv'){ readFile('f_csv','csv',function(){ cb(body); }); return; }
-  if(k==='csv_stock'){ readFile('f_csv','csv',function(){ readFile('f_stock','stock_csv',function(){ cb(body); }); }); return; }
+  if(k==='csv'){ readFile('f_csv', SUITE[p.type]?'ordre_csv':'csv',function(){ cb(body); }); return; }
+  if(k==='csv_stock'){ readFile('f_csv','ordre_csv',function(){ readFile('f_stock','vare_csv',function(){ cb(body); }); }); return; }
   if(k==='domain_comp'){
     body.own={name:val('f_own')}; body.competitors=[val('f_c1'),val('f_c2'),val('f_c3')].filter(Boolean).map(function(n){return {name:n};});
     body.current=[]; cb(body); return;
@@ -2516,24 +2519,30 @@ function runAnalysis(p){
     out.innerHTML='<div class="demoflag">Motoren er ikke koblet på endnu — viser eksempel i stedet. Live-kald aktiveres når routeren er deployet.</div>';
     showDemoAppend(p); return;
   }
+  var tok=PAID[p.type];
   collectInput(p,function(body){
+    if(tok){ body.access_token=tok; } else { body.demo=true; }
     var tok=PAID[p.type];
     if(tok){ body.access_token=tok; } else { body.demo=true; }
     out.innerHTML='<div class="result">'+(tok?'Kører fuld analyse…':'Kører gratis teaser…')+'</div>';
     fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify(body)})
-      .then(function(r){return r.json();})
-      .then(function(data){ renderResult(data); })
+      .then(function(r){return r.json().then(function(d){return {status:r.status,data:d};});})
+      .then(function(res){ renderResult(res.data,res.status,p,!!tok); })
       .catch(function(e){ out.innerHTML='<div class="result">Kunne ikke kontakte motoren: '+e.message+'</div>'; });
   });
 }
 function showDemoAppend(p){
   document.getElementById('out').innerHTML += '<div class="result">'+(DEMO[p.type]||'Eksempel kommer.')+'</div>';
 }
-function renderResult(data){
+function renderResult(data,status,p,wasFull){
   var out=document.getElementById('out');
+  if(status===402||(data&&data.betaling_kraevet)){ out.innerHTML='<div class="demoflag">Den fulde rapport kræver køb — tryk „Køb & få leveret“.</div>'; return; }
   if(!data.ok){ out.innerHTML='<div class="result">Fejl: '+escapeHtml(String(data.error||(data.result&&data.result.error)||'ukendt'))+'</div>'; return; }
   var r=data.result||{}, html='';
-  var k=kpis(r.meta); if(k)html+='<div class="result">'+k+'</div>';
+  if(!wasFull){ html+='<div class="demoflag">GRATIS FORHÅNDSVISNING på dine data — køb for fuld rapport + Excel.</div>'; }
+  if(r.html){ html+='<div class="result">'+r.html+'</div>'; }
+  else { var k=kpis(r.meta); if(k)html+='<div class="result">'+k+'</div>'; }
+  if(r.xlsx_base64){ html+='<div class="result"><a class="price" download="'+((p&&p.type)||'afgang')+'-rapport.xlsx" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'+r.xlsx_base64+'">⬇ Download Excel-rapport</a></div>'; }
   if(data.forklaring&&data.forklaring.forklaring_tekst){html+='<div class="result"><h4>Analyse (Gemini)</h4>'+mdLite(data.forklaring.forklaring_tekst)+'</div>';}
   else if(r.handlingsplan){html+='<div class="result"><h4>Handlingsplan</h4>'+escapeHtml(Array.isArray(r.handlingsplan)?r.handlingsplan.join('\n'):JSON.stringify(r.handlingsplan,null,2))+'</div>';}
   html+='<details style="margin-top:10px"><summary class="cfg" style="cursor:pointer">Se rå motor-output (JSON)</summary><div class="result">'+escapeHtml(JSON.stringify(r,null,2))+'</div></details>';
@@ -2570,6 +2579,22 @@ var PAID = {};
       })
       .catch(function(){});
   }catch(e){}
+})();
+</script>
+<script>
+(function(){
+  var m=location.search.match(/[?&]session_id=([^&]+)/);
+  if(!m||!MOTOR_URL) return;
+  var sid=decodeURIComponent(m[1]);
+  fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify({session_id:sid})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.ok&&d.access_token){
+        PAID[d.product]=d.access_token;
+        var p=PRODUCTS.filter(function(x){return x.type===d.product;})[0];
+        if(p){ openProduct(p); document.getElementById('out').innerHTML='<div class="demoflag">✔ Betaling gennemført for '+escapeHtml(p.name)+'. Upload din CSV igen og tryk Kør analyse for din fulde rapport + Excel.</div>'; }
+      }
+    }).catch(function(){});
 })();
 </script>
 </body></html>
