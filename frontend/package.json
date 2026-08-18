@@ -1,0 +1,6 @@
+{
+  "name": "afgang-frontend-tests",
+  "private": true,
+  "type": "module",
+  "devDependencies": { "jsdom": "^24.1.0" }
+}
