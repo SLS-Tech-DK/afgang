@@ -2522,8 +2522,6 @@ function runAnalysis(p){
   var tok=PAID[p.type];
   collectInput(p,function(body){
     if(tok){ body.access_token=tok; } else { body.demo=true; }
-    var tok=PAID[p.type];
-    if(tok){ body.access_token=tok; } else { body.demo=true; }
     out.innerHTML='<div class="result">'+(tok?'Kører fuld analyse…':'Kører gratis teaser…')+'</div>';
     fetch(MOTOR_URL,{method:'POST',headers:{'Content-Type':'application/json','X-Afgang-Key':(window.AFGANG_KEY||'')},body:JSON.stringify(body)})
       .then(function(r){return r.json().then(function(d){return {status:r.status,data:d};});})
