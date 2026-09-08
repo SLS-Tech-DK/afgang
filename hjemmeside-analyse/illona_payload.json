@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "name": "Illona Laursen",
+    "name_demo": "En akupunktur-klinik i København",
+    "url": "illona-laursen.dk",
+    "type": "akupunktur-klinik, København",
+    "tech": "WordPress (Virtue-tema · Yoast)",
+    "pages": 13,
+    "source": "data hentet fra sidens kildekode 30. aug – 4. sept. 2026",
+    "score": 48,
+    "score_max": 100,
+    "score_label": "Samlet synligheds- & tillids-score — trukket ned af indhold, ikke teknik",
+    "counts": [
+      {"n": "60+", "l": "sprogfejl", "c": "rod"},
+      {"n": "0", "l": "Google-profil", "c": "rod"},
+      {"n": "3", "l": "\"kommer snart\" live", "c": "gul"},
+      {"n": "0", "l": "blogindlæg", "c": "gul"},
+      {"n": "13", "l": "sider gennemgået", "c": "gron"}
+    ]
+  },
+  "recommendations": [
+    {"rank": 1, "title": "Opret en Google-profil i klinikkens navn", "body": "Der findes ingen profil i klinikkens navn, og en fremmed virksomhed (\"Ching Nigel\") ligger på adressen. Den enkeltstående største grund til ikke at blive fundet lokalt. Opret + verificér + ryd op.", "tag": "crit", "tag_label": "Kritisk"},
+    {"rank": 2, "title": "Ryd de tre \"kommer snart\"-behandlinger", "body": "Hjernerystelse, Bihulebetændelse og Ansigtslammelse står live med \"Her kommer snart en beskrivelse\". Skriv dem eller fjern fanerne — tomme løfter koster tillid.", "tag": "let", "tag_label": "Hurtig"},
+    {"rank": 3, "title": "Korrekturrunde — særligt titlerne", "body": "60+ sprogfejl, flere i side-titlerne Google viser først (\"fertillitet\", \"Viste du at\", \"POSTUOLOGI\"). Størst effekt på tillid, kræver ingen udvikler.", "tag": "let", "tag_label": "Hurtig"},
+    {"rank": 4, "title": "Tilføj LocalBusiness-schema", "body": "Siden har kun generisk Organization-markup. Uden LocalBusiness (adresse, geo, telefon, tider) forstår Google ikke at det er en lokal klinik. Færdig kode under \"Lokal synlighed\".", "tag": "hoej", "tag_label": "Høj"},
+    {"rank": 5, "title": "Gør booking-vejen synlig", "body": "Bookingen (EasyPractice) ligger kun på priser-siden. Læg en tydelig \"Book online\" i menuen og nederst på hver behandlingsside — direkte til bookingen.", "tag": "hoej", "tag_label": "Høj"},
+    {"rank": 6, "title": "Skriv meta-beskrivelser hvor de mangler", "body": "Flere sider mangler dem, så Google klipper en tilfældig sætning ud. 1–2 linjer pr. side i Yoast-feltet der allerede er der.", "tag": "med", "tag_label": "Mellem"},
+    {"rank": 7, "title": "Sæt AI-synlighed op (AEO)", "body": "Ingen llms.txt, tynd robots.txt, ingen FAQ-schema. Derfor bliver siden ikke citeret når folk spørger ChatGPT o.l. om en akupunktør i København.", "tag": "med", "tag_label": "Mellem"},
+    {"rank": 8, "title": "Byg indhold der trækker (blog + kosmetisk-side)", "body": "Ingen artikler i dag. Emner som \"kosmetisk akupunktur vs. botox\" og \"akupunktur mod migræne — hvad siger forskningen\" trækker søgninger og gør siden citérbar. Plus en dedikeret kosmetisk-side.", "tag": "med", "tag_label": "Vækst"}
+  ],
+  "overblik": [
+    {"title": "Fundamentet virker", "status": "ok", "status_label": "OK", "body": "Yoast kører, alle sider svarer (status 200), der er sitemap og canonical, siden er mobilvenlig, ingen døde links. Maskinen fejler ikke noget."},
+    {"title": "Indholdet halter", "status": "fix", "status_label": "Ret", "body": "60+ stave- og sprogfejl (flere i titlerne), tre behandlinger med \"kommer snart\", kontaktformular på engelsk, og priser der ikke stemmer på tværs af siderne."},
+    {"title": "Synligheden er ikke sat op", "status": "fix", "status_label": "Ret", "body": "Ingen Google-profil i klinikkens navn, kun generisk schema (ingen LocalBusiness), og AI-synlighed slet ikke sat op. Det er her de fleste nye kunder tabes."},
+    {"title": "Konvertering kan strammes", "status": "del", "status_label": "Løft", "body": "Booking er gemt væk, ingen pakker/klippekort, og den nye kosmetiske ydelse har hverken pris eller salgsside."}
+  ],
+  "seo": [
+    {"title": "Stavefejl i side-titlerne", "status": "fix", "status_label": "Ret", "body": "Titlen er den blå overskrift i Google + browserfanen — det første folk ser.", "ex": [["Graviditet og fertillitet", "Graviditet og fertilitet"], ["Viste du at", "Vidste du at"], ["POSTUOLOGI", "Posturologi"]]},
+    {"title": "Manglende meta-beskrivelser", "status": "fix", "status_label": "Ret", "body": "Akupunktur- og kosmetisk-siderne har gode beskrivelser, men zoneterapi, priser, kontakt, om, gavekort og de fleste behandlingssider mangler — så Google klipper selv en tilfældig sætning ud."},
+    {"title": "Forsiden mangler en H1", "status": "fix", "status_label": "Ret", "body": "Forsidens store tekst er en H2, ikke en H1. Google bruger H1 til at forstå hvad siden handler om. Undersiderne har korrekt H1 — kun forsiden mangler."},
+    {"title": "robots.txt henviser ikke til sitemap", "status": "del", "status_label": "Løft", "body": "Sitemap findes (Yoast), men robots.txt peger ikke på det. Lille ting, hurtig gevinst for crawl."},
+    {"title": "Canonical, sitemap, HTTPS, mobil, breadcrumbs", "status": "ok", "status_label": "OK", "body": "Alt dette er på plads. Fundamentet er der."}
+  ],
+  "sprog_intro": "Et udpluk af de tydelige fejl. Ikke en komplet korrektur, men nok til en fuld rettelses-runde. Fejl på næsten alle sider.",
+  "sprog_rows": [
+    ["/ (forside)", "\"Illona laursen\" (navn med lille) · dobbelt mellemrum · \"Nyt jeg tilbyder nu…\" mangler tegnsætning · ingen H1"],
+    ["/akupunktur/", "3 tomme faner (\"kommer snart\") · \"12 hovede meridaner\" → hovedmeridianer · \"energi baner\", \"engangs nåle\", \"forbyggende\""],
+    ["/oereakupunktur/", "\"POSTUOLOGI\" → Posturologi · \"symtomer\" → symptomer · \"stryker immunforsvaret\" → styrker · \"kobineres\" → kombineres"],
+    ["/zoneterapi/", "\"gir\" → giver · \"i form af af Kolik\" (dobbelt af) · \"Arrangmentet\" · brudt mobilepay-sætning · billede uden alt-tekst"],
+    ["/illona-laursen/ (om)", "\"Posturoloig\" · \"hormoelle ublancer\" → hormonelle ubalancer · \"boldtrykregulerende\" → blodtryks… · \"Gl kongevej\" → Gl. Kongevej"],
+    ["/kontakt/", "\"Viste du at\" → Vidste du at (også i Google) · \"Find vej til klikken\" → klinikken · formular på engelsk"],
+    ["/portfolio/kosmetisk-akupunktur/", "\"naturlig ansigt løft\" → naturligt ansigtsløft · \"pore minskes\" → porerne mindskes · \"et omåde\" → område"],
+    ["/portfolio/graviditet/", "Titel: \"fertillitet\" · \"fertiletsproblemer\" · \"gravidtet\" · \"boldcirkulationen\" · \"minsker riskoen\" · \"folliker\""],
+    ["/portfolio/laendesmerter/", "\"4 hver dansker\" → hver 4. dansker · \"fiberspræning\" · \"overbelasting\" · \"hofleproblemer\""],
+    ["/portfolio/rygestop/", "\"vijlestyrken\" / \"svag vijle\" → vilje · \"go ide\" → god idé"],
+    ["/portfolio/iskias/", "\"aurricoterapi\" → auriculoterapi · \"forsage\" → forårsage · \"igemmen\" → igennem"],
+    ["/portfolio/angst-og-depression/", "\"adskille psykiske problemer\" → adskillige · \"Alfhjælper\" → Afhjælper · \"krops akupunktur\""],
+    ["/portfolio/kraeft-kemoterapi/", "\"hårdrest ramt\" → hårdest ramt · \"retten kroppen op\" → rette kroppen op"]
+  ],
+  "lokal": [
+    {"title": "Ingen Google-profil — fremmed på adressen", "status": "fix", "status_label": "Kritisk", "body": "Bekræftet: der er ingen Google Business-profil i klinikkens navn, og på adressen (Havnegade 43) ligger en fremmed profil (\"Ching Nigel\"). Resultatet: reelt usynlig på Google Maps og i lokale søgninger. Opret egen profil, verificér, og få ryddet den fremmede."},
+    {"title": "Kun generisk Organization-schema", "status": "fix", "status_label": "Ret", "body": "Siden fortæller ikke Google at det er en lokal klinik. Indsæt LocalBusiness-schema i <head> på forsiden:", "pre": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"HealthAndBeautyBusiness\",\n  \"name\": \"Illona Laursen — Akupunktur & Zoneterapi\",\n  \"telephone\": \"+4560923404\",\n  \"address\": { \"@type\":\"PostalAddress\",\n    \"streetAddress\":\"Havnegade 43\", \"postalCode\":\"1058\",\n    \"addressLocality\":\"København K\", \"addressCountry\":\"DK\" },\n  \"areaServed\": \"København\"\n}\n</script>"},
+    {"title": "Ingen anmeldelser i spil", "status": "del", "status_label": "Løft", "body": "Anmeldelser er den vigtigste lokale løftestang. Sæt et enkelt system op: bed tilfredse kunder om en Google-anmeldelse (fx via EasyPractice-kvitteringen)."}
+  ],
+  "ai": [
+    {"title": "Ingen llms.txt", "status": "fix", "status_label": "Ret", "body": "Det er filen AI-modeller læser for at forstå hvad siden er. Findes ikke i dag (404) → modellerne har intet at gå ud fra."},
+    {"title": "Tynd robots.txt", "status": "del", "status_label": "Løft", "body": "Henviser ikke til sitemap og styrer ikke crawl. Nem at forbedre."},
+    {"title": "Ingen FAQ-schema", "status": "fix", "status_label": "Ret", "body": "Der er gode spørgsmål/svar-emner (dækker forsikring? hvad kan behandles?), men uden FAQPage-schema bliver de ikke citeret af AI og Google. Største lette AEO-gevinst."},
+    {"title": "Konsekvens", "status": "", "status_label": "", "body": "Spørger nogen \"en god akupunktør i København K?\" til en AI i dag, har den intet at hente om klinikken. Med llms.txt + FAQ-schema + LocalBusiness bliver den citérbar."}
+  ],
+  "indhold": [
+    {"title": "Tre behandlinger står \"kommer snart\"", "status": "fix", "status_label": "Ret nu", "body": "Hjernerystelse, Bihulebetændelse, Ansigtslammelse — alle med \"Her kommer snart en fyldestgørende beskrivelse\", live for alle besøgende. Skriv eller fjern."},
+    {"title": "Ingen blog / artikler", "status": "del", "status_label": "Vækst", "body": "Nul indhold der kan rangere på informationssøgninger. Oplagte, salgbare emner:", "list": ["Kosmetisk akupunktur vs. botox — det naturlige alternativ (høj interesse, lav konkurrence lokalt)", "Akupunktur mod migræne — hvad siger forskningen (der findes stærk evidens at læne sig op ad)", "Dækker min sundhedsforsikring / \"danmark\" akupunktur? — fjerner en købsbarriere"]},
+    {"title": "Kosmetisk akupunktur mangler sin egen side", "status": "del", "status_label": "Vækst", "body": "Den nye højmargin-ydelse ligger kun som et menupunkt uden pris og uden en side der sælger den som en kur. Det største enkeltstående vækst-scope."},
+    {"title": "Uens priser på tværs af siderne", "status": "fix", "status_label": "Ret", "body": "Priser-siden, gavekort-siden og behandlingssiderne opererer med forskellige tal (eller \"kontakt for pris\"). Ret så det er ens overalt — uens priser skaber tvivl og mails."}
+  ],
+  "konvertering": [
+    {"title": "Book-knappen er gemt væk", "status": "fix", "status_label": "Ret", "body": "EasyPractice-bookingen ligger kun inde på priser-siden. Forsiden og de 8 behandlingssider har ingen tydelig \"Book online\" — de fleste ender med \"ring til mig\". Hver side taber de kunder der var klar til at booke der og da."},
+    {"title": "Kontaktformular på engelsk", "status": "fix", "status_label": "Ret", "body": "Felterne hedder Name / Email / Message / Send Email på en dansk klinikside. Skift til Navn / E-mail / Besked / Send."},
+    {"title": "Ingen pakker eller klippekort", "status": "del", "status_label": "Vækst", "body": "Der sælges kun enkeltbehandlinger, så genbooking afhænger af at kunden selv husker det. Klippekort (fx kosmetisk kur på 8) binder genbooking ind i produktet — det er dét de stærkeste klinikker i byen gør."},
+    {"title": "Forsikring & \"danmark\" er gemt", "status": "del", "status_label": "Løft", "body": "Dækning er en dokumenteret købsdriver. Gør det tydeligt på forsiden med en enkel \"sådan får du tilskud\"-sektion."}
+  ]
+}
